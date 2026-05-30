@@ -1,0 +1,150 @@
+---
+title: "Työkalut ja toimintatavat"
+description: "Suunnittelutyökalut, kehitystyökalut ja suunnittelun ja kehityksen yhteistyö."
+order: 9
+section: "Työkalut"
+tags: ["Figma", "Storybook", "Playwright", "design-to-code"]
+published: true
+---
+
+## 9.1 Suunnittelutyökalut
+
+### Figma
+
+Nykypäivän standardi — ja syystä:
+
+| Ominaisuus | Hyöty |
+|---|---|
+| **Auto Layout** | Responsiiviset komponentit ilman koodia |
+| **Variantit** | Kaikki tilat yhdessä komponentissa |
+| **Design tokenit** | Värit, välit, typografia keskitetysti |
+| **Dev Mode** | Kehittäjä näkee tarkat arvot, koodin, CSS:n |
+| **Yhteistyö** | Reaaliaikainen, kommentit, versiohistoria |
+
+### Prototyyppaus
+
+| Työkalu | Vahvuus |
+|---|---|
+| **Figma** | Nopea, integroitu suunnitteluun |
+| **Prototype** | Kehittyneet animaatiot ja siirtymät |
+| **Origami** (Facebook) | Mobiiliprotot, eleohjaus |
+| **Framer** | Koodipohjainen, React-komponentit |
+
+## 9.2 Kehitystyökalut
+
+### Storybook + Chromatic
+
+```typescript
+// Storybook: komponentit eristyksissä
+export default {
+  title: "Components/Button",
+  component: Button,
+};
+
+export const Primary = {
+  args: {
+    variant: "primary",
+    children: "Tallenna",
+  },
+};
+
+export const Disabled = {
+  args: {
+    ...Primary.args,
+    disabled: true,
+  },
+};
+```
+
+### Playwright ja Cypress
+
+| Työkalu | Vahvuus |
+|---|---|
+| **Playwright** | Nopea, moniselaimekäs, hyvä debug |
+| **Cypress** | Helppo aloittaa, hyvä dokumentaatio |
+
+### Visuaaliset regressiotestit
+
+Percy, Applitools — vertaavat kuvakaappauksia eri versioiden välillä.
+Näkevät muutokset, joita yksikkötestit eivät näe (layout, värit, fontit).
+
+### axe DevTools
+
+Saavutettavuustestaus suoraan selaimen DevToolsissa — klikkaa, analysoi, korjaa.
+
+<AnalogyBox>
+  **Analogia:** Työkalut ovat kuin käsityöläisen työkalupakki.
+  - **Figma** on kuin työpiirustus — näyttää miltä lopputuloksen pitäisi näyttää
+  - **Storybook** on kuin mallihuone — jokainen komponentti on esillä erikseen
+  - **Playwright** on kuin testiajo — varmistaa että kaikki toimii yhdessä
+  - **Chromatic** on kuin valokuva ennen ja jälkeen — näkee pienetkin muutokset
+
+  Hyvä käsityöläinen tuntee työkalunsa. Mutta työkalut eivät tee mestaria —
+  taito ja kokemus tekevät.
+</AnalogyBox>
+
+## 9.3 Suunnittelun ja kehityksen yhteistyö
+
+### Design-to-code -putket
+
+```
+Figma → Design tokenit (JSON) → Koodi (CSS-muuttujat) → Komponentit → Sivu
+```
+
+1. Suunnittelija määrittelee tokenit Figmassa
+2. Tokenit synkronoidaan (käsiohjatusti tai työkalulla, kuten Specify/tokens.studio)
+3. Kehittäjä käyttää tokeneita Tailwind-konfiguraatiossa / CSS-muuttujina
+4. Komponentit rakennetaan Figma-komponenttien mukaan
+
+### Suunnittelukatselmukset (Design QA)
+
+```yaml
+Kriteerit ennen hyväksyntää:
+  - Vastaako toteutus Figma-suunnittelua? (pikselitarkkuus ±2px)
+  - Toimiiko kaikki tilat (loading, empty, error, hover, focus)?
+  - Onko saavutettavuus huomioitu (kontrasti, näppäimistö, ruudunlukija)?
+  - Toimiiko mobiililla ja desktopilla?
+  - Onhan fontit, värit ja välit design tokenien mukaiset?
+```
+
+### Yhteinen kieli
+
+**Design tokenit** ovat siltä suunnittelun ja kehityksen välillä:
+
+```json
+{
+  "color": {
+    "brand": { "value": "oklch(0.55 0.24 280)" },
+    "bg": { "value": "oklch(0.98 0.005 280)" },
+    "text": { "value": "oklch(0.15 0.02 280)" }
+  },
+  "spacing": {
+    "md": { "value": "1rem" },
+    "lg": { "value": "1.5rem" }
+  }
+}
+```
+
+### Dokumentaatio
+
+| Työkalu | Käyttötarkoitus |
+|---|---|
+| **Storybook** | Komponenttien dokumentaatio + testaus |
+| **Zeroheight** | Koko design systemin dokumentaatio |
+| **Notion / Confluence** | Prosessit, käytännöt, tutkimustulokset |
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Hyvä suunnittelun ja kehityksen välinen yhteistyö
+  on nopein tapa rakentaa laadukkaita käyttöliittymiä. Kun suunnittelija
+  ja kehittäjä puhuvat samaa kieltä (design tokenit), käyttävät samoja
+  työkaluja (Figma → Storybook → koodi) ja tarkistavat laatua yhdessä
+  (design QA), lopputulos on johdonmukainen, saavutettava ja valmis
+  tuotantoon — ilman turhia iteraatiokierroksia.
+</WhyItMatters>
+
+<Reference id="nielsen2012" />
+<Reference id="norman2013" />
+
+---
+
+**Osa 2 on nyt valmis!** Siirry takaisin [etusivulle](/AI-Koulu/) tai tutustu [interaktiivisiin demoihin](/AI-Koulu/).

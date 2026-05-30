@@ -1,0 +1,157 @@
+---
+title: "AI ja UI/UX:n leikkauspisteet"
+description: "Generatiivinen UI, keskustelevat käyttöliittymät ja eettiset näkökohdat."
+order: 7
+section: "AI ja UI/UX"
+tags: ["generatiivinen UI", "conversational UI", "eettisyys", "AI-avusteinen"]
+published: true
+---
+
+## 7.1 Generatiivinen UI
+
+Käyttöliittymät, jotka *generoituvat* käyttäjän tarpeiden mukaan — eivät
+ole staattisesti ennalta määriteltyjä.
+
+### Käyttöliittymien generointi käyttäjän tarpeen mukaan
+
+```typescript
+// AI generoi lomakkeen käyttäjän luonnollisesta kielestä
+const userRequest = "Haluan varata pöydän kahdelle huomenna klo 19";
+const form = await ai.generateUI(userRequest);
+// → Generoi: päivämäärävalitsin, kellonaika, henkilömäärä, vahvistus
+```
+
+### Dynaamiset komponentit ja mukautuvat asettelut
+
+Sama sivu voi näyttää täysin erilaiselta eri käyttäjille — AI valitsee
+komponentit ja layoutin käyttäjän roolin, laitteen ja historian perusteella.
+
+### Prompt-pohjainen UI:n rakennus
+
+Palvelut kuten **Vercel AI SDK** ja **v0.dev** mahdollistavat käyttöliittymän
+kuvaamisen luonnollisella kielellä — AI kääntää sen koodiksi.
+
+<AnalogyBox>
+  **Analogia:** Generatiivinen UI on kuin ravintola, jossa ei ole menua —
+  kokki kysyy mitä haluat ja tekee juuri sinulle sopivan annoksen.
+  Perinteinen UI on kuin pikaruokala: sama annos, sama koko, joka kerta.
+  Generatiivinen UI on fine dining -kokemus, joka on räätälöity juuri
+  sinun makuusi ja tarpeisiisi.
+</AnalogyBox>
+
+## 7.2 Keskustelevat käyttöliittymät (Conversational UI)
+
+### Chat-pohjaiset rajapinnat
+
+Chat UI on noussut yhdeksi yleisimmistä käyttöliittymämalleista —
+yksinkertainen, matala oppimiskynnys, toimii kaikilla laitteilla.
+
+### Hybridimallit (chat + perinteinen UI)
+
+```typescript
+// Hybridi: chat + perinteiset komponentit rinnakkain
+<ChatLayout>
+  <ChatSidebar>
+    <MessageList messages={messages} />
+    <MessageInput onSubmit={sendMessage} />
+  </ChatSidebar>
+  <ContentArea>
+    {/* AI voi lisätä tänne perinteisiä komponentteja */}
+    {aiResponse.type === "form" && <DynamicForm schema={aiResponse.form} />}
+    {aiResponse.type === "chart" && <Chart data={aiResponse.data} />}
+    {aiResponse.type === "text" && <TextContent content={aiResponse.text} />}
+  </ContentArea>
+</ChatLayout>
+```
+
+### Streaming ja progressiivinen tekstin renderöinti
+
+```typescript
+// Streaming: näytä tekstiä jo sen tullessa
+const response = await fetch("/api/chat", { body: streamBody });
+const reader = response.body.getReader();
+
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  appendText(new TextDecoder().decode(value));  // Päivitä UI reaaliajassa
+}
+```
+
+### Virhetilat: kun AI ei tiedä, on epävarma, tai kieltäytyy
+
+AI-käyttöliittymissä on kolme uutta virhetilaa:
+
+| Tila | UI-ilmentymä | Ratkaisu |
+|---|---|---|
+| **Ei tiedä** | "En osaa vastata tähän" | Ohjaa ihmiselle tai tarjoa tarkennusta |
+| **Epävarma** | "Tämä perustuu epävarmaan tietoon" | Näytä lähde ja luottamusprosentti |
+| **Kieltäytyy** | "En voi käsitellä tätä pyyntöä" | Selitä miksi ja tarjoa vaihtoehtoa |
+
+## 7.3 AI-avusteinen käyttökokemus
+
+### Älykkäät ehdotukset ja automaattitäydennys
+
+Hakukenttä, joka ehdottaa ennen kuin ehdit kirjoittaa loppuun.
+AI analysoi kontekstin, historian ja trendit.
+
+### Personointi ilman tungettelevuutta
+
+```typescript
+// Personointi: AI päättelee tarpeet, ei kysy niitä
+const userContext = {
+  timeOfDay: "morning",
+  device: "mobile",
+  previousPages: ["/ai-architecture/rag", "/ai-architecture/agents"],
+};
+
+// → AI ehdottaa: "Jatkatko RAG-luvusta?"
+```
+
+### AI-agentit käyttöliittymässä
+
+- **Keskusteluavustaja:** "Miten tämä toimii?"
+- **Co-pilot:** "Kirjoita sähköposti tästä aiheesta"
+- **Automaatio:** "Tee tämä toistuva tehtävä puolestani"
+
+## 7.4 Eettiset näkökohdat
+
+### Läpinäkyvyys
+
+Käyttäjän pitää aina tietää, milloin hän on tekemisissä AI:n kanssa.
+
+```typescript
+// Merkitse AI-vastaukset selkeästi
+<span class="ai-badge" role="status">AI-generoitu</span>
+```
+
+### Harhat ja oikeudenmukaisuus
+
+AI-mallit voivat toistaa ja vahvistaa yhteiskunnallisia harhoja.
+Tarkista: "Toimiiko tämä yhtä hyvin kaikille käyttäjäryhmille?"
+
+### Yksityisyys
+
+- Minimoi datan keräys
+- Älä lähetä sensitiivistä dataa kolmannelle osapuolelle
+- Kerro käyttäjälle, mitä dataa kerätään ja mihin sitä käytetään
+
+### Käyttäjän autonomia
+
+"AI-ehdotus" ei saa olla "AI-päätös". Käyttäjällä pitää aina olla
+mahdollisuus kieltäytyä, muokata ja ohittaa AI:n ehdotukset.
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** AI muuttaa käyttöliittymiä perustavanlaatuisesti —
+  mutta se tuo mukanaan täysin uusia haasteita. Luottamus on AI-käyttöliittymän
+  tärkein ominaisuus: jos käyttäjä ei luota, hän ei käytä. Läpinäkyvyys,
+  hallittavuus ja eettisyys eivät ole lisäominaisuuksia — ne ovat
+  edellytyksiä.
+</WhyItMatters>
+
+<Reference id="brown2020" />
+<Reference id="norman2013" />
+
+---
+
+**Seuraavaksi:** [UX-tutkimus ja datavetoinen suunnittelu](/AI-Koulu/ui-ux/08-ux-research/)

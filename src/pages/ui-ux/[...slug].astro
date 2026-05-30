@@ -6,6 +6,11 @@ import AnalogyBox from "../../components/ui/AnalogyBox.tsx";
 import WhyItMatters from "../../components/ui/WhyItMatters.tsx";
 import Reference from "../../components/ui/Reference.tsx";
 import Diagram from "../../components/ui/Diagram.tsx";
+import HicksLawGame from "../../components/demo/HicksLawGame.tsx";
+import ContrastTool from "../../components/demo/ContrastTool.tsx";
+import CLSDemo from "../../components/demo/CLSDemo.tsx";
+import AccessibilityLab from "../../components/demo/AccessibilityLab.tsx";
+import SkeletonStudio from "../../components/demo/SkeletonStudio.tsx";
 
 export async function getStaticPaths() {
   const chapters = await getCollection("ui-ux");
@@ -17,7 +22,7 @@ export async function getStaticPaths() {
 
 const { chapter } = Astro.props;
 const { Content } = await chapter.render();
-const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram };
+const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, HicksLawGame, ContrastTool, CLSDemo, AccessibilityLab, SkeletonStudio };
 ---
 
 <Layout title={chapter.data.title} description={chapter.data.description} entry={chapter}>

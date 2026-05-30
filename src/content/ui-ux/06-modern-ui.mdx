@@ -1,0 +1,185 @@
+---
+title: "Modernit UI-teknologiat"
+description: "Komponenttiarkkitehtuurit, tilanhallinta ja CSS-arkkitehtuurit."
+order: 6
+section: "Modernit teknologiat"
+tags: ["komponentit", "tilanhallinta", "CSS", "TypeScript"]
+published: true
+---
+
+## 6.1 Komponenttiarkkitehtuurit
+
+### Web-komponentit
+
+Natiivit selainkomponentit — kehyksestä riippumattomia. Toimivat Reactissa,
+Vuessa, Angularissa ja vanilja-JS:ssä.
+
+### Headless-komponenttikirjastot
+
+Antavat toiminnallisuuden ja saavutettavuuden, mutta *sinä* päätät ulkoasun.
+
+| Kirjasto | Kehys | Vahvuus |
+|---|---|---|
+| **Radix UI** | React | Monipuolisin, hyvä a11y |
+| **Headless UI** | React, Vue | Yksinkertainen, Tailwind-ystävä |
+| **Ark UI** | Kehyksistä riippumaton | Web-komponentit, kustomoitava |
+
+### Komponenttien koostaminen (Composition)
+
+```typescript
+// Huono: jäykkä, paljon propseja
+<Card
+  title="Otsikko"
+  description="Kuvaus"
+  image="/kuva.jpg"
+  actions={[<Button>Lue lisää</Button>]}
+  footer={<Footer />}
+/>
+
+// Hyvä: kompositio, joustava
+<Card>
+  <CardImage src="/kuva.jpg" alt="..." />
+  <CardContent>
+    <h3>Otsikko</h3>
+    <p>Kuvaus</p>
+  </CardContent>
+  <CardActions>
+    <Button>Lue lisää</Button>
+  </CardActions>
+</Card>
+```
+
+<AnalogyBox>
+  **Analogia:** Komponenttiarkkitehtuuri on kuin LEGO-palikat.
+  - **Web-komponentit:** yleispalikat, sopivat kaikkiin sarjoihin
+  - **Headless-komponentit:** tekniset palikat (akselit, nivelet) — et näe
+    niitä, mutta ne mahdollistavat liikkeen
+  - **Kompositio:** et rakenna "linnan palikkaa" vaan yhdistät seinä-,
+    katto- ja tornipalikoista linnan
+</AnalogyBox>
+
+## 6.2 Tilanhallinta
+
+### Kolme tilatyyppiä
+
+| Tila | Kuvaus | Esimerkki |
+|---|---|---|
+| **Palvelimen tila** | Data, joka tulee backendista | Käyttäjät, tuotteet |
+| **Asiakkaan tila** | Käyttöliittymän tila | Valikko auki/kiinni, valittu välilehti |
+| **URL-tila** | Sivun osoitteessa | Hakuparametrit, filtterit |
+
+### React Query / TanStack Query
+
+```typescript
+const { data, isLoading, error } = useQuery({
+  queryKey: ["users"],
+  queryFn: () => fetch("/api/users").then(r => r.json()),
+  staleTime: 5 * 60 * 1000,  // 5 minuuttia ennen uudelleenhakua
+});
+```
+
+### Signaalit ja reaktiivisuus
+
+```typescript
+// Solid.js/Preact Signals: suoraviivaisempi kuin useState
+const [count, setCount] = signal(0);
+
+// Efekti reagoi automaattisesti signaalin muutoksiin
+effect(() => {
+  console.log("Count muuttui:", count());
+});
+```
+
+## 6.3 CSS-arkkitehtuurit
+
+### Utility-first (Tailwind CSS)
+
+```html
+<!-- Utility-first: luokat kertovat tarkalleen mitä tekevät -->
+<div class="flex items-center gap-4 p-6 rounded-xl bg-white shadow-md">
+```
+
+### Cascade Layers
+
+```css
+/* @layer: määrittele tyylien prioriteettijärjestys */
+@layer base, components, utilities;
+
+@layer base {
+  h1 { font-size: 2rem; }       /* Matalin prioriteetti */
+}
+@layer utilities {
+  .text-large { font-size: 3rem; }  /* Korkein prioriteetti */
+}
+```
+
+### Container Queries
+
+```css
+/* Reagoi komponentin kokoon, ei ikkunan kokoon */
+@container (min-width: 400px) {
+  .card {
+    flex-direction: row;  /* Isossa kontissa vierekkäin */
+  }
+}
+```
+
+### CSS Nesting (natiivi)
+
+```css
+.card {
+  background: white;
+
+  & .title {
+    font-weight: bold;        /* .card .title */
+  }
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);  /* .card:hover */
+  }
+}
+```
+
+## 6.4 Tyyppiturvallisuus ja kehittäjäkokemus
+
+### TypeScript UI-arkkitehtuurissa
+
+```typescript
+interface ButtonProps {
+  variant: "primary" | "secondary" | "ghost";
+  size: "sm" | "md" | "lg";
+  disabled?: boolean;
+  children: ReactNode;
+}
+```
+
+### Skeemapohjaiset lomakkeet
+
+```typescript
+import { z } from "zod";
+
+const UserSchema = z.object({
+  name: z.string().min(2, "Liian lyhyt nimi"),
+  email: z.string().email("Virheellinen sähköposti"),
+  age: z.number().min(18, "Pitää olla täysi-ikäinen"),
+});
+```
+
+### Storybook
+
+Komponenttikirjasto, jossa jokainen komponentti on dokumentoituna
+erikseen — erillään sovelluksesta. Mahdollistaa komponenttien
+kehittämisen ja testaamisen eristyksissä.
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Teknologiavalinnat — React vs. Solid, Tailwind vs.
+  CSS-in-JS, TanStack Query vs. Redux — ovat tiimisi tuottavuuden ydin.
+  Älä valitse hype-pohjalta. Valitse sen perusteella, mikä ratkaisee
+  *todellisen ongelmasi* yksinkertaisimmin.
+</WhyItMatters>
+
+<Reference id="norman2013" />
+
+---
+
+**Seuraavaksi:** [AI ja UI/UX leikkauspisteet](/AI-Koulu/ui-ux/07-ai-ux/)

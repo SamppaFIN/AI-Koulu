@@ -1,0 +1,118 @@
+---
+title: "UX-tutkimus ja datavetoinen suunnittelu"
+description: "Kvantitatiiviset ja kvalitatiiviset menetelmät, analyysi ja iterointi."
+order: 8
+section: "UX-tutkimus"
+tags: ["UX-tutkimus", "A/B-testaus", "analytiikka", "kvalitatiivinen"]
+published: true
+---
+
+## 8.1 Kvantitatiiviset menetelmät
+
+### A/B-testaus ja monikätiset bandiitit
+
+```typescript
+// Yksinkertainen A/B-testi
+const variant = Math.random() < 0.5 ? "A" : "B";
+
+if (variant === "A") {
+  showButton("Osta nyt");        // Kontrolli
+} else {
+  showButton("Lisää ostoskoriin"); // Variantti
+}
+
+// Mittaa: klikkausprosentti, konversio, hylkäysprosentti
+```
+
+**Monikätinen bandiitti (Multi-Armed Bandit)** on A/B-testin kehittyneempi
+versio: se ohjaa jatkuvasti enemmän liikennettä paremmin toimivaan varianttiin.
+
+### Suppiloanalyysi ja drop-off-pisteet
+
+```
+Kotisivu (100%) → Tuotesivu (65%) → Ostoskori (30%) → Maksu (10%) → Vahvistus (8%)
+```
+
+Mistä suurin osa käyttäjistä putoaa? Ostoskorista maksuun (30% → 10%):
+- Onko maksu liian monimutkainen?
+- Puuttuuko luottokortin logo?
+- Onko toimituskulut yllätys?
+
+### Lämpökartat ja klikkauskartat
+
+Työkalut: Hotjar, Microsoft Clarity, FullStory. Näyttävät:
+- Mihin käyttäjät klikkaavat (klikkauskartta)
+- Kuinka pitkälle he vierittävät (vierityskartta)
+- Mihin heidän katseensa pysähtyy (lämpökartta)
+
+<AnalogyBox>
+  **Analogia:** UX-tutkimus on kuin lääkärintarkastus.
+  - **Kvantitatiivinen** (analytiikka, A/B-testaus) on kuin verikoe —
+    numeerista, objektiivista, kertoo *mitä* tapahtuu
+  - **Kvalitatiivinen** (haastattelut, testaus) on kuin lääkärin kysely —
+    subjektiivista, kertoo *miksi* jotain tapahtuu
+  - Molempia tarvitaan: verikoe kertoo että kolesteroli on korkea,
+    lääkärin kysely kertoo että syöt liikaa pizzaa
+</AnalogyBox>
+
+## 8.2 Kvalitatiiviset menetelmät
+
+### Käytettävyystestaus
+
+- **Moderoitu:** Testaaja ja moderaattori samassa tilassa — syvin ymmärrys
+- **Moderoimaton:** Testaaja tekee tehtävät itsenäisesti — isompi otos
+
+### Korttien lajittelu (Card Sorting)
+
+Käyttäjät järjestelevät sisältöä omalla tavallaan. Tuloksena
+informaatioarkkitehtuuri, joka perustuu käyttäjien mentaalimalliin.
+
+### 5 sekunnin testi
+
+Näytä käyttäjälle sivua 5 sekuntia, kysy sitten:
+- "Mitä tällä sivulla voi tehdä?"
+- "Mikä on tärkein asia?"
+- "Mitä jäi mieleen?"
+
+## 8.3 Jatkuva oppiminen ja iterointi
+
+### HEART-mittarit (Google)
+
+| Metriikka | Kuvaus | Esimerkki |
+|---|---|---|
+| **H**appiness | Käyttäjätyytyväisyys | NPS, CSAT |
+| **E**ngagement | Sitoutuminen | Vierailujen tiheys, aika sivulla |
+| **A**doption | Uusien ominaisuuksien käyttöönotto | % käyttäjistä, jotka käyttävät uutta toimintoa |
+| **R**etention | Paluu käyttäjäksi | Päivittäin/viikoittain palaavat |
+| **T**ask Success | Tehtävän suorittaminen | Onnistumisprosentti, aika tehtävään |
+
+### Palautesilmukka
+
+```
+Käyttäjäpalaute → Analyysi → Priorisointi → Toteutus → Mittaus → Käyttäjäpalaute
+```
+
+Sulje silmukka: kun käyttäjä antaa palautetta, kerro mitä teit sillä.
+
+### Hypoteesivetoinen kehitys
+
+```
+Hypoteesi: "Jos lisäämme suodattimet, käyttäjät löytävät tuotteet nopeammin"
+Metriikka: Aika ensimmäiseen ostoon (min)
+Tavoite: -20%
+Testi: A/B, 2 viikkoa, 50% liikenteestä
+```
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Data ei korvaa suunnittelijaa — mutta data estää
+  suunnittelijaa tekemästä päätöksiä mututuntumalla. Parhaat tiimit yhdistävät
+  kvantitatiivisen datan (mitä tapahtuu) ja kvalitatiivisen ymmärryksen
+  (miksi tapahtuu). Kumpikaan yksin ei riitä.
+</WhyItMatters>
+
+<Reference id="nielsen2012" />
+<Reference id="norman2013" />
+
+---
+
+**Seuraavaksi:** [Työkalut ja toimintatavat](/AI-Koulu/ui-ux/09-tools/)

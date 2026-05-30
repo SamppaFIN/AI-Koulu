@@ -1,0 +1,162 @@
+---
+title: "Visuaaliset trendit"
+description: "Typografia, värit, animaatio ja tilallinen suunnittelu modernissa UI:ssa."
+order: 2
+section: "Visuaaliset trendit"
+tags: ["typografia", "OKLCH", "animaatio", "värit", "glassmorphism"]
+published: true
+---
+
+## 2.1 Typografia ja mikrotypografia
+
+Typografia on käyttöliittymän ääni — se välittää tunnelman, hierarkian ja luettavuuden.
+
+### Muuttuvat fontit (Variable fonts)
+
+Yksi fonttitiedosto sisältää kaikki leikkaukset (light, regular, bold, black) ja
+akselit (leveys, korkeus, kursiivi). Yksi tiedosto korvaa 10+ erillistä.
+
+```css
+/* Variable font: yksi tiedosto, rajattomat variaatiot */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Variable.woff2') format('woff2');
+  font-weight: 100 900;  /* Koko väli yhdessä tiedostossa */
+}
+```
+
+### Typografinen hierarkia ja rytmi
+
+Hyvä typografia perustuu *modulaariseen skaalaan* — fonttikoot seuraavat
+suhteellista kaavaa (esim. 1.25× kultainen suhde).
+
+| Taso | Koko (clamp) | Paino | Käyttö |
+|---|---|---|---|
+| H1 | clamp(2rem, 5vw, 3.5rem) | 800 (Bold) | Sivun otsikko |
+| H2 | clamp(1.5rem, 3.5vw, 2.5rem) | 700 | Luvun otsikko |
+| H3 | clamp(1.2rem, 2.5vw, 1.75rem) | 600 | Alaotsikko |
+| Body | clamp(1rem, 1.5vw, 1.125rem) | 400 | Leipäteksti |
+| Small | clamp(0.8rem, 1.2vw, 0.9rem) | 400 | Ala-viitteet |
+
+### Responsiivinen typografia
+
+```css
+/* Fluid typografia: skaalautuu ikkunan koon mukaan */
+font-size: clamp(1rem, 0.75rem + 1.5vw, 1.375rem);
+```
+
+<Callout type="tip">
+  Käytä `clamp()`-funktiota minimalistisesti: yksi asteikon porras näyttää
+  ammattimaiselta, liian moni tekee kalligrafiasta sirkusta.
+</Callout>
+
+### Fonttien suorituskyky (FOUT, FOIT)
+
+| Strategia | Kuvaus | Riski |
+|---|---|---|
+| `font-display: swap` | Näytä varafontti, vaihda ladattuun | FOUT (Flash of Unstyled Text) |
+| `font-display: optional` | Älä koskaan vaihda, jos fontti ei lataudu ajoissa | Käyttäjä ei ehkä näe oikeaa fonttia |
+| **Preload** | Lataa fontti etukäteen | Paras, jos fontti on kriittinen |
+
+<AnalogyBox>
+  **Analogia:** Typografia on kuin pukeutuminen — sama asia voi näyttää
+  hyvältä tai huonolta riippuen fontista. H1 on kuin takki: sen pitää olla
+  huomiota herättävä mutta ei räikeä. Leipäteksti on kuin paita: sen pitää
+  olla mukava ja luettava. Small-teksti on kuin asusteet: pienet yksityiskohdat.
+</AnalogyBox>
+
+## 2.2 Värit ja teemoitus
+
+### OKLCH-väriavaruus
+
+OKLCH on nykyaikaisin väriavaruus, joka on *ihmissilmälle lineaarinen* —
+toisin kuin RGB tai HSL, joissa sama numeerinen muutos näyttää eri
+suuruiselta eri väreillä.
+
+```css
+/* OKLCH: looginen, ennustettava, saavutettava */
+--color-brand: oklch(0.55 0.24 280);         /* Kroma (kylläisyys): 0.24 */
+--color-brand-light: oklch(0.7 0.2 280);     /* Vaaleus: 0.7 */
+--color-brand-dark: oklch(0.4 0.22 280);     /* Sävy: 280° (violetti) */
+```
+
+### Tumma/vaalea/kontrasti -teemat
+
+```css
+[data-theme="dark"] {
+  --color-bg: oklch(0.12 0.02 280);
+  --color-text: oklch(0.92 0.01 280);
+}
+```
+
+### Saavutettavat värikontrastit (APCA vs. WCAG)
+
+APCA (Accessible Perceptual Contrast Algorithm) on WCAG:n korvaaja, joka
+ottaa huomioon *havaitun kontrastin* eikä pelkkää matemaattista suhdetta.
+
+| Standardi | Laskentatapa | Tavoite |
+|---|---|---|
+| **WCAG 2.1 AA** | Luminaanssisuhde ≥ 4.5:1 | Helppo laskea, epätarkka |
+| **APCA** | Havaittu kontrasti | Tarkempi, ottaa huomioon kontekstin |
+
+### Kokeile itse: Värikontrastityökalu
+
+<ContrastTool />
+
+### Gradientit ja efektit
+
+- **Glassmorphism:** `backdrop-filter: blur(10px)` — käytä harkiten
+- **Neumorphism:** sisäänpainuneet/ulospäin pullistuneet pinnat — riski saavutettavuudelle
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Visuaaliset trendit tulevat ja menevät, mutta
+  typografian perusteet, saavutettavat värit ja looginen teemoitus pysyvät.
+  Älä seuraa trendejä sokeasti — laske kontrastit, testaa ruudunlukijalla,
+  varmista että tumma tila toimii.
+</WhyItMatters>
+
+## 2.3 Liike ja animaatio
+
+### Mikrovuorovaikutukset
+
+Pienet animaatiot kertovat käyttäjälle, että jotain tapahtuu:
+
+```css
+/* Napin hover: kevyt nousu */
+.button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+```
+
+### View Transitions API
+
+Natiivi selain-API sivujen välisten siirtymien animointiin—ei tarvetta
+kirjastoille yksinkertaisissa siirtymissä.
+
+### prefers-reduced-motion
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+## 2.4 Tilallinen suunnittelu
+
+- **Varjot:** `box-shadow` kertoo kerrostumisesta (MUI: kolme tasoa)
+- **backdrop-filter:** lasimaiset pinnat — kevyt blur riittää, älä liioittele
+- **z-index-strategia:** sticky header (100), modaalit (1000), työkalupaljastimet (10000)
+
+<Reference id="w3c2023" />
+<Reference id="nielsen2012" />
+
+---
+
+**Seuraavaksi:** [Vuorovaikutussuunnittelu](/AI-Koulu/ui-ux/03-interaction-design/)

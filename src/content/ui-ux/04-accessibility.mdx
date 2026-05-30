@@ -1,0 +1,178 @@
+---
+title: "Saavutettavuus (A11y)"
+description: "WCAG 2.2, ARIA, ruudunlukijat ja kognitiivinen saavutettavuus."
+order: 4
+section: "Saavutettavuus"
+tags: ["a11y", "WCAG", "ARIA", "ruudunlukija", "saavutettavuus"]
+published: true
+---
+
+## 4.1 Standardit ja vaatimukset
+
+### WCAG 2.2 AA/AAA
+
+WCAG (Web Content Accessibility Guidelines) on kansainvälinen standardi
+verkkosisällön saavutettavuudelle. **AA-taso** on lakisääteinen minimi
+useimmissa maissa (EU, USA, UK).
+
+| Periaate | Kuvaus | Esimerkkejä |
+|---|---|---|
+| **Havaittava** | Sisältö on kaikkien aistittavissa | Tekstivastineet kuville, tekstitys videoille |
+| **Toiminnallinen** | Kaikki toiminnot on käytettävissä | Näppäimistönavigaatio, riittävä aika |
+| **Ymmärrettävä** | Sisältö ja käyttöliittymä on loogisia | Selkeä kieli, ennustettava toiminta |
+| **Toimintavarma** | Yhteensopiva apuvälineiden kanssa | Semanttinen HTML, ARIA |
+
+### EN 301 549 (EU)
+
+EU:n saavutettavuusdirektiivi — **pakollinen** julkisille verkkosivuille
+ja -palveluille EU-alueella.
+
+### Ruudunlukijat
+
+| Ruudunlukija | Alusta | Markkinaosuus |
+|---|---|---|
+| **NVDA** | Windows | ~40% (ilmainen, avoin) |
+| **JAWS** | Windows | ~30% (maksullinen, vanhin) |
+| **VoiceOver** | macOS, iOS | ~20% (sisäänrakennettu) |
+| **TalkBack** | Android | ~10% (sisäänrakennettu) |
+
+<Callout type="info">
+  **Testausvinkki:** Laita ruudunlukija päälle ja sulje silmäsi.
+  Pystytkö käyttämään sivustoa? Jos et, sinulla on saavutettavuusongelma.
+</Callout>
+
+<AnalogyBox>
+  **Analogia:** Saavutettavuus on kuin rakennuksen esteettömyys.
+  - **Luiskat** (tekstitys) auttavat pyörätuolikäyttäjiä — ja myös
+    lastenvaunujen kanssa liikkuvia
+  - **Hissti** (näppäimistönavigaatio) auttaa pyörätuolissa — ja myös
+    kassien kanssa
+  - **Selkeät opasteet** (semanttinen HTML) auttavat näkövammaisia — ja
+    myös turisteja ja kiireisiä käyttäjiä
+
+  Kukaan ei rakenna portaita ilman luiskaa — älä tee samaa verkkosivullasi.
+</AnalogyBox>
+
+## 4.2 Tekninen saavutettavuus
+
+### Semanttinen HTML
+
+```html
+<!-- Huono: div-pohjainen -->
+<div class="button" onclick="submit()">Lähetä</div>
+
+<!-- Hyvä: natiivi -->
+<button type="submit">Lähetä</button>
+```
+
+Natiivit elementit tulevat sisäänrakennetun saavutettavuuden kanssa —
+älä keksi pyörää uudelleen.
+
+### ARIA-attribuutit
+
+ARIA (Accessible Rich Internet Applications) korjaa semantiikan, kun
+natiivia elementtiä ei voi käyttää:
+
+```html
+<div
+  role="button"
+  tabindex="0"
+  aria-label="Sulje ikkuna"
+  onkeydown="if(event.key==='Enter') this.click()"
+>
+  ×
+</div>
+```
+
+**ARIA-sääntö:** "No ARIA is better than bad ARIA." — Käytä vain kun
+natiivi elementti ei riitä.
+
+### Otsikkohierarkia ja maamerkit
+
+```html
+<header role="banner">
+<nav role="navigation" aria-label="Päänavigaatio">
+<main role="main">
+<aside role="complementary">
+<footer role="contentinfo">
+```
+
+### Väri ei ainoana informaationa
+
+- Älä koskaan käytä *pelkkää* väriä kertomaan jotain
+- Lisää aina teksti, ikoni tai kuvio värin rinnalle
+- Esim: virheilmoitus = punainen reunus + "Virhe" teksti + ⚠️ ikoni
+
+### Tekstin skaalautuvuus
+
+Sivun pitää toimia 200% zoomilla — ilman vaakasuoraa skrollausta.
+Testaa zoomaamalla selaimessa.
+
+## 4.3 Kognitiivinen saavutettavuus
+
+### Selkeä kieli
+
+- Vältä ammattislangia, käytä arkikieltä
+- Lyhyet virkkeet (max 20 sanaa)
+- Yksi idea per kappale
+
+### Johdonmukaisuus
+
+Sama toiminto → sama ulkoasu. "Osta"-nappi on aina sininen, ei joskus vihreä.
+
+### Virheiden ehkäisy
+
+"Oletko varma, että haluat poistaa?" on hyvä. "Peruuta"-painike ennen
+kuin on liian myöhäistä on vielä parempi.
+
+### Aikarajojen joustavuus
+
+Jos sivulla on aikaraja (istunto, tarjous), anna käyttäjälle:
+1. mahdollisuus pidentää aikaa
+2. varoitus ennen umpeutumista
+3. tieto siitä, että aika on loppumassa
+
+## 4.4 Saavutettavuuden testaus
+
+### Automaattiset työkalut
+
+| Työkalu | Käyttötarkoitus |
+|---|---|
+| **axe-core** | Parhaat säännöt, Playwright/CI-integraatio |
+| **Lighthouse** | Nopea yleiskatsaus, osana Chrome DevToolsia |
+| **WAVE** | Visuaalinen, näyttää ongelmat suoraan sivulla |
+
+### Manuaalinen testaus
+
+Automaattityökalut löytävät ~30% ongelmista. Loput vaativat ihmistä:
+- Navigoi pelkällä näppäimistöllä (TAB, Enter, Escape, nuolet)
+- Lue ruudunlukijalla (NVDA, VoiceOver)
+- Testaa zoomaamalla 200%
+- Testaa kontrastit fyysisellä etäisyydellä
+
+### CI-putki
+
+```yaml
+# Playwright + axe-core
+- name: Accessibility tests
+  run: npx playwright test --grep @a11y
+```
+
+### Kokeile itse: Saavutettavuuslabra
+
+<AccessibilityLab />
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Saavutettavuus ei ole "nice to have" — se on
+  laillinen vaatimus (EU:n saavutettavuusdirektiivi) ja moraalinen velvollisuus.
+  15-20% väestöstä tarvitsee saavutettavuutta. Ja jokainen meistä on joskus
+  tilanteessa, jossa saavutettavuus auttaa: kirkas aurinko (kontrasti),
+  meluisa ympäristö (tekstitys), kipsissä oleva käsi (näppäimistönavigaatio).
+</WhyItMatters>
+
+<Reference id="w3c2023" />
+<Reference id="norman2013" />
+
+---
+
+**Seuraavaksi:** [Suorituskyky ja Web Vitals](/AI-Koulu/ui-ux/05-performance/)

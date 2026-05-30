@@ -1,0 +1,152 @@
+---
+title: "Vuorovaikutussuunnittelu (IxD)"
+description: "Navigaatio, lomakkeet, data ja notifikaatiot — käyttäjän toimintojen suunnittelu."
+order: 3
+section: "Vuorovaikutussuunnittelu"
+tags: ["IxD", "navigaatio", "lomakkeet", "notifikaatiot"]
+published: true
+---
+
+## 3.1 Navigaatiomallit
+
+Navigaatio on käyttäjän kompassi — ilman sitä käyttäjä eksyy.
+
+### Perinteinen navigaatio vs. haku-keskeinen
+
+| Malli | Milloin sopii | Esimerkki |
+|---|---|---|
+| **Ylävalikko** | Harva, hierarkkinen sisältö | Uutissivusto, verkkokauppa |
+| **Sivupalkki** | Syvä, monitasoinen sisältö | Dokumentaatio, työkalut |
+| **Haku-keskeinen** | Suuri määrä sisältöä | Tietokanta, API-dokkarit |
+| **Pohja-navigaatio** | Mobiili, 3-5 näkymää | Sovellukset, some |
+
+### Megamenut
+
+Leveät, monitasoiset valikot — tehokkaita mutta vaativat huolellista
+saavutettavuustestausta. Varmista: näppäimistö saavuttaa kaikki linkit,
+valikko sulkeutuu Escape-näppäimellä.
+
+### Leivänmurut ja progressiivinen paljastus
+
+```html
+<nav aria-label="Leivänmurut">
+  <ol>
+    <li><a href="/">Etusivu</a></li>
+    <li><a href="/oppaat">Oppaat</a></li>
+    <li aria-current="page">RAG-arkkitehtuurit</li>
+  </ol>
+</nav>
+```
+
+<AnalogyBox>
+  **Analogia:** Navigaatio on kuin kyltit kaupungissa.
+  - **Ylävalikko:** pääväylät (valtatie 4, valtatie 5)
+  - **Leivänmurut:** "Olet täällä" -kartta
+  - **Haku:** kysy paikalliselta (Google Maps)
+  - **Pohja-navigaatio:** metrokartta — 5 linjaa, helppo muistaa
+
+  Hyvä navigaatio ei vaadi karttaa — tiedät aina missä olet ja miten pääset
+  minne haluat.
+</AnalogyBox>
+
+### Kokeile itse: Hickin laki -peli
+
+<HicksLawGame />
+
+## 3.2 Lomakkeet ja datan syöttö
+
+### Yksikenttäiset lomakkeet
+
+Yksi kenttä kerrallaan vähentää kognitiivista kuormaa — käyttäjä keskittyy
+yhteen asiaan. Toimii erityisesti mobiilissa.
+
+### Inline-validointi
+
+```html
+<input
+  type="email"
+  aria-describedby="email-error"
+  aria-invalid="false"
+/>
+<span id="email-error" role="alert">
+  Tarkista sähköpostiosoite
+</span>
+```
+
+- Validointi tapahtuu *kun kenttä menettää fokuksen*, ei ennen
+- Virheviesti on selkeä ja toiminnallinen: "Syötä vähintään 8 merkkiä"
+- Onnistunut validointi näytetään vihreänä (ärlä luota pelkkään väriin)
+
+### Virhetilat ja palautuminen
+
+| Tila | UI-ratkaisu |
+|---|---|
+| **Tyhjä kenttä** | Placeholder + label |
+| **Virheellinen** | Punainen reunus + selite + korjausehdotus |
+| **Onnistunut** | Vihreä reunus + vahvistus |
+| **Lataus** | Spinneri + "Tallennetaan..." |
+
+### Wizard-mallit monimutkaisille lomakkeille
+
+1/4 → 2/4 → 3/4 → 4/4
+
+Näytä edistyminen, salli palaaminen taaksepäin, älä tyhjennä kenttiä
+jos käyttäjä palaa edelliseen vaiheeseen.
+
+## 3.3 Data ja tietonäkymät
+
+### Taulukot
+
+```html
+<table role="grid">
+  <caption>Asiakkaat ja tilaukset</caption>
+  <thead>
+    <tr>
+      <th scope="col" aria-sort="ascending">Nimi</th>
+      <th scope="col">Tilauksia</th>
+    </tr>
+  </thead>
+  <tbody><!-- ... --></tbody>
+</table>
+```
+
+### Dashboardit
+
+- Oikea visualisointi oikeaan dataan: aikasarjat → viivakaavio, osuudet → piirakka
+- Progressiivinen paljastus: aloita tiivistelmällä, poraudu yksityiskohtiin
+- Tyhjät tilat: "Ei dataa vielä" → "Lisää ensimmäinen asiakas" → ohjaus
+
+## 3.4 Notifikaatiot ja palautejärjestelmät
+
+### Toastit, bannerit, modaalit
+
+| Komponentti | Milloin | Huomioitavaa |
+|---|---|---|
+| **Toast** | Lyhyt, ei-kriittinen tieto | Häviää automaattisesti, ei keskeytä |
+| **Banneri** | Tärkeä, koko sivua koskeva | Voi vaatia toimintaa ("Hyväksy evästeet") |
+| **Modaali** | Kriittinen, keskeyttävä | Estä taustan vuorovaikutus, sulje Esc |
+
+### Push-notifikaatiot
+
+Ajoitus ja frekvenssi ovat kaikki kaikessa: liian monet → käyttäjä poistaa
+käyttöoikeudet. Personoi: "Maanantaisin uudet artikkelit" vs. "Tässä 5 uutista tänään".
+
+### Järjestelmän tilan kommunikointi
+
+Sama sääntö kuin AI-järjestelmissä: **käyttäjän pitää tietää mitä tapahtuu**.
+"Lähetetään..." "Tallennettu." "Virhe: yhteys katkesi, yritetään uudelleen..."
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Vuorovaikutussuunnittelu on sitä, mitä käyttäjä
+  *tekee* — ei sitä, miltä se *näyttää*. Hyvä IxD tuntuu luonnolliselta:
+  käyttäjä tietää intuitiivisesti mitä tehdä, saa palautetta jokaisesta
+  toiminnosta, ja osaa palautua virheistä. Huono IxD saa käyttäjän tuntemaan
+  itsensä tyhmäksi — ja se on suunnittelijan vika, ei käyttäjän.
+</WhyItMatters>
+
+<Reference id="norman2013" />
+<Reference id="nielsen2012" />
+
+---
+
+**Seuraavaksi:** [Saavutettavuus](/AI-Koulu/ui-ux/04-accessibility/)

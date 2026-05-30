@@ -1,0 +1,168 @@
+---
+title: "Suorituskyky ja Web Vitals"
+description: "Core Web Vitals, optimointi ja koettu suorituskyky."
+order: 5
+section: "Suorituskyky"
+tags: ["Web Vitals", "LCP", "INP", "CLS", "optimointi"]
+published: true
+---
+
+## 5.1 Core Web Vitals
+
+Google mittaa sivustosi käyttökokemusta kolmella metriikalla — nämä vaikuttavat
+suoraan hakukonesijoitukseen.
+
+### LCP (Largest Contentful Paint)
+
+**Mitä:** Suurimman sisältöelementin latautumisaika.
+**Tavoite:** < 2.5s. **Huono:** > 4.0s.
+
+Yleisin syy hitaaseen LCP:hen on kuvan latautuminen. Ratkaisu:
+
+```html
+<img
+  src="hero-1200w.webp"
+  srcset="hero-800w.webp 800w, hero-1200w.webp 1200w"
+  sizes="(max-width: 800px) 100vw, 50vw"
+  loading="eager"  <!-- Älä lazy loadaa LCP-kuvaa -->
+  fetchpriority="high"
+  alt="Hero-kuva"
+/>
+```
+
+### INP (Interaction to Next Frame)
+
+**Mitä:** Viive käyttäjän toiminnon (klikkaus, napautus) ja seuraavan ruudun
+päivityksen välillä. Korvasi FID:n (First Input Delay) 2024.
+**Tavoite:** < 200ms. **Huono:** > 500ms.
+
+```typescript
+// INP-ongelma: raskas laskenta estää renderöinnin
+button.addEventListener("click", () => {
+  heavyComputation();  // ESTÄÄ renderöinnin 300ms ajaksi
+});
+
+// Ratkaisu: siirrä laskenta pois pääsäikeestä
+button.addEventListener("click", async () => {
+  await new Promise(r => setTimeout(r, 0));  // Anna selaimen hengittää
+  heavyComputation();
+});
+```
+
+### CLS (Cumulative Layout Shift)
+
+**Mitä:** Sivun asettelun odottamattomat hyppäykset latauksen aikana.
+**Tavoite:** < 0.1. **Huono:** > 0.25.
+
+| Syy | Ratkaisu |
+|---|---|
+| Kuva ilman kokoa | Aina `width` + `height` attribuutit |
+| Mainos tai upotus | Varaa tila etukäteen |
+| Fontin vaihto | `font-display: optional` tai preload |
+| Dynaaminen sisältö | Puskuroi tila ennen lisäystä |
+
+<Callout type="warning">
+  **CLS on salakavalin Web Vitals -ongelma.** Sitä ei huomaa kehityksessä
+  (lataus on liian nopea), mutta käyttäjät kokevat sen. Testaa aina
+  hitaalla verkolla (Slow 3G Chrome DevToolsissa).
+</Callout>
+
+## 5.2 Suorituskyvyn optimointi
+
+### Koodin jakaminen (Code splitting)
+
+```typescript
+// Lazy load: ladataan vasta kun käyttäjä tarvitsee
+const HeavyComponent = React.lazy(() => import("./HeavyComponent"));
+
+// Astrossa: island-arkkitehtuuri tekee tämän automaattisesti
+```
+
+### Kuvien optimointi
+
+| Formaatti | Käyttötapaus | Tiedostokoko (vs. PNG) |
+|---|---|---|
+| **WebP** | Valokuvat, grafiikka | -30% |
+| **AVIF** | Valokuvat, korkea laatu | -50% |
+| **SVG** | Ikonit, logot, grafiikka | Pieni, skaalautuva |
+
+### Fonttien optimointi
+
+```css
+/* Subsetattu fontti: vain tarvittavat merkit */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-subset.woff2') format('woff2');
+  unicode-range: U+0000-00FF;  /* Latin perusmerkit */
+}
+```
+
+### Bundle-koon analysointi
+
+```bash
+npx vite-bundle-analyzer  # Visualisoi bundle-koon
+```
+
+## 5.3 Koettu suorituskyky
+
+Todellinen nopeus on tärkeää, mutta *koettu nopeus* on sitäkin tärkeämpää.
+
+### Optimistiset päivitykset (Optimistic UI)
+
+```typescript
+// Perinteinen: odota palvelinta
+async function save() {
+  await api.save(data);  // Spinneri, 2s odotus
+  showSuccess();
+}
+
+// Optimistinen: oleta onnistuminen
+function save() {
+  showSuccess();          // Välitön palaute
+  api.save(data).catch(() => showError());  // Korjaa jos epäonnistuu
+}
+```
+
+### Skeleton-näytöt vs. spinnerit
+
+```html
+<!-- Skeleton: näyttää tulevan sisällön rakenteen -->
+<div class="skeleton-card">
+  <div class="skeleton-image" aria-hidden="true"></div>
+  <div class="skeleton-line" style="width: 80%" aria-hidden="true"></div>
+  <div class="skeleton-line" style="width: 60%" aria-hidden="true"></div>
+</div>
+```
+
+### Progressiivinen lataus
+
+Näytä ensin kriittinen sisältö, lataa loput myöhemmin.
+
+### Kokeile itse: Skeleton loader -studio
+
+<SkeletonStudio />
+
+### Kokeile itse: CLS-virheen visualisointi
+
+<CLSDemo />
+
+### Web Workerit
+
+```typescript
+// Siirrä raskas laskenta taustasäikeeseen
+const worker = new Worker("analyze-worker.js");
+worker.postMessage(imageData);
+worker.onmessage = (e) => showResults(e.data);
+```
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** 53% käyttäjistä poistuu, jos sivu latautuu
+  yli 3 sekunnissa. Ja jokainen sekunti lisää konversiota 20%.
+  Suorituskyky on osa käyttökokemusta — ei erillinen tekninen ominaisuus.
+</WhyItMatters>
+
+<Reference id="google2024" />
+
+---
+
+**Seuraavaksi:** [Modernit UI-teknologiat](/AI-Koulu/ui-ux/06-modern-ui/)

@@ -6,6 +6,10 @@ import AnalogyBox from "../../components/ui/AnalogyBox.tsx";
 import WhyItMatters from "../../components/ui/WhyItMatters.tsx";
 import Reference from "../../components/ui/Reference.tsx";
 import Diagram from "../../components/ui/Diagram.tsx";
+import TokenizerDemo from "../../components/demo/TokenizerDemo.tsx";
+import RAGPlayground from "../../components/demo/RAGPlayground.tsx";
+import AgentSimulation from "../../components/demo/AgentSimulation.tsx";
+import MultimodalComparison from "../../components/demo/MultimodalComparison.tsx";
 
 export async function getStaticPaths() {
   const chapters = await getCollection("ai-architecture");
@@ -17,7 +21,7 @@ export async function getStaticPaths() {
 
 const { chapter } = Astro.props;
 const { Content } = await chapter.render();
-const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram };
+const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, TokenizerDemo, RAGPlayground, AgentSimulation, MultimodalComparison };
 ---
 
 <Layout title={chapter.data.title} description={chapter.data.description} entry={chapter}>
