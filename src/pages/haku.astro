@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import SearchBar from "../components/SearchBar.tsx";
 ---
 
 <Layout title="Haku" description="Hae AI-arkkitehtuurien ja UI/UX-käytäntöjen oppaista">
@@ -9,20 +10,11 @@ import Layout from "../layouts/Layout.astro";
       Hae koko sivuston sisällöstä — oppaista, käsitteistä ja esimerkeistä.
     </p>
 
-    <div
-      id="search-container"
-      style={{
-        background: "var(--color-bg-card)",
-        border: "1px solid var(--color-border)",
-        borderRadius: "12px",
-        padding: "var(--space-lg)",
-        textAlign: "center",
-      }}
-    >
-      <p style="font-size: 2rem; margin: 0 0 var(--space-md) 0;">🔍</p>
-      <p style="color: var(--color-text-secondary);">
-        Haku tulee käyttöön Pagefind-integraation myötä (Vaihe 4).
-      </p>
+    <div style="max-width: 600px;">
+      <SearchBar client:visible />
+    </div>
+  </section>
+</Layout>
     </div>
   </section>
 </Layout>

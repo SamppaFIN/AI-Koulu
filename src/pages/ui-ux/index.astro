@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
+import { ChapterProgress } from "../../components/ProgressTracker.tsx";
 
 const chapters = await getCollection("ui-ux");
 const sorted = chapters.sort((a, b) => a.data.order - b.data.order);
@@ -8,6 +9,8 @@ const sorted = chapters.sort((a, b) => a.data.order - b.data.order);
 
 <Layout title="UI/UX-käytännöt" description="Nykyajan UI/UX-suunnittelun käytännöt ja trendit">
   <section class="container-content" style="padding-block: var(--space-3xl);">
+    <ChapterProgress items={sorted.map(c => ({ id: c.slug, title: c.data.title }))} basePath="ui-ux" client:visible />
+
     <h1 style="color: var(--color-brand);">UI/UX-käytännöt</h1>
     <p style="color: var(--color-text-secondary); font-size: 1.2rem; margin-bottom: var(--space-2xl);">
       Nykyajan UI/UX-suunnittelun käytännöt — ihmiskeskeisestä suunnittelusta moderneihin teknologioihin.

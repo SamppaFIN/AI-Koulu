@@ -7,6 +7,7 @@ import WhyItMatters from "../../components/ui/WhyItMatters.tsx";
 import Reference from "../../components/ui/Reference.tsx";
 import Diagram from "../../components/ui/Diagram.tsx";
 import HicksLawGame from "../../components/demo/HicksLawGame.tsx";
+import ProgressWrapper from "../../components/ProgressWrapper.tsx";
 import ContrastTool from "../../components/demo/ContrastTool.tsx";
 import CLSDemo from "../../components/demo/CLSDemo.tsx";
 import AccessibilityLab from "../../components/demo/AccessibilityLab.tsx";
@@ -68,6 +69,7 @@ const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, H
       </a>
     </nav>
   </article>
+  <ProgressWrapper slug={chapter.slug} client:visible />
 </Layout>
 
 <style is:global>

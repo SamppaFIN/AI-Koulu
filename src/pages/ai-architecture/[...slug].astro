@@ -10,6 +10,7 @@ import TokenizerDemo from "../../components/demo/TokenizerDemo.tsx";
 import RAGPlayground from "../../components/demo/RAGPlayground.tsx";
 import AgentSimulation from "../../components/demo/AgentSimulation.tsx";
 import MultimodalComparison from "../../components/demo/MultimodalComparison.tsx";
+import ProgressWrapper from "../../components/ProgressWrapper.tsx";
 
 export async function getStaticPaths() {
   const chapters = await getCollection("ai-architecture");
@@ -67,6 +68,7 @@ const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, T
       </a>
     </nav>
   </article>
+  <ProgressWrapper slug={chapter.slug} client:visible />
 </Layout>
 
 <style is:global>
