@@ -19,7 +19,7 @@ const sorted = chapters.sort((a, b) => a.data.order - b.data.order);
       gap: var(--space-md);
     ">
       {sorted.map((chapter) => (
-        <a href={`/AI-Koulu/ui-ux/${chapter.id}/`} class="chapter-link">
+        <a href={`/AI-Koulu/ui-ux/${chapter.slug}/`} class="chapter-link">
           <article style="
             display: flex;
             align-items: flex-start;

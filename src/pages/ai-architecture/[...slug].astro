@@ -10,7 +10,7 @@ import Diagram from "../../components/ui/Diagram.tsx";
 export async function getStaticPaths() {
   const chapters = await getCollection("ai-architecture");
   return chapters.map((chapter) => ({
-    params: { slug: chapter.id },
+    params: { slug: chapter.slug },
     props: { chapter },
   }));
 }
