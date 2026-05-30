@@ -1,0 +1,229 @@
+---
+title: "Arkkitehtuuriset suunnitteluperiaatteet"
+description: "Luotettavuus, skaalautuvuus, turvallisuus ja havainnoitavuus AI-järjestelmissä."
+order: 9
+section: "Suunnitteluperiaatteet"
+tags: ["luotettavuus", "skaalautuvuus", "turvallisuus", "observability"]
+published: true
+---
+
+## 4.1 Luotettavuus ja virheensieto
+
+AI-järjestelmät ovat perusluonteeltaan epädeterministisiä. Tämä tarkoittaa,
+että perinteiset virheenkäsittelymallit eivät toimi.
+
+### Epädeterminististen komponenttien käsittely
+
+```typescript
+// Perinteinen: oleta että toimii
+const result = api.call(data);
+assert(result.isValid);
+
+// AI-maailma: oleta että voi epäonnistua
+const result = await ai.call(data);
+
+// Tarkista ensin, luota sitten
+if (!isValidResult(result)) {
+  result = await fallbackStrategy(data);
+}
+```
+
+### Fallback-strategiat
+
+Kun LLM epäonnistuu, sinulla pitää olla suunnitelma:
+
+| Taso | Strategia | Latenssi |
+|---|---|---|
+| **1** | Yritä uudelleen (retry) | +1× |
+| **2** | Pienempi malli (gpt-4o → gpt-4o-mini) | −50% |
+| **3** | Välimuistista (aiempi samankaltainen vastaus) | −90% |
+| **4** | Sääntöpohjainen (template + parametrit) | −99% |
+| **5** | Virheilmoitus käyttäjälle | — |
+
+<Callout type="warning">
+  **Tärkeää:** Fallback-strategia pitää testata *ennen* tuotantoonmenoa.
+  Jos LLM epäonnistuu, tiedätkö mitä tapahtuu? Moni järjestelmä kaatuu
+  hiljaa siksi, että fallbackia ei ole koskaan testattu.
+</Callout>
+
+### Uudelleenyrityslogiikka ja piirikatkaisijat
+
+```typescript
+// Piirikatkaisija (Circuit Breaker)
+class CircuitBreaker {
+  private failures = 0;
+  private threshold = 5;
+  private state: "closed" | "open" | "half-open" = "closed";
+
+  async call(fn: () => Promise<any>) {
+    if (this.state === "open") {
+      throw new Error("Circuit breaker open");
+    }
+    try {
+      const result = await fn();
+      this.failures = 0;
+      return result;
+    } catch (e) {
+      this.failures++;
+      if (this.failures >= this.threshold) {
+        this.state = "open";
+        setTimeout(() => { this.state = "half-open"; }, 30000);
+      }
+      throw e;
+    }
+  }
+}
+```
+
+### "Defensive design" probabilistisessa maailmassa
+
+1. **Älä luota mihinkään** — tarkista jokainen vastaus
+2. **Rajoita vahinkoja** — minimoi mitä malli voi tehdä
+3. **Oleta pahinta** — malli hallusinoi, toimi sen mukaisesti
+
+## 4.2 Skaalautuvuus
+
+### Tilattomat vs. tilalliset komponentit
+
+| Komponentti | Tila | Skaalautuvuus |
+|---|---|---|
+| **LLM-palvelin** | Tilaton (ei tallenna mitään) | Helppo, vaakasuora |
+| **Vektoritietokanta** | Tilallinen (indeksi) | Vaikea, vaatii jakamista |
+| **Keskusteluhistoria** | Tilallinen (säilytettävä) | Puskuroitu, Redis |
+| **Agenttiprosessi** | Tilallinen (muisti) | Vaikea, istuntosidonnainen |
+
+### Viestijonot ja asynkroninen käsittely
+
+```typescript
+// Event-driven AI: jono erottaa kutsun ja käsittelyn
+interface AIRequest {
+  id: string;
+  prompt: string;
+  callbackUrl: string;
+}
+
+// Lähetä jono
+await queue.send({ id: "123", prompt: "Analysoi...", callbackUrl: "/webhook" });
+
+// Vastaanota tulos
+app.post("/webhook", (req, res) => {
+  const result = req.body;
+  // Lähetä vastaus käyttäjälle (WebSocket, SSE)
+});
+```
+
+### Hajautetut vektoritietokannat ja globaali latenssi
+
+- **Pinecone:** automaattinen replikointi eri alueille
+- **Weaviate:** multi-tenancy, Kubernetes-pohjainen
+- **Milvus:** shardaus + replikointi manuaalisesti
+
+## 4.3 Turvallisuus ja vastuullinen AI
+
+### Arkkitehtuuritason suojamekanismit
+
+```typescript
+// Syötevalidointi
+function validateInput(input: string) {
+  // 1. Estä jailbreak-yritykset
+  if (containsJailbreak(input)) return reject();
+  // 2. Poista PII
+  input = removePII(input);
+  // 3. Rajoita pituus
+  if (input.length > 4000) return reject();
+  return input;
+}
+```
+
+### Sisäänrakennettu auditointi ja selitettävyys
+
+```typescript
+interface AuditLog {
+  timestamp: Date;
+  user: string;
+  input: string;
+  output: string;
+  model: string;
+  tokens: number;
+  cost: number;
+  latency: number;
+}
+```
+
+### Pääsynhallinta
+
+- **Kuka saa kutsua mitäkin mallia?** — kalliimmat mallit vaativat hyväksynnän
+- **Kuka voi nähdä mitä dataa?** — sensitiivinen data rajatuille käyttäjille
+
+### Tietovuotojen esto
+
+- Älä koskaan lähetä sensitiivistä dataa kolmannen osapuolen API:in
+- Anonymisoi ennen LLM-kutsua
+- Tarkista vastauksista PII
+
+### EU AI Act -vaatimukset
+
+EU:n tekoälyasetus luokittelee AI-järjestelmät riskitasoihin. Korkean riskin
+järjestelmät vaativat:
+- Riskienhallintajärjestelmän
+- Teknisen dokumentaation
+- Ihmiskontrollin
+- Läpinäkyvyyden
+
+## 4.4 Havainnoitavuus (Observability)
+
+### Hajautettu jäljitys AI-putkessa
+
+```typescript
+// OpenTelemetry: jäljitä AI-kutsu
+span.setAttribute("ai.prompt", prompt.substring(0, 100));
+span.setAttribute("ai.model", "gpt-4o");
+span.setAttribute("ai.tokens", completion.usage.total_tokens);
+```
+
+### Token-tason monitorointi
+
+```
+Graafi 1: Token-kulutus / käyttäjä / päivä
+Graafi 2: Kustannus / käyttäjä / päivä
+Graafi 3: Top-10 kalleimmat kyselyt
+```
+
+### Kustannusperäinen havainnointi
+
+```sql
+-- Esimerkki: kalleimmat käyttäjät
+SELECT
+  user_id,
+  SUM(tokens) as total_tokens,
+  SUM(cost) as total_cost,
+  COUNT(*) as request_count
+FROM ai_logs
+WHERE date = CURRENT_DATE
+GROUP BY user_id
+ORDER BY total_cost DESC
+LIMIT 10;
+```
+
+### Laatumetriikat
+
+| Metriikka | Kuvaus | Miten mitataan |
+|---|---|---|
+| **Relevanssi** | Onko vastaus aiheeseen? | Käyttäjäpalaute, nosta/älä |
+| **Factuality** | Onko vastaus totta? | Eval-joukko, manuaalinen tarkistus |
+| **Turvallisuus** | Onko vastaus turvallinen? | Moderointi-API |
+| **Kohteliaisuus** | Onko vastaus asiallinen? | Kielenkäytön analyysi |
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Nämä neljä periaatetta — luotettavuus,
+  skaalautuvuus, turvallisuus ja havainnoitavuus — ovat niitä, jotka
+  erottavat leikkikalun tuotantojärjestelmästä. Yksikään näistä ei ole
+  "kiva lisä" vaan välttämättömyys, jos järjestelmän on tarkoitus
+  palvella oikeita käyttäjiä oikeassa maailmassa.
+</WhyItMatters>
+
+<Reference id="google2024" />
+
+---
+
+**Seuraavaksi:** [Viitearkkitehtuurit](/AI-Koulu/ai-architecture/05-reference-architectures/) — konkreettiset esimerkit.

@@ -1,0 +1,190 @@
+---
+title: "Agenttipohjaiset arkkitehtuurit"
+description: "ReAct-malli, työkalujen käyttö ja monen agentin järjestelmät."
+order: 4
+section: "Arkkitehtuurityypit"
+tags: ["agentit", "ReAct", "function calling", "LangChain", "LangGraph"]
+published: true
+---
+
+## ReAct-malli (Reasoning + Acting)
+
+ReAct on arkkitehtuuri, jossa LLM vuorottelee **päättelyn** (Reasoning) ja
+**toiminnan** (Acting) välillä. Sen sijaan, että malli tuottaisi yhden
+vastauksen, se käy läpi silmukan:
+
+<Diagram type="react-loop">
+  {/* Päättely → Toiminta → Havainto → Päättely → ... → Lopullinen vastaus */}
+</Diagram>
+
+1. **Päättely (Thought):** "Mitä minun pitää tehdä seuraavaksi?"
+2. **Toiminta (Action):** "Kutsun sää-API:a saadakseni tämän päivän säätiedot"
+3. **Havainto (Observation):** "Sää-API palautti: Aurinkoista, 22°C"
+4. → Takaisin vaiheeseen 1, kunnes vastaus on valmis
+
+```typescript
+interface AgentState {
+  thought: string;
+  action: ToolCall | null;
+  observation: string;
+  done: boolean;
+}
+
+async function reactLoop(task: string, tools: Tool[]) {
+  const state: AgentState = { thought: "", action: null, observation: "", done: false };
+  const messages = [
+    { role: "system", content: "Olet avulias agentti. Käytä työkaluja harkiten." },
+    { role: "user", content: task },
+  ];
+
+  while (!state.done) {
+    const response = await llm(messages); // Päättely + toiminta
+    const action = parseAction(response);
+
+    if (action.type === "FINISH") {
+      state.done = true;
+      return response;
+    }
+
+    // Suorita työkalu
+    state.observation = await executeTool(action);
+    messages.push({ role: "assistant", content: response });
+    messages.push({ role: "tool", content: state.observation });
+  }
+}
+```
+
+<Callout type="info">
+  **ReAct vs. Chain-of-Thought:** CoT on pelkkää päättelyä (ajattele ääneen),
+  ReAct on päättelyä + toimintaa. CoT sopii matematiikkaan ja logiikkaan,
+  ReAct tilanteisiin, joissa tarvitaan ulkoisia työkaluja.
+</Callout>
+
+### Työkalujen käyttö
+
+Agentin tärkein ominaisuus on kyky käyttää työkaluja (function calling).
+
+| Työkalu | Käyttötapaus | Esimerkki |
+|---|---|---|
+| **Laskin** | Matemaattiset laskut | `calc("3 * 7 + 2")` |
+| **Sää-API** | Reaaliaikainen säätieto | `getWeather("Helsinki")` |
+| **Vektorihaku** | Tiedonhaku omasta datasta | `search(query: "verotus 2026")` |
+| **Koodin suoritus** | Ohjelmointitehtävät | `runPython("print('hello')")` |
+| **SQL-kysely** | Tietokantahaut | `queryDB("SELECT * FROM users")` |
+| **Verkkohaku** | Reaaliaikainen internet-haku | `webSearch("uutiset tänään")` |
+
+<AnalogyBox>
+  **Analogia:** Agentti on kuin ravintolan keittiömestari. Hän:
+  1. **Suunnittelee** (päättely) — "Tarvitsen alkupalan, pääruoan ja jälkiruoan"
+  2. **Delegoi** (työkalut) — "Kokkaaja 1, tee alkupala. Kokkaaja 2, hoida pääruoka"
+  3. **Tarkkailee** (havainto) — "Alkupala on valmis, pääruoka on uunissa"
+  4. **Oppii** (muisti) — "Viimeksi asiakas piti enemmän kalasta kuin lihasta"
+
+  Ilman agenttia (pelkkä LLM) kokki yrittäisi tehdä kaiken itse — ja
+  polttaisi ruoan. Agentin kanssa kokki hallinnoi tiimiä ja varmistaa
+  että kaikki valmistuu ajallaan.
+</AnalogyBox>
+
+### Monen agentin järjestelmät
+
+Yhden agentin sijaan voidaan käyttää useita erikoistuneita agentteja.
+
+#### Hierarkkiset järjestelmät
+
+```
+Pääagentti (orkestraattori)
+├── Tutkimusagentti (hakee tietoa)
+├── Koodausagentti (kirjoittaa koodia)
+├── Testausagentti (testaa koodin)
+└── Dokumentaatioagentti (kirjoittaa selitykset)
+```
+
+Pääagentti jakaa tehtävät, valvoo edistymistä ja yhdistää tulokset.
+
+#### Vertaisverkot (Peer-to-peer)
+
+Agentit kommunikoivat keskenään ilman keskusohjausta:
+
+```
+Agentti A: "Tarvitsen dataa asiakkaista"
+Agentti B: "Minulla on pääsy asiakasdataan, haen sen"
+Agentti C: "Minä visualisoin datan, kun saat sen"
+```
+
+#### Kommunikaatioprotokollat
+
+| Menetelmä | Kuvaus | Esimerkki |
+|---|---|---|
+| **Viestipohjainen** | Agentit lähettävät toisilleen JSON-viestejä | RabbitMQ, Kafka |
+| **Yhteinen tila** | Kaikki kirjoittavat jaettuun muistiin | Redis, tietokanta |
+| **LLM-välitteinen** | Agentit keskustelevat LLM:n kautta | "Agentti A sanoo: ..." |
+
+### Kriittiset ongelmat
+
+| Ongelma | Oire | Ratkaisu |
+|---|---|---|
+| **Päättelysilmukka** | Agentti jumittuu samaan toimintoon | Maksimi iteraatio, timeout |
+| **Hallusinaatio** | Agentti keksii työkalun tuloksen | Pakota työkalun tulos, älä luota agenttiin |
+| **Token-kustannukset** | Agentti tekee 20 turhaa API-kutsua | Rajaa päättelyä, käytä pieniä malleja osatehtäviin |
+| **Kontekstin ylivuoto** | Keskusteluhistoria vie liikaa tilaa | Muistin yhteenveto, unohda vanha |
+
+```typescript
+// Päättelysilmukan esto
+const MAX_ITERATIONS = 10;
+const startTime = Date.now();
+const TIMEOUT_MS = 30000;
+
+for (let i = 0; i < MAX_ITERATIONS; i++) {
+  if (Date.now() - startTime > TIMEOUT_MS) {
+    throw new Error("Agent timeout");
+  }
+  // ... agentin logiikka
+}
+```
+
+### Muistin hallinta
+
+Agenteilla on kolme muistitasoa:
+
+| Muistityyppi | Kuvaus | Esimerkki |
+|---|---|---|
+| **Työmuisti** (working) | Nykyisen tehtävän konteksti | Keskusteluhistoria, väliaikaiset tulokset |
+| **Episodinen muisti** (episodic) | Aiemmat istunnot | "Viimeksi tämä käyttäjä kysyi X:stä" |
+| **Semanttinen muisti** (semantic) | Faktoja ja tietoa | "Yrityksen nimi on ABC, perustettu 2020" |
+
+```typescript
+// Episodinen muisti: tallenna ja palauta
+class EpisodicMemory {
+  async store(userId: string, interaction: Interaction) { /* ... */ }
+  async recall(userId: string, query: string): Promise<Interaction[]> {
+    // Hae samankaltaiset interaktiot vektorihaulla
+  }
+}
+```
+
+### Kehykset (Frameworkit)
+
+| Kehys | Kieli | Vahvuus | Heikkous |
+|---|---|---|---|
+| **LangChain** | Python/TS | Suuri ekosysteemi, paljon integraatioita | Monimutkainen, paljon abstraktioita |
+| **LangGraph** | Python/TS | Graafipohjainen agenttien hallinta | Uusi, nopeasti muuttuva |
+| **CrewAI** | Python | Yksinkertainen monen agentin malli | Rajoitettu joustavuus |
+| **AutoGen** | Python | Microsoftin agenttikehys | Monimutkainen konfiguraatio |
+| **Semantic Kernel** | C#/Python | Microsoftin AI-orkestraatio | Windows-painotteinen |
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Agentit ovat seuraava askel LLM-sovellusten
+  kehityksessä — ne eivät vain *vastaa*, ne *toimivat*. Mutta agenttien
+  rakentaminen on monimutkaista: päättelysilmukat, token-kustannukset ja
+  hallusinaatiot ovat todellisia ongelmia, jotka vaativat huolellista
+  arkkitehtuurisuunnittelua. Älä rakenna agenttia, jos pelkkä RAG riittää.
+</WhyItMatters>
+
+<Reference id="yao2022" />
+<Reference id="wei2022" />
+<Reference id="wang2023" />
+<Reference id="xi2023" />
+
+---
+
+**Seuraavaksi:** [Hienosäädetyt mallit](/AI-Koulu/ai-architecture/02-4-finetuning/) — milloin kouluttaa oma malli.

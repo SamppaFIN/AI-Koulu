@@ -1,0 +1,139 @@
+---
+title: "Multimodaaliset arkkitehtuurit"
+description: "Kuva+teksti, video+ääni+teksti -putket ja yhteinen upotusavaruus."
+order: 6
+section: "Arkkitehtuurityypit"
+tags: ["multimodaali", "CLIP", "GPT-4o", "Gemini", "kuva", "ääni"]
+published: true
+---
+
+## Kuva+teksti, video+ääni+teksti -putket
+
+Multimodaalinen AI tarkoittaa järjestelmiä, jotka käsittelevät ja yhdistävät
+useita eri datatyyppejä: tekstiä, kuvia, ääntä, videota ja taulukoita.
+
+<Diagram type="multimodal-pipeline">
+  {/* Teksti → Tekstienkooderi → Yhteinen avaruus */}
+  {/* Kuva → Kuvienkooderi → Yhteinen avaruus */}
+  {/* Ääni → Äänienkooderi → Yhteinen avaruus */}
+</Diagram>
+
+### Erilliset enkooderit + yhteinen upotusavaruus
+
+Multimodaalisen järjestelmän ydinidea on **yhteinen upotusavaruus**
+(joint embedding space). Jokainen datatyyppi projisoidaan samaan
+vektoriavaruuteen, jossa samankaltaiset asiat ovat lähellä toisiaan.
+
+- Teksti: "koira juoksee puistossa" → [0.2, 0.8, -0.3, ...]
+- Kuva: valokuva koirasta → [0.25, 0.75, -0.28, ...]
+- Ääni: koiran haukunta → [0.22, 0.78, -0.31, ...]
+
+<Callout type="info">
+  **Avaintekniikka:** CLIP (Contrastive Language-Image Pre-training) on
+  tunnetuin menetelmä. Se kouluttaa tekstienkooderin ja kuvienkooderin
+  rinnakkain siten, että oikea kuva-teksti -pari on lähellä toisiaan ja
+  väärät parit kaukana toisistaan.
+</Callout>
+
+<AnalogyBox>
+  **Analogia:** Multimodaalinen järjestelmä on kuin tulkkikeskus, jossa
+  on eri kielten tulkkeja. Kun joku puhuu suomea (teksti), suomentulkki
+  kääntää sen yhteiskielelle (upotusavaruus). Kun toinen näyttää kuvan
+  (kuva), kuvatulkki kääntää myös sen yhteiskielelle. Nyt molemmat voivat
+  "keskustella" samassa kielessä, vaikka heidän alkuperäiset kielensä
+  ovat eri.
+
+  Samalla tavalla teksti, kuvat ja ääni muutetaan yhteiseen
+  "konekieleen", jossa niitä voi verrata ja yhdistellä.
+</AnalogyBox>
+
+### Viimeisimmät mallit
+
+| Malli | Tuetut moodit | Vahvuus | Julkaistu |
+|---|---|---|---|
+| **GPT-4o** | Teksti, kuva, ääni | Nopea, hyvä kaikessa | 2024 |
+| **Gemini 1.5 Pro** | Teksti, kuva, ääni, video | Jättimäinen konteksti (1M tokenia) | 2024 |
+| **Claude 3.5 Sonnet** | Teksti, kuva | Paras koodaus ja päättely | 2024 |
+| **Llama 3.2 Vision** | Teksti, kuva | Avoin, itse isännöitävä | 2024 |
+
+### Käyttötapaukset
+
+#### Dokumenttianalyysi
+
+Skannattu PDF → OCR → taulukoiden irrotus → semanttinen indeksointi → "kysy dokumentilta"
+
+```typescript
+async function analyzeDocument(imageBase64: string, question: string) {
+  const response = await multimodalModel({
+    images: [imageBase64],
+    prompt: `Analysoi tämä dokumentti. ${question}`,
+  });
+  return response;
+}
+```
+
+#### Videoanalyysi
+
+Valitse avainruudut, analysoi ne multimodaalimallilla, yhdistä tulokset.
+
+1. Pura video ruuduiksi (1 frame/sekunti)
+2. Analysoi jokainen ruutu erikseen
+3. Yhdistä analyysit aikajanaksi
+4. Vastaa kysymyksiin videon sisällöstä
+
+#### Reaaliaikainen tulkinta
+
+Kamera + mikrofoni → reaaliaikainen analyysi → ääniohjaus:
+
+```
+Käyttäjä (näyttää kuvaa): "Mitä tässä on?"
+AI: "Kuvassa on kolme henkilöä kokoushuoneessa, valkotaulu täynnä muistiinpanoja"
+Käyttäjä: "Tee niistä tiivistelmä"
+AI (analysoi taulun tekstit): "Kokouksessa käsiteltiin..."
+```
+
+### Tekninen toteutus
+
+```python
+# Yksinkertainen multimodaalinen luokittelija CLIPillä
+import torch
+from transformers import CLIPProcessor, CLIPModel
+
+model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+
+def classify_image(image, labels):
+    inputs = processor(
+        text=labels,
+        images=image,
+        return_tensors="pt",
+        padding=True
+    )
+    outputs = model(**inputs)
+    logits_per_image = outputs.logits_per_image
+    probs = logits_per_image.softmax(dim=1)
+    return labels[probs.argmax().item()]
+```
+
+### Haasteet
+
+| Haaste | Kuvaus | Ratkaisu |
+|---|---|---|
+| **Kontekstin koko** | Kuvat vievät paljon tokeneita | Kuvien pienennys, avainruudut videoille |
+| **Latenssi** | Useita enkoodereita peräkkäin | Putkien optimointi, rinnakkaisuus |
+| **Hintalappu** | Kuvan analyysi maksaa 10× tekstin | Käytä tekstiä aina kun mahdollista |
+| **Tarkkuus** | OCR voi epäonnistua, kuvatulkinta voi olla väärä | Fallback-strategiat, ihmisen tarkistus |
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Multimodaalisuus on seuraava iso askel AI-sovelluksissa.
+  Yhä useampi käyttötapaus vaatii sekä tekstin, kuvien että äänen käsittelyä.
+  Arkkitehtuurin on tuettava eri modaliteetteja joustavasti — ja ennen kaikkea
+  *oikealla hinnalla*. Ei kannata lähettää kuvaa analysoitavaksi, jos teksti riittää.
+</WhyItMatters>
+
+<Reference id="radford2021" />
+<Reference id="openai2023" />
+
+---
+
+**Seuraavaksi:** [Hybridiarkkitehtuurit](/AI-Koulu/ai-architecture/02-6-hybrid/) — sääntöpohjaiset + neuroverkot yhdessä.

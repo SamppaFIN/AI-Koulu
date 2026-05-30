@@ -1,0 +1,162 @@
+---
+title: "RAG-arkkitehtuurit"
+description: "Retrieval-Augmented Generation — tiedonhaun ja generoinnin yhdistäminen."
+order: 3
+section: "Arkkitehtuurityypit"
+tags: ["RAG", "vektoritietokanta", "embedding", "tiedonhaku"]
+published: true
+---
+
+## Perus-RAG
+
+Retrieval-Augmented Generation (RAG) on arkkitehtuuri, joka yhdistää
+**tiedonhaun** (retrieval) ja **tekstin generoinnin** (generation).
+Sen idea on yksinkertainen: sen sijaan, että kysytään LLM:ltä suoraan,
+haetaan ensin relevantti konteksti omasta tietokannasta ja annetaan se
+mallille mukaan.
+
+<Diagram type="rag-pipeline">
+  {/* Data → Chunkkaus → Embedding → Vektoritietokanta → Haku → LLM → Vastaus */}
+</Diagram>
+
+RAG-putken vaiheet:
+
+1. **Datan valmistelu:** dokumentit pilkotaan paloiksi (chunks)
+2. **Upotukset (embeddings):** jokaisesta palasta luodaan vektoriesitys
+3. **Indeksointi:** vektorit tallennetaan vektoritietokantaan
+4. **Kysely:** käyttäjän kysymys muutetaan vektoriksi
+5. **Haku:** lähimmät vektorit haetaan (kNN-haku)
+6. **Kontekstin muodostus:** löydetyt palat lisätään promptiin
+7. **Generointi:** LLM tuottaa vastauksen kontekstin perusteella
+
+<Callout type="tip">
+  **Avainajatus:** RAG on tapa antaa LLM:lle *pääsy omaan tietoon* ilman
+  kalliista hienosäädöstä. Kun data muuttuu, päivität vektoritietokantaa,
+  et mallia.
+</Callout>
+
+### Chunkkausstrategiat
+
+Datan pilkkominen on kriittinen vaihe — liian isot palat hukuttavat
+relevantin tiedon, liian pienet menettävät kontekstin.
+
+| Strategia | Kuvaus | Parhaiten sopii |
+|---|---|---|
+| **Kiinteä pituus** | N tokenia per chunk, limitys | Yksinkertainen teksti |
+| **Lauseraja** | Pilkkoo virkkeiden mukaan | Luonnollinen teksti |
+| **Kappaleraja** | Pilkkoo kappaleiden mukaan | Dokumentit, artikkelit |
+| **Semanttinen** | Embedding-pohjainen rajaus | Monimutkainen sisältö |
+| **Rekursiivinen** | Useita rajoja, valitsee parhaan | Yleiskäyttöinen |
+
+<AnalogyBox>
+  **Analogia:** RAG on kuin kirjastonhoitaja, joka hakee sinulle oikeat
+  kirjat ennen kuin kirjoitat esseen. Sen sijaan, että yrität muistaa
+  kaiken ulkoa (hienosäätö), menet kirjastoon (vektoritietokanta),
+  pyydät apua (haku), ja kirjastonhoitaja hakee oikeat kirjat (tulokset).
+  Sitten kirjoitat esseen kirjojen pohjalta (generointi).
+
+  **Hyvä kirjastonhoitaja** tietää tarkalleen mitkä kirjat ovat relevantteja
+  ja osaa jättää epäolennaiset pois. **Huono kirjastonhoitaja** tuo
+  satunnaisia kirjoja tai liian monta kirjaa, jolloin hukut tietoon.
+</AnalogyBox>
+
+### Vektoritietokannat
+
+| Tietokanta | Tyyppi | Erityispiirre |
+|---|---|---|
+| **Pinecone** | Pilvipalvelu | Täysin hallittu, skaalautuva, kallis |
+| **Weaviate** | Itse isännöity/pilvi | Kubernetes, GraphQL, monikielinen |
+| **Qdrant** | Itse isännöity/pilvi | Rust-pohjainen, nopea, tehokas |
+| **Milvus** | Itse isännöity | Hajautettu, GPU-kiihdytetty |
+| **pgvector** | PostgreSQL-lisäosa | Helppo integroida, ei erillistä infraa |
+
+### Kehittyneet RAG-mallit
+
+Perus-RAG on vasta alkua. Käytännössä tarvitaan usein monimutkaisempia
+malleja:
+
+#### Agentic RAG
+
+Agentti päättää *miten* haku suoritetaan:
+
+- **Reititys:** eri kyselyt → eri tietokannat (teksti, koodi, taulukot)
+- **Kyselyn hajotus:** monimutkainen kysymys pilkotaan osiin
+- **Iteraatio:** haku → tarkenna → haku uudelleen → generointi
+
+```typescript
+async function agenticRAG(query: string) {
+  // 1. Analysoi kyselyn tyyppi
+  const type = await classifyQuery(query);
+
+  // 2. Reititä oikeaan tietokantaan
+  if (type === "factual") {
+    return searchVectorDB(query);
+  } else if (type === "tabular") {
+    return searchTabularDB(query);
+  } else {
+    return searchHybrid(query);
+  }
+
+  // 3. Tarkenna tarvittaessa
+  // 4. Generoi vastaus
+}
+```
+
+#### Multimodaalinen RAG
+
+Tekstin lisäksi haetaan kuvia, taulukoita ja ääntä:
+
+- Teksti upotetaan tekstienkooderilla (esim. text-embedding-3-small)
+- Kuvat upotetaan kuvienkooderilla (esim. CLIP)
+- Yhteinen upotusavaruus mahdollistaa "näytä kuva, joka muistuttaa tätä tekstiä"
+
+#### Graph RAG
+
+Tietograafit + vektorihaku:
+
+- Entiteetit ja niiden väliset suhteet tallennetaan graafiin
+- Vektorihaku löytää relevantit entiteetit
+- Graafihaku löytää niiden väliset yhteydet
+- Lopputulos: konteksti, joka ymmärtää *suhteet* eikä vain *samankaltaisuutta*
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** RAG on yleisin tapa tuoda oma data osaksi
+  AI-sovellusta. Se on halvempi kuin hienosäätö, helpompi päivittää kuin
+  agentit, ja se vähentää hallusinaatioita merkittävästi. Oikea RAG-arkkitehtuuri
+  on kuitenkin paljon monimutkaisempi kuin "laita dokumentti embedding-palveluun".
+  Chunkkaus, haku ja kontekstin muodostus vaativat huolellista suunnittelua.
+</WhyItMatters>
+
+### Caching- ja streaming-strategiat
+
+RAG-järjestelmän suorituskykyä voi parantaa merkittävästi:
+
+- **Semanttinen cache:** samankaltaiset kyselyt palauttavat välimuistista
+  (GPTCache, Redis + embeddings)
+- **Vastauksen streaming:** tokenit välitetään käyttäjälle yksi kerrallaan
+  koetun nopeuden parantamiseksi
+- **Prefetching:** hae seuraava todennäköisin konteksti etukäteen
+
+```typescript
+// Semanttinen cache yksinkertaistettuna
+async function getCachedOrFetch(query: string) {
+  const queryEmbedding = await embed(query);
+  const cached = await redis.similaritySearch(queryEmbedding, 0.95);
+
+  if (cached) {
+    return cached.answer; // Osuma! Palauta välimuistista
+  }
+
+  const answer = await fullRAGPipeline(query);
+  await redis.store(queryEmbedding, answer);
+  return answer;
+}
+```
+
+<Reference id="lewis2020" />
+<Reference id="gao2023" />
+<Reference id="kwiatkowski2019" />
+
+---
+
+**Seuraavaksi:** [Agenttipohjaiset arkkitehtuurit](/AI-Koulu/ai-architecture/02-3-agents/) — AI, joka toimii ja tekee päätöksiä.

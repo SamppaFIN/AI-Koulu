@@ -1,0 +1,158 @@
+---
+title: "Hienosäädettyjen mallien arkkitehtuurit"
+description: "Milloin hienosäätö kannattaa ja miten malleja palvellaan tuotannossa."
+order: 5
+section: "Arkkitehtuurityypit"
+tags: ["fine-tuning", "vLLM", "quantization", "GGUF", "AWQ"]
+published: true
+---
+
+## Milloin hienosäätö kannattaa?
+
+Hienosäätö (fine-tuning) on prosessi, jossa valmiiksi koulutettua mallia
+jatkokoulutetaan omalla datalla. Se ei ole ainoa tapa — ja harvoin se on
+ensimmäinen.
+
+<Diagram type="decision-tree">
+  {/* Kysymys → Onko dataa? → Onko prompt engineering riittävä? → Onko RAG riittävä? → Hienosäätö */}
+</Diagram>
+
+### Päätöspuu: Hienosäätö vs. RAG vs. Prompt engineering
+
+| Kriteeri | Prompt engineering | RAG | Hienosäätö |
+|---|---|---|---|
+| **Tarvitaanko omaa dataa?** | Ei | Kyllä | Kyllä, paljon |
+| **Muuttuuko data usein?** | — | Kyllä, paras valinta | Ei, data staattista |
+| **Tarvitaanko tarkkaa muotoa?** | Ei | Ei | Kyllä (esim. JSON) |
+| **Kustannus** | 0 € | Vektoritietokanta + upotukset | Koulutus + palvelu |
+| **Tarvittava datamäärä** | 0 | 10–1000 dokumenttia | 1000+ esimerkkiä |
+| **Hallusinaatioriski** | Korkea | Matala | Keskitaso |
+
+<Callout type="warning">
+  **Yleinen virhe:** Yritetään hienosäätää mallia, kun oikea ratkaisu olisi
+  RAG. Hienosäätö opettaa mallille *muotoa ja tyyliä*, ei faktoja.
+  Jos haluat mallin tietävän asioita, käytä RAG:ia. Jos haluat mallin
+  *vastaavan tietyssä muodossa*, hienosäätö voi olla oikea valinta.
+</Callout>
+
+### Milloin hienosäätö on oikea valinta?
+
+1. **Tietty ulosoton muoto** — haluat aina JSON-muotoisen vastauksen
+2. **Oman äänensävyn oppiminen** — brändin mukainen kirjoitustyyli
+3. **Tehtäväkohtainen suorituskyky** — esim. koodin korjaus tietylle kielelle
+4. **Mallin kutistaminen** — iso malli → pieni malli (distillaatio)
+
+<AnalogyBox>
+  **Analogia:** Hienosäätö on kuin lähettäisi lapsen erikoiskouluun.
+  Peruskoulutus (perusmalli) antaa yleiset taidot, mutta erikoiskoulu
+  (hienosäätö) opettaa tiettyä erikoisalaa.
+
+  - **Prompt engineering** on kuin antaisi tarkat ohjeet: "Kirjoita tiivistelmä, max 100 sanaa"
+  - **RAG** on kuin antaisi tueksi kirjan: "Tässä on faktat, tee niistä tiivistelmä"
+  - **Hienosäätö** on kuin kouluttaisi lapsesta juristin: "Nyt osaat lakikielen automaattisesti"
+
+  Kaikilla on paikkansa, mutta koulutus maksaa eniten.
+</AnalogyBox>
+
+### Mallien palveluarkkitehtuurit
+
+Kun malli on hienosäädetty, se pitää saada tuotantoon.
+
+| Työkalu | Kuvaus | Parasta |
+|---|---|---|
+| **vLLM** | Tehokas LLM-palvelin PagedAttentioilla | Suorituskyky, suuret mallit |
+| **TGI** (Text Generation Inference) | Hugging Facen palvelin | Integraatio Hugging Face -ekosysteemiin |
+| **Ollama** | Paikallinen LLM-ajuri | Helppo asennus, kehitys |
+| **llama.cpp** | C++-pohjainen optimoitu inferenssi | CPU:lla toimivat mallit |
+
+```python
+# vLLM-palvelin (yksinkertaistettu)
+from vllm import LLM, SamplingParams
+
+llm = LLM(model="meta-llama/Llama-3-70B", tensor_parallel_size=4)
+params = SamplingParams(temperature=0.7, max_tokens=512)
+
+output = llm.generate("Keksi tarina AI:sta", params)
+print(output[0].outputs[0].text)
+```
+
+### Mallien rinnakkaisuus
+
+Isoja malleja ei voi ajaa yhdellä GPU:lla. Tarvitaan rinnakkaisuutta.
+
+| Menetelmä | Kuvaus | Milloin käyttää |
+|---|---|---|
+| **Tensor parallelism** | Malli jaetaan GPU:iden kesken | Yksi iso malli, monta GPU:ta |
+| **Pipeline parallelism** | Kerrokset eri GPU:ille | Erittäin syvät mallit |
+| **Data parallelism** | Sama malli, eri dataa | Suuri määrä samanaikaisia pyyntöjä |
+
+### Kvanttisointi ja optimointi
+
+Mallin kokoa voi pienentää merkittävästi ilman suurta laadun heikkenemistä.
+
+| Menetelmä | Tarkkuus | Koonpienennys | Laatu (vs. FP16) |
+|---|---|---|---|
+| **FP16** | 16-bit | 1× | — |
+| **INT8** | 8-bit | 2× | Lähes identtinen |
+| **INT4** (AWQ/GPTQ) | 4-bit | 4× | Hieman heikompi |
+| **GGUF Q4_K_M** | 4-bit (kvantisointi) | ~4× | Hyvä laatu |
+
+```python
+# AWQ-kvantisointi
+from awq import AutoAWQForCausalLM
+
+model = AutoAWQForCausalLM.from_pretrained("meta-llama/Llama-3-8B")
+model.quantize(tokenizer, quant_config={"bits": 4, "group_size": 128})
+model.save_pretrained("llama-3-8b-awq")
+```
+
+### Mallien A/B-testaus ja canary-julkaisut
+
+Tuotannossa haluat testata uutta mallia ennen täyttä käyttöönottoa.
+
+```typescript
+// Yksinkertainen canary-julkaisu
+async function getCompletion(prompt: string) {
+  const useCanary = Math.random() < 0.1; // 10% liikenteestä
+
+  if (useCanary) {
+    return callModel("gpt-4o-canary"); // Uusi malli
+  }
+  return callModel("gpt-4o-stable"); // Nykyinen malli
+}
+
+// Mittaa: laatu, latenssi, kustannus, virhetilanteet
+```
+
+### Lokaalit mallit osana arkkitehtuuria
+
+Lokaalit mallit (Ollama, llama.cpp) ovat yhä tärkeämpiä:
+
+- **Yksityisyys:** data ei poistu koneelta
+- **Latenssi:** ei verkkokutsua
+- **Offline:** toimii ilman internetyhteyttä
+- **Kustannus:** ei token-maksuja
+
+```typescript
+// Hybridiarkkitehtuuri: lokaali + pilvi
+async function getCompletion(prompt: string, sensitive: boolean) {
+  if (sensitive || !navigator.onLine) {
+    return localModel(prompt); // Ollama lokaalisti
+  }
+  return cloudModel(prompt);   // GPT-4o pilvessä
+}
+```
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Hienosäätö on tehokas mutta kallis työkalu.
+  Usein RAG tai prompt engineering riittää. Kun kuitenkin hienosäädät,
+  sinun on mietittävä koko palveluarkkitehtuuri: kvanttisointi, rinnakkaisuus,
+  A/B-testaus ja lokaali vs. pilvi. Huono palveluarkkitehtuuri tekee
+  hyvästäkin mallista käyttökelvottoman.
+</WhyItMatters>
+
+<Reference id="touvron2023" />
+
+---
+
+**Seuraavaksi:** [Multimodaaliset arkkitehtuurit](/AI-Koulu/ai-architecture/02-5-multimodal/) — teksti, kuvat, ääni yhdessä.

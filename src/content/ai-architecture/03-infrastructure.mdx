@@ -1,0 +1,229 @@
+---
+title: "AI-infrastruktuuri ja alustat"
+description: "Koulutus, inferenssi, MLOps ja kustannustenhallinta tuotannossa."
+order: 8
+section: "AI-infrastruktuuri"
+tags: ["MLOps", "koulutus", "inferenssi", "DeepSpeed", "GPU"]
+published: true
+---
+
+## 3.1 Koulutusinfrastruktuuri
+
+Suurten kielimallien koulutus on infrastruktuuriltaan äärimmäisen vaativaa.
+
+### Hajautettu koulutus
+
+| Työkalu | Kuvaus | Milloin käyttää |
+|---|---|---|
+| **DeepSpeed** (Microsoft) | ZeRO-optimointi, muistin tehokkuus | Suurten mallien koulutus |
+| **FSDP** (PyTorch) | Fully Sharded Data Parallel | PyTorch-käyttäjät |
+| **Megatron-LM** (NVIDIA) | Tensor + pipeline parallelism | Erittäin suuret mallit (>100B) |
+
+```python
+# DeepSpeed ZeRO-3: jaa optimoijan tila GPU:iden kesken
+deepspeed_config = {
+    "zero_optimization": {
+        "stage": 3,
+        "offload_optimizer": {"device": "cpu"},
+    },
+    "train_batch_size": 32,
+    "gradient_accumulation_steps": 4,
+}
+```
+
+### GPU-klusterit ja orkestrointi
+
+- **Kubernetes + GPU-lisäosa** — dynaaminen GPU:iden allokointi
+- **Slurm** — perinteinen HPC-orkestraattori
+- **SkyPilot** — monipilviorkestraattori (AWS, GCP, Azure)
+
+### Kokeilujen seuranta
+
+| Työkalu | Vahvuus |
+|---|---|
+| **MLflow** | Avoin, laaja käyttäjäkunta, helppo |
+| **Weights & Biases** | Kaunis UI, hyvä yhteistyö |
+| **Neptune** | Keskitetty, monipuolinen |
+
+<Callout type="tip">
+  **Suositus:** Aloita MLflow'lla, se on avointa ja riittää useimmille
+  tiimeille. Päivitä W&B:hen tai Neptunelle, kun tarvitset parempaa
+  visualisointia ja tiimiyhteistyötä.
+</Callout>
+
+## 3.2 Inferenssipalvelut
+
+Kun malli on koulutettu, se pitää saada tuotantoon.
+
+### Arkkitehtuurimallit
+
+| Tila | Kuvaus | Latenssi | Hinta | Milloin |
+|---|---|---|---|---|
+| **Reaaliaikainen** | Synkroninen, odota vastausta | &lt;1s | Korkea | Chatbot, API |
+| **Eräkäsittely** | Useita pyyntöjä kerralla | Minuutteja | Matala | Analyysi, raportointi |
+| **Striimaus** | Tokenit tulevat yksi kerrallaan | 0.1s/token | Keskitaso | Keskustelu, kirjoitus |
+
+### Kylmäkäynnistys ja lämmittely
+
+Mallin lataaminen muistiin kestää. Ratkaisut:
+
+```yaml
+# Kubernetes HPA: pysy lämpimänä
+minReplicas: 2          # Aina vähintään 2 palvelinta
+maxReplicas: 10
+targetCPUUtilization: 70
+```
+
+- **Keep-alive:** pidä vähintään yksi palvelin aina päällä
+- **Pre-warming:** esilataa malli muistiin ennen liikennettä
+- **Serverless:** (esim. Modal, Replicate) — lataa tarvittaessa, hyvä kehitykseen
+
+### Autoskaalaus GPU-kuormalle
+
+```yaml
+# GPU-pohjainen autoskaalaus K8s:ssa
+metrics:
+  - type: External
+    metric:
+      name: gpu_utilization
+      target:
+        type: AverageValue
+        averageValue: 70
+```
+
+### Edge-inferenssi
+
+| Teknologia | Laite | Käyttötapaus |
+|---|---|---|
+| **CoreML** | Apple (iPhone, Mac) | Mobiili iOS-sovellukset |
+| **ONNX Runtime** | Windows, Linux, macOS | Ristiinalusta, optimoitu |
+| **WebGPU** | Selain | AI selaimessa (Chrome, Edge) |
+| **TensorRT** | NVIDIA GPU | Tehokkain NVIDIA-laitteilla |
+
+## 3.3 MLOps ja LLMOps
+
+AI-järjestelmän ylläpito on erilaista kuin perinteisen softan.
+
+### Dataputket
+
+```
+Keräys → Puhdistus → Versiointi → Validointi → Käyttöön
+```
+
+Jokaisen vaiheen pitää olla:
+- **Toistettava** — sama data → sama tulos aina
+- **Versioitu** — tiedetään millä datalla malli on koulutettu
+- **Monitoroitu** — tiedetään jos datan laatu heikkenee
+
+### Mallirekisterit ja elinkaarihallinta
+
+```yaml
+# Mallirekisterimerkintä (MLflow)
+model:
+  name: "asiakaspalvelu-agentti"
+  version: 3
+  stage: "production"  # staging, production, archived
+  metrics:
+    accuracy: 0.94
+    latency_ms: 450
+  data_hash: "abc123def456"
+```
+
+### Promptien hallinta ja versiointi
+
+Promptit ovat yhtä tärkeitä kuin koodi — niitä pitää versioida.
+
+| Työkalu | Kuvaus |
+|---|---|
+| **LangSmith** | Kattava promptien hallinta |
+| **PromptLayer** | Promptien lokitus ja versiointi |
+| **Oma registry** | Git-pohjainen, YAML-muoto |
+
+### Monitorointi
+
+AI-järjestelmässä seurataan täysin uusia asioita:
+
+| Mittari | Kuvaus | Miten havaitaan |
+|---|---|---|
+| **Ajautuminen (drift)** | Datan jakauma muuttuu | Tilastolliset testit (KS-testi) |
+| **Myrkyllisyys** | Malli tuottaa loukkaavaa sisältöä | Moderointi-API (esim. Azure Content Safety) |
+| **Laatu** | Vastausten relevanssi | Käyttäjäpalaute, eval-joukot |
+| **Latenssi** | Vastausaika | P50/P95/P99 -seuranta |
+
+```typescript
+// Ajautumisen tunnistus
+function detectDrift(baseline: number[], current: number[]) {
+  const statistic = kolmogorovSmirnovTest(baseline, current);
+  if (statistic.pValue < 0.05) {
+    alertTeam("Data drift detected!");
+  }
+}
+```
+
+### Turvallisuus
+
+| Riski | Ratkaisu |
+|---|---|
+| **Jailbreak** | Prompt-suodatus, syötteen validointi |
+| **PII-vuoto** | PII-suodatin ennen ja jälkeen LLM:n |
+| **Sisällön moderointi** | Moderointi-API jokaiselle vastaukselle |
+
+## 3.4 Kustannusten hallinta ja optimointi
+
+AI-sovellusten suurin menoerä on usein ei itse kehitys vaan *ajokustannukset*.
+
+### Token-pohjainen hinnoittelu ja budjetointi
+
+```typescript
+function estimateCost(tokens: number, model: string) {
+  const rates = {
+    "gpt-4o": { input: 0.01, output: 0.03 },  // $/1K tokens
+    "claude-3.5": { input: 0.008, output: 0.024 },
+  };
+  const rate = rates[model];
+  return (tokens * rate.output) / 1000;
+}
+```
+
+### Välimuististrategiat
+
+| Strategia | Säästö | Esimerkki |
+|---|---|---|
+| **Semanttinen cache** | 30–50% | GPTCache, Redis + embeddings |
+| **Tarkka välimuisti** | 10–20% | Täsmälleen sama kysely |
+| **Vastausten välimuisti** | 5–15% | CDN, selaimen cache |
+
+### Pienempien mallien ketjutus vs. yksi iso malli
+
+```typescript
+// Kalliimpi: yksi iso malli kaikkeen
+const answer = await gpt4o(prompt);
+
+// Halvempi: pieni malli seuloo, iso malli vastaa tarpeen mukaan
+const isComplex = await gpt4oMini(`Onko tämä monimutkainen? ${prompt}`);
+if (isComplex) {
+  return gpt4o(prompt);
+}
+return gpt4oMini(prompt);
+```
+
+### Hybridipilvi ja lokaali inferenssi
+
+```
+Tavalliset kyselyt:      Lokaali malli (Ollama)         — 0€/kysely
+Monimutkaiset kyselyt:   Pilvimalli (GPT-4o)             — 0.03€/kysely
+Sensitiivinen data:      Lokaali malli (Ollama)          — 0€, tietoturva
+```
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Infrastruktuuri määrittää, pääseekö AI-sovellus
+  koskaan tuotantoon. 90% projekteista kaatuu siihen, että malli toimii
+  kehittäjän koneella mutta ei tuotannossa. MLOps, kustannusten hallinta
+  ja oikea inferenssiarkkitehtuuri ovat yhtä tärkeitä kuin itse malli.
+</WhyItMatters>
+
+<Reference id="touvron2023" />
+
+---
+
+**Seuraavaksi:** [Suunnitteluperiaatteet](/AI-Koulu/ai-architecture/04-design-principles/) — luotettavuus, skaalautuvuus ja turvallisuus.

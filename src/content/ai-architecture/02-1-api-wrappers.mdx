@@ -1,0 +1,139 @@
+---
+title: "API-kääremallit (Thin Wrappers)"
+description: "Yksinkertaisin tapa rakentaa AI-sovellus: UI + prompt + API-kutsu."
+order: 2
+section: "Arkkitehtuurityypit"
+tags: ["API", "thin wrapper", "prompt", "OpenAI", "Anthropic"]
+published: true
+---
+
+## Yksinkertaisin malli: UI + prompt + API-kutsu
+
+API-kääremalli on AI-arkkitehtuurien alkeellisin muoto. Sovellus koostuu
+kolmesta kerroksesta:
+
+1. **Käyttöliittymä** (UI) — keskusteluikkuna, lomake, tekstikenttä
+2. **Prompt-logiikka** — viestien muotoilu, kontekstin hallinta, system promptit
+3. **API-kutsu** — HTTP-pyyntö LLM-palveluun (OpenAI, Anthropic, Google, jne.)
+
+<Diagram type="api-wrapper">
+  {/* UI → Prompt → API → Vastaus → UI */}
+</Diagram>
+
+<Callout type="info">
+  **Tärkeää:** Tämä on *nopein tapa* päästä markkinoille, mutta harvoin
+  *oikea tapa* tuotantoon. Malli sopii prototyyppeihin, yksinkertaisiin
+  tekstinkäsittelytehtäviin ja tilanteisiin, joissa datan laatu ja määrä
+  eivät vaadi monimutkaisempaa arkkitehtuuria.
+</Callout>
+
+### Käyttötapaukset
+
+API-kääre sopii parhaiten:
+
+- **Yksinkertaiset chatbotit** — asiakaspalvelun alustava seulonta, FAQ-botit
+- **Tekstinkäsittely** — tiivistäminen, kääntäminen, oikoluku, parafrasointi
+- **Sisällön generointi** — luonnokset, markkinointitekstit, ideointi
+- **Koodiavustus** — snippetit, selitykset (mutta katso luku 5.3 Copilot-tyyppisestä)
+
+### Tekninen toteutus
+
+```typescript
+// Yksinkertainen API-kääre Expressissä
+import OpenAI from "openai";
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+app.post("/chat", async (req, res) => {
+  const { message } = req.body;
+
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      { role: "system", content: "Olet avulias assistentti." },
+      { role: "user", content: message },
+    ],
+  });
+
+  res.json({ reply: completion.choices[0].message.content });
+});
+```
+
+<AnalogyBox>
+  **Analogia:** API-kääre on kuin taksimatka. Astut kyytiin (UI),
+  sanot määränpään (prompt), kuljettaja vie sinut perille (API).
+  Se on helppoa ja nopeaa, mutta:
+  - Hinta per kilometri on korkea (token-maksut)
+  - Et voi vaikuttaa reittiin (mallin päätöksiin)
+  - Joskus päädyt väärään paikkaan (hallusinaatio)
+  - Olet sidottu taksifirmaan (vendor lock-in)
+</AnalogyBox>
+
+### Hyödyt
+
+| Hyöty | Selitys |
+|---|---|
+| **Nopea toteutus** | Päivissä, ei viikoissa |
+| **Pieni alkukustannus** | Ei tarvetta omalle infrastruktuurille |
+| **Helppo päivittää** | Mallia voi vaihtaa yhdellä parametrilla |
+| **Ei dataputkia** | Kaikki tieto tulee LLM:n harjoitusdatasta |
+| **Skaalautuu heti** | Palveluntarjoaja hoitaa infra-asiat |
+
+### Riskit
+
+| Riski | Kuvaus | Miten lieventää |
+|---|---|---|
+| **Vendor lock-in** | Yhden toimittajan varaan jääminen | Abstraktiokerros API-kutsujen ympärille (ks. esimerkki) |
+| **Latenssi** | API-kutsut kestävät 0.5–5s | Streaming (SSE), optimistic UI |
+| **Hinta** | Token-pohjainen laskutus voi yllättää | Semanttinen cache, ketjuta pieniä malleja |
+| **Hallusinaatio** | Malli keksii asioita | Prompt-engineering, faktojen tarkistus |
+| **Tietoturva** | Data menee kolmannelle osapuolelle | Älä lähetä sensitiivistä dataa, anonymisoi |
+
+### Abstraktiokerros (vaihtoehtoisten mallien tuki)
+
+```typescript
+interface LLMProvider {
+  chat(messages: Message[]): Promise<string>;
+}
+
+class OpenAIProvider implements LLMProvider {
+  async chat(messages: Message[]) { /* ... */ }
+}
+
+class AnthropicProvider implements LLMProvider {
+  async chat(messages: Message[]) { /* ... */ }
+}
+
+class OllamaProvider implements LLMProvider {
+  async chat(messages: Message[]) { /* ... */ }
+}
+```
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** API-kääre on houkutteleva, mutta sen riskit
+  realisoituvat vasta kun sovellus on tuotannossa. Jos et ole varautunut
+  vendor lock-iniin ja kustannuksiin, saatat joutua tilanteeseen, jossa
+  koko sovellus on rakennettu yhden API:n varaan — ja vaihto toiseen
+  on massiivinen projekti. Rakenna abstraktiokerros *ennen* kuin tarvitset sitä.
+</WhyItMatters>
+
+### Yhteenveto valintakriteereistä
+
+**Valitse API-kääre, jos:**
+- Teet prototyyppiä tai MVP:tä
+- Sovelluksesi on yksinkertainen teksti → teksti -putki
+- Sinulla ei ole dataa, jota haluaisit käyttää kontekstina
+- Haluat testata ideaa mahdollisimman nopeasti
+
+**Harkitse muuta arkkitehtuuria, jos:**
+- Tarvitset oman datan käyttöä (katso RAG, luku 2.2)
+- Tarvitset monivaiheista päättelyä (katso agentit, luku 2.3)
+- Kustannukset ovat kriittinen tekijä
+- Sovellus käsittelee sensitiivistä dataa
+
+<Reference id="brown2020" />
+<Reference id="openai2023" />
+
+---
+
+**Seuraavaksi:** [RAG-arkkitehtuurit](/AI-Koulu/ai-architecture/02-2-rag/) — kun tarvitset omaa dataa mukaan.

@@ -1,0 +1,156 @@
+---
+title: "Hybridiarkkitehtuurit"
+description: "Sääntöpohjaiset järjestelmät, neuroverkot ja ihmiskontrolli samassa putkessa."
+order: 7
+section: "Arkkitehtuurityypit"
+tags: ["hybridi", "säännöt", "HITL", "symbolinen", "ML"]
+published: true
+---
+
+## Sääntöpohjaiset + neuroverkot
+
+Hybridiarkkitehtuurit yhdistävät **perinteisen ohjelmoinnin** (säännöt,
+logiikka, rajapinnat) ja **neuroverkot** (LLM:t, ML-mallit) samassa
+järjestelmässä. Tavoitteena on saada molempien maailmojen parhaat puolet.
+
+<Diagram type="hybrid-architecture">
+  {/* Kysely → Sääntöpohjainen reititin → LLM / ML-malli / Perinteinen koodi → Vastaus */}
+</Diagram>
+
+<Callout type="info">
+  **Avainajatus:** Neuroverkot ovat hyviä *joustavuudessa ja luovuudessa*,
+  säännöt ovat hyviä *tarkkuudessa ja luotettavuudessa*. Hybridi yhdistää
+  nämä: säännöt hoitavat sen, mihin ne sopivat, neuroverkot hoitavat loput.
+</Callout>
+
+### Sääntöpohjainen reititin
+
+Yksinkertaisin hybridi: ohjaa kysely oikeaan käsittelijään sääntöjen perusteella.
+
+```typescript
+async function hybridRouter(query: string) {
+  // 1. Sääntöpohjainen luokittelu
+  if (query.includes("saldo") || query.includes("tili")) {
+    return handleBanking(query);      // Tarkka, säännöt takana
+  }
+  if (query.includes("sää") || query.includes("lämpötila")) {
+    return handleWeather(query);      // API-kutsu + LLM selitys
+  }
+  if (isComplexReasoning(query)) {
+    return handleWithLLM(query);      // Vapaa päättely
+  }
+  // 2. Oletus: LLM
+  return handleWithLLM(query);
+}
+```
+
+<AnalogyBox>
+  **Analogia:** Hybridiarkkitehtuuri on kuin lentoaseman turvatarkastus.
+  - **Säännöt** = koneet ja automaatti (skannerit, metallinpaljastimet):
+    nopeita, tarkkoja, eivät erehdy perusasioissa
+  - **Neuroverkot** = turvatarkastajat (ihmiset, jotka tulkitsevat kuvia):
+    joustavia, ymmärtävät kontekstia, osaavat arvioida poikkeustilanteita
+  - **Yhdessä:** kone hoitaa 95% työstä, ihminen keskittyy poikkeuksiin
+
+  Ilman koneita tarkastus olisi hidasta. Ilman ihmisiä kone tekisi virheitä
+  poikkeustilanteissa. Yhdessä ne ovat parempia kuin kumpikaan yksin.
+</AnalogyBox>
+
+### Klassinen ML + LLM rinnakkain
+
+Monet ongelmat ratkeavat paremmin klassisella ML:llä kuin LLM:llä:
+
+| Tehtävä | Klassinen ML | LLM | Hybridi |
+|---|---|---|---|
+| **Roskapostin tunnistus** | 99.5% tarkkuus | Hidas ja kallis | ML luokittelee, LLM selittää |
+| **Tunneanalyysi** | 90% tarkkuus | 95% tarkkuus | ML seuloo, LLM analysoi vaikeat |
+| **Tuotesuositukset** | 10ms, hyvä | 2s, parempi | ML suosittelee, LLM perustelee |
+| **Kyselyluokittelu** | Nopea, 97% | Hidas, 99% | ML reitittää, LLM käsittelee vaikeat |
+
+```python
+# Hybridi: ML + LLM
+def hybrid_sentiment(text: str):
+    # 1. Kevyt ML-malli luokittelee ensin
+    ml_result = light_model.predict(text)
+    confidence = ml_result.confidence
+
+    # 2. Jos ML on epävarma, käytä LLM:ää
+    if confidence < 0.8:
+        llm_result = llm_analyze(text)
+        return llm_result
+
+    return ml_result.label
+```
+
+### Symbolinen päättely + neuroverkot
+
+Neuroverkot eivät osaa *varsinaisesti* päätellä — ne jäljittelevät
+päätelyä. Symbolinen AI (kuten graafit, logiikkaohjelmointi) sen sijaan
+on tarkkaa mutta joustamatonta.
+
+| Ominaisuus | Neuroverkot | Symbolinen | Hybridi |
+|---|---|---|---|
+| **Joustavuus** | Korkea | Matala | Molemmat |
+| **Tarkkuus** | Vaihteleva | Täydellinen | Tarkka joustava |
+| **Selitettävyys** | Huono | Täydellinen | Hyvä |
+| **Oppiminen** | Datasta | Käsin kirjoitettu | Molemmat |
+
+```python
+# Symbolinen + neuroverkot: matemaattinen päättely
+def solve_word_problem(problem: str):
+    # 1. LLM tulkitsee ongelman
+    math_expression = llm.extract_math(problem)
+    # "Matiaksella on 3 omenaa, hän saa 2 lisää" → "3 + 2"
+
+    # 2. Symbolinen laskin ratkaisee tarkasti
+    result = sympy.solve(math_expression)
+
+    # 3. LLM muotoilee vastauksen
+    return llm.format_answer(f"Tulos on {result}")
+```
+
+### Ihmiskontrolli silmukassa (Human-in-the-Loop)
+
+Kaikkein tärkein hybridimuoto: **ihminen varmistaa ja ohjaa**.
+
+<Diagram type="hitl-loop">
+  {/* AI → Ehdotus → Ihminen tarkistaa → Hyväksy/Hylkää/Muokkaa → AI oppii */}
+</Diagram>
+
+| Taso | Kuvaus | Milloin |
+|---|---|---|
+| **Tarkkailu** | Ihminen näkee kaikki AI:n vastaukset | Korkean riskin sovellukset |
+| **Hyväksyntä** | AI ehdottaa, ihminen hyväksyy | Asiakasviestintä, lääketiede |
+| **Korjaus** | AI tekee, ihminen korjaa virheet | Dataputket, koodaus |
+| **Ohjaus** | Ihminen antaa suuntaa, AI toteuttaa | Luova työ, suunnittelu |
+
+```typescript
+// Human-in-the-Loop: varmistus ennen lähetystä
+async function sendCustomerEmail(draft: string) {
+  const approval = await requestHumanApproval(draft);
+  if (approval.status === "approved") {
+    return emailService.send(draft);
+  }
+  if (approval.status === "edited") {
+    return emailService.send(approval.editedVersion);
+  }
+  // rejected: älä lähetä
+  return { status: "rejected", reason: approval.reason };
+}
+```
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Harva tuotantosovellus käyttää pelkkää LLM:ää.
+  Todellisuudessa parhaat järjestelmät ovat hybridejä: säännöt hoitavat
+  rutiinit, LLM hoitaa poikkeukset, klassinen ML seuloo dataa, ja ihminen
+  varmistaa tärkeimmät päätökset. Hybridiarkkitehtuurin suunnittelu —
+  mikä menee mihinkin ja milloin — on yksi tärkeimmistä AI-arkkitehdin
+  taidoista.
+</WhyItMatters>
+
+<Reference id="brown2020" />
+<Reference id="wei2022" />
+
+---
+
+**Seuraavaksi:** [AI-infrastruktuuri ja alustat](/AI-Koulu/ai-architecture/03-infrastructure/) — koulutus, inferenssi, MLOps.

@@ -1,0 +1,223 @@
+---
+title: "Viitearkkitehtuurit"
+description: "Konkreettiset esimerkit ja teknologiavalinnat: RAG, agentti, Copilot ja dokumenttianalyysi."
+order: 10
+section: "Viitearkkitehtuurit"
+tags: ["viitearkkitehtuuri", "RAG", "agentti", "Copilot", "dokumenttianalyysi"]
+published: true
+---
+
+## 5.1 Yritystason RAG-järjestelmä
+
+Täydellinen arkkitehtuuri yrityksen dokumenttien kyselyjärjestelmälle.
+
+### Arkkitehtuurikaavio
+
+<Diagram type="enterprise-rag">
+  {/* Datalähteet → ETL → Vektoritietokanta → API → UI */}
+</Diagram>
+
+### Komponentit
+
+| Kerros | Teknologia | Tehtävä |
+|---|---|---|
+| **Datalähteet** | SharePoint, Confluence, S3 | Lähdedokumentit |
+| **ETL-putki** | Airflow + Python | Hae, chunkkaa, upota |
+| **Vektoritietokanta** | Pinecone / Weaviate | Indeksoi ja hae |
+| **API** | FastAPI / Express | Reititä kyselyt |
+| **UI** | React / Streamlit | Käyttöliittymä |
+| **Monitorointi** | LangSmith / MLflow | Seuraa laatua |
+
+### Skaalautuvuus
+
+```yaml
+# Kubernetes-konfiguraatio
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rag-api
+spec:
+  replicas: 3
+  resources:
+    requests:
+      memory: "1Gi"
+    limits:
+      memory: "2Gi"
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rag-api-hpa
+spec:
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+```
+
+### Turvallisuus
+
+- **Dokumenttitason pääsynhallinta:** käyttäjä näkee vain dokumentit, joihin hänellä on oikeus
+- **PII-poisto:** automatisoi henkilötietojen poisto ennen indeksointia
+- **Audit-loki:** kaikki kyselyt ja vastaukset lokitetaan
+
+<Callout type="info">
+  **Kriittinen oivallus:** Yritys-RAGissa suurin haaste ei ole tekniikka
+  vaan *pääsynhallinta*. Jos et ole tarkkana, käyttäjä voi kysellä
+  dokumenteista, joihin hänellä ei ole pääsyä, RAG:n kautta.
+</Callout>
+
+## 5.2 Asiakaspalvelun AI-agentti
+
+### Putki
+
+```
+Puheentunnistus → LLM → Tietokantahaut → Puhesynteesi
+```
+
+### Teknologiavalinnat
+
+| Vaihe | Teknologia | Vaihtoehtoja |
+|---|---|---|
+| **Puheentunnistus (STT)** | Whisper / Azure Speech | Speechmatics, Deepgram |
+| **Päätely** | GPT-4o / Claude | Mikä tahansa LLM |
+| **Tietokantahaku** | pgvector / Qdrant | Asiakkasdata, tilaukset |
+| **Puhesynteesi (TTS)** | ElevenLabs / Azure Speech | OpenAI TTS, WellSaid |
+| **Puhelinintegraatio** | Twilio / Vonage | Voximplant |
+
+### Ihmiskontrolli ja eskalaatio
+
+```typescript
+// Eskalaatio ihmiselle
+async function handleConversation(input: string, context: Context) {
+  const intent = await classifyIntent(input);
+
+  if (intent.confidence < 0.7) {
+    // En ole varma → kysy tarkennusta
+    return askClarification();
+  }
+
+  if (intent.type === "complaint" || intent.sentiment === "angry") {
+    // Valitus tai vihainen asiakas → heti ihmiselle
+    return escalateToHuman(intent);
+  }
+
+  const response = await getAIResponse(input, context);
+  return response;
+}
+```
+
+### Muistin hallinta pitkissä keskusteluissa
+
+```typescript
+// Yhteenveto-muisti: tiivistä vanha keskustelu
+if (messages.length > 20) {
+  const summary = await llm.summarize(messages.slice(0, -10));
+  messages = [
+    { role: "system", content: `Aiempi keskustelu: ${summary}` },
+    ...messages.slice(-10),
+  ];
+}
+```
+
+## 5.3 Koodiavustaja (Copilot-tyyppinen)
+
+### Kontekstin keräys repo-tasolla
+
+```typescript
+interface RepoContext {
+  openFiles: string[];           // Tällä hetkellä avoimet tiedostot
+  currentFile: string;           // Aktiivinen tiedosto
+  cursorPosition: Position;      // Kursori
+  imports: string[];             // Importit lähellä kursoria
+  similarCode: CodeSnippet[];    // Samankaltainen koodi muualta reposta
+  gitBlame: GitBlame[];          // Kuka kirjoitti mitäkin
+}
+```
+
+### RAG kooditietokantaan
+
+- Koodi jaetaan funktio- ja luokkatasoisiin chunkkeihin
+- Jokainen chunk upotetaan kommentteineen
+- Haku: käyttäjän koodi → samankaltainen koodi → konteksti
+
+### Integraatio IDE:hen ja CI/CD-putkeen
+
+```
+IDE (VS Code, JetBrains) → API → AI-palvelu → IDE
+                                ↓
+                           CI/CD (GitHub Actions)
+                                ↓
+                           Testit → Build → Deploy
+```
+
+## 5.4 Multimodaalinen dokumenttianalyysi
+
+### Putki
+
+<Diagram type="document-analysis">
+  {/* PDF → OCR → Taulukot → RAG → UI */}
+</Diagram>
+
+| Vaihe | Teknologia |
+|---|---|
+| **PDF-skannaus** | Tesseract, Azure Document Intelligence |
+| **OCR** | Tesseract, Google Cloud Vision |
+| **Taulukoiden irrotus** | Camelot, Tabula |
+| **Semanttinen indeksointi** | CLIP + vektoritietokanta |
+| **Kysy dokumentilta** | GPT-4o / Claude multimodaali |
+
+### Visuaalisten elementtien semanttinen indeksointi
+
+```typescript
+// Indeksoi kaaviot ja kuvat
+interface IndexedVisual {
+  image: Buffer;
+  caption: string;
+  embedding: number[];       // CLIP-vektori
+  pageNumber: number;
+  documentId: string;
+  type: "chart" | "diagram" | "photo" | "table";
+}
+```
+
+### "Kysy dokumentista" -tyylinen käyttöliittymä
+
+```typescript
+async function askDocument(question: string, documentId: string) {
+  // 1. Hae relevantit tekstiosuudet
+  const textChunks = await vectorDB.search(question, { documentId });
+
+  // 2. Hae relevantit visuaaliset elementit
+  const visuals = await vectorDB.searchVisual(question, { documentId });
+
+  // 3. Yhdistä konteksti
+  const context = buildMultimodalContext(textChunks, visuals);
+
+  // 4. Generoi vastaus
+  const answer = await multimodalLLM(question, context);
+
+  return { answer, sources: [...textChunks, ...visuals] };
+}
+```
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Viitearkkitehtuurit eivät ole kopioitavia
+  reseptejä vaan *lähtökohtia*. Jokainen projekti on erilainen, mutta
+  nämä esimerkit antavat sinulle käsityksen siitä, mitä komponentteja
+  tarvitset ja miten ne voivat liittyä toisiinsa. Kopioi ideat, mukauta
+  tarpeisiisi.
+</WhyItMatters>
+
+<Reference id="chen2021" />
+<Reference id="lewis2020" />
+<Reference id="yao2022" />
+
+---
+
+**Osa 1 on nyt käsitelty!** Siirry [UI/UX-käytäntöihin](/AI-Koulu/ui-ux/01-hcd/) tai valitse jokin AI-arkkitehtuuriluku uudelleen luettavaksi.
