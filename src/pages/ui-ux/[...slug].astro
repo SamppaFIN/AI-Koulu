@@ -76,21 +76,40 @@ const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, H
 
 <style is:global>
   .mdx-content h2 {
-    margin-top: var(--space-2xl);
+    margin-top: var(--space-3xl);
+    margin-bottom: var(--space-md);
     color: var(--color-brand-dark);
   }
   .mdx-content h3 {
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-sm);
+  }
+  .mdx-content h4 {
     margin-top: var(--space-xl);
+    margin-bottom: var(--space-sm);
   }
   .mdx-content p {
-    margin-block: var(--space-md);
+    margin-block: var(--space-lg);
+    line-height: 1.8;
   }
   .mdx-content ul, .mdx-content ol {
-    margin-block: var(--space-md);
+    margin-block: var(--space-lg);
     padding-left: var(--space-lg);
   }
   .mdx-content li {
     margin-block: var(--space-xs);
+  }
+  /* Pidä otsikko ja sitä seuraava sisältö lähellä toisiaan */
+  .mdx-content h2 + p,
+  .mdx-content h3 + p,
+  .mdx-content h4 + p {
+    margin-top: 0;
+  }
+  .mdx-content h2 + ul,
+  .mdx-content h2 + ol,
+  .mdx-content h3 + ul,
+  .mdx-content h3 + ol {
+    margin-top: 0;
   }
   .mdx-content code {
     background: var(--color-bg-code);
