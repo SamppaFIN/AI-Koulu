@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="fi" data-theme="system"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Kuva+teksti, video+ääni+teksti -putket ja yhteinen upotusavaruus."><title>Multimodaaliset arkkitehtuurit | AI & UI/UX Edu</title><!-- Fontit --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><!-- Globaalit tyylit --><link rel="stylesheet" href="/src/styles/globals.css"><!-- Teema-skripti (suoritetaan ennen renderöintiä flashin estämiseksi) --><script>
+      (function() {
+        var theme = localStorage.getItem('ai-edu-theme') || 'system';
+        var root = document.documentElement;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', theme);
+      })();
+    </script><style>.mdx-content h2{margin-top:var(--space-2xl);color:var(--color-brand-dark)}.mdx-content h3{margin-top:var(--space-xl)}.mdx-content p{margin-block:var(--space-md)}.mdx-content ul,.mdx-content ol{margin-block:var(--space-md);padding-left:var(--space-lg)}.mdx-content li{margin-block:var(--space-xs)}.mdx-content code{background:var(--color-bg-code);padding:.15rem .4rem;border-radius:4px;font-size:.85em}.mdx-content pre{background:var(--color-bg-code);border:1px solid var(--color-border);border-radius:8px;padding:var(--space-md);overflow-x:auto;margin-block:var(--space-lg)}.mdx-content pre code{background:none;padding:0}.mdx-content blockquote{border-left:4px solid var(--color-brand-light);padding-left:var(--space-lg);margin-block:var(--space-lg);color:var(--color-text-secondary);font-style:italic}.mdx-content a{color:var(--color-brand);text-decoration:underline;text-underline-offset:2px}.mdx-content a:hover{color:var(--color-brand-dark)}.mdx-content img{max-width:100%;border-radius:8px;margin-block:var(--space-lg)}.mdx-content hr{border:none;border-top:1px solid var(--color-border);margin-block:var(--space-2xl)}.mdx-content table{width:100%;border-collapse:collapse;margin-block:var(--space-lg)}.mdx-content th,.mdx-content td{padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);text-align:left}.mdx-content th{background:var(--color-bg-card);font-weight:600}
+</style></head> <body> <!-- Yläpalkki --> <header class="container-wide" style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+    "> <!-- Logo --> <a href="/AI-Koulu/" style="
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--color-brand);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      "> <span style="font-size: 1.5rem;">⚡</span>
+AI & UI/UX Edu
+</a> <!-- Navigaatio --> <nav aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);"> <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+AI-arkkitehtuurit
+</a> <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+UI/UX-käytännöt
+</a> <a href="/AI-Koulu/haku/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+Haku
+</a> <!-- Teemanvaihtaja --> <button id="theme-toggle" aria-label="Vaihda teemaa" style="
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--color-text);
+            font-size: 1rem;
+            line-height: 1;
+          ">
+🌓
+</button> </nav> </header> <!-- Pääsisältö --> <main>  <article class="container-content" style="padding-block: var(--space-2xl);"> <!-- Otsikko --> <header style="margin-bottom: var(--space-2xl);"> <p style="
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-brand);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-sm);
+      ">
+Luku 6 — Arkkitehtuurityypit </p> <h1 style="margin: 0 0 var(--space-sm) 0;">Multimodaaliset arkkitehtuurit</h1> <p style="color: var(--color-text-secondary); font-size: 1.1rem; margin: 0;"> Kuva+teksti, video+ääni+teksti -putket ja yhteinen upotusavaruus. </p> </header> <!-- Varsinainen sisältö (MDX renderöitynä) --> <div class="mdx-content"> <h2 id="kuvateksti-videoääniteksti--putket">Kuva+teksti, video+ääni+teksti -putket</h2>
+<p>Multimodaalinen AI tarkoittaa järjestelmiä, jotka käsittelevät ja yhdistävät
+useita eri datatyyppejä: tekstiä, kuvia, ääntä, videota ja taulukoita.</p>
+<div style="background:var(--color-bg-card);border:2px dashed var(--color-border);border-radius:12px;padding:3rem 2rem;margin-block:1.5rem;text-align:center;color:var(--color-text-muted)"><p style="font-size:2rem;margin:0 0 0.5rem 0">📐</p><p style="font-weight:600;margin:0 0 0.25rem 0">Kaavio: <!-- -->multimodal-pipeline</p><p style="font-size:0.85rem;margin:0">Interaktiivinen diagrammi tulossa vaiheessa 3.</p></div>
+<h3 id="erilliset-enkooderit--yhteinen-upotusavaruus">Erilliset enkooderit + yhteinen upotusavaruus</h3>
+<p>Multimodaalisen järjestelmän ydinidea on <strong>yhteinen upotusavaruus</strong>
+(joint embedding space). Jokainen datatyyppi projisoidaan samaan
+vektoriavaruuteen, jossa samankaltaiset asiat ovat lähellä toisiaan.</p>
+<ul>
+<li>Teksti: “koira juoksee puistossa” → [0.2, 0.8, -0.3, …]</li>
+<li>Kuva: valokuva koirasta → [0.25, 0.75, -0.28, …]</li>
+<li>Ääni: koiran haukunta → [0.22, 0.78, -0.31, …]</li>
+</ul>
+<div style="background:oklch(0.6 0.18 240 / 0.1);border:1px solid oklch(0.6 0.18 240 / 0.3);border-radius:12px;padding:1rem 1.25rem;margin-block:1.5rem;display:flex;gap:0.75rem;align-items:flex-start" role="alert"><span style="font-size:1.3rem;flex-shrink:0;margin-top:0.1rem">ℹ️</span><div style="color:var(--color-text);line-height:1.6"><p><strong>Avaintekniikka:</strong> CLIP (Contrastive Language-Image Pre-training) on
+tunnetuin menetelmä. Se kouluttaa tekstienkooderin ja kuvienkooderin
+rinnakkain siten, että oikea kuva-teksti -pari on lähellä toisiaan ja
+väärät parit kaukana toisistaan.</p></div></div>
+<div style="background:color-mix(in oklab, var(--color-accent) 10%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-accent) 30%, var(--color-border));border-left:4px solid var(--color-accent);border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--color-accent);margin:0 0 0.5rem 0">💡 Reaalimaailman analogia</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Analogia:</strong> Multimodaalinen järjestelmä on kuin tulkkikeskus, jossa
+on eri kielten tulkkeja. Kun joku puhuu suomea (teksti), suomentulkki
+kääntää sen yhteiskielelle (upotusavaruus). Kun toinen näyttää kuvan
+(kuva), kuvatulkki kääntää myös sen yhteiskielelle. Nyt molemmat voivat
+“keskustella” samassa kielessä, vaikka heidän alkuperäiset kielensä
+ovat eri.</p><p>Samalla tavalla teksti, kuvat ja ääni muutetaan yhteiseen
+“konekieleen”, jossa niitä voi verrata ja yhdistellä.</p></div></div>
+<h3 id="viimeisimmät-mallit">Viimeisimmät mallit</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Malli</th><th>Tuetut moodit</th><th>Vahvuus</th><th>Julkaistu</th></tr></thead><tbody><tr><td><strong>GPT-4o</strong></td><td>Teksti, kuva, ääni</td><td>Nopea, hyvä kaikessa</td><td>2024</td></tr><tr><td><strong>Gemini 1.5 Pro</strong></td><td>Teksti, kuva, ääni, video</td><td>Jättimäinen konteksti (1M tokenia)</td><td>2024</td></tr><tr><td><strong>Claude 3.5 Sonnet</strong></td><td>Teksti, kuva</td><td>Paras koodaus ja päättely</td><td>2024</td></tr><tr><td><strong>Llama 3.2 Vision</strong></td><td>Teksti, kuva</td><td>Avoin, itse isännöitävä</td><td>2024</td></tr></tbody></table>
+<h3 id="käyttötapaukset">Käyttötapaukset</h3>
+<h4 id="dokumenttianalyysi">Dokumenttianalyysi</h4>
+<p>Skannattu PDF → OCR → taulukoiden irrotus → semanttinen indeksointi → “kysy dokumentilta”</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> analyzeDocument</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">imageBase64</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">question</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> response</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> multimodalModel</span><span style="color:#E1E4E8">({</span></span>
+<span class="line"><span style="color:#E1E4E8">    images: [imageBase64],</span></span>
+<span class="line"><span style="color:#E1E4E8">    prompt: </span><span style="color:#9ECBFF">`Analysoi tämä dokumentti. ${</span><span style="color:#E1E4E8">question</span><span style="color:#9ECBFF">}`</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">  });</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#E1E4E8"> response;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h4 id="videoanalyysi">Videoanalyysi</h4>
+<p>Valitse avainruudut, analysoi ne multimodaalimallilla, yhdistä tulokset.</p>
+<ol>
+<li>Pura video ruuduiksi (1 frame/sekunti)</li>
+<li>Analysoi jokainen ruutu erikseen</li>
+<li>Yhdistä analyysit aikajanaksi</li>
+<li>Vastaa kysymyksiin videon sisällöstä</li>
+</ol>
+<h4 id="reaaliaikainen-tulkinta">Reaaliaikainen tulkinta</h4>
+<p>Kamera + mikrofoni → reaaliaikainen analyysi → ääniohjaus:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>Käyttäjä (näyttää kuvaa): &quot;Mitä tässä on?&quot;</span></span>
+<span class="line"><span>AI: &quot;Kuvassa on kolme henkilöä kokoushuoneessa, valkotaulu täynnä muistiinpanoja&quot;</span></span>
+<span class="line"><span>Käyttäjä: &quot;Tee niistä tiivistelmä&quot;</span></span>
+<span class="line"><span>AI (analysoi taulun tekstit): &quot;Kokouksessa käsiteltiin...&quot;</span></span></code></pre>
+<h3 id="tekninen-toteutus">Tekninen toteutus</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># Yksinkertainen multimodaalinen luokittelija CLIPillä</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> torch</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> transformers </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> CLIPProcessor, CLIPModel</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">model </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> CLIPModel.from_pretrained(</span><span style="color:#9ECBFF">&quot;openai/clip-vit-base-patch32&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">processor </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> CLIPProcessor.from_pretrained(</span><span style="color:#9ECBFF">&quot;openai/clip-vit-base-patch32&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> classify_image</span><span style="color:#E1E4E8">(image, labels):</span></span>
+<span class="line"><span style="color:#E1E4E8">    inputs </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> processor(</span></span>
+<span class="line"><span style="color:#FFAB70">        text</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">labels,</span></span>
+<span class="line"><span style="color:#FFAB70">        images</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">image,</span></span>
+<span class="line"><span style="color:#FFAB70">        return_tensors</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;pt&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">        padding</span><span style="color:#F97583">=</span><span style="color:#79B8FF">True</span></span>
+<span class="line"><span style="color:#E1E4E8">    )</span></span>
+<span class="line"><span style="color:#E1E4E8">    outputs </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> model(</span><span style="color:#F97583">**</span><span style="color:#E1E4E8">inputs)</span></span>
+<span class="line"><span style="color:#E1E4E8">    logits_per_image </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> outputs.logits_per_image</span></span>
+<span class="line"><span style="color:#E1E4E8">    probs </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> logits_per_image.softmax(</span><span style="color:#FFAB70">dim</span><span style="color:#F97583">=</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> labels[probs.argmax().item()]</span></span></code></pre>
+<h3 id="haasteet">Haasteet</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Haaste</th><th>Kuvaus</th><th>Ratkaisu</th></tr></thead><tbody><tr><td><strong>Kontekstin koko</strong></td><td>Kuvat vievät paljon tokeneita</td><td>Kuvien pienennys, avainruudut videoille</td></tr><tr><td><strong>Latenssi</strong></td><td>Useita enkoodereita peräkkäin</td><td>Putkien optimointi, rinnakkaisuus</td></tr><tr><td><strong>Hintalappu</strong></td><td>Kuvan analyysi maksaa 10× tekstin</td><td>Käytä tekstiä aina kun mahdollista</td></tr><tr><td><strong>Tarkkuus</strong></td><td>OCR voi epäonnistua, kuvatulkinta voi olla väärä</td><td>Fallback-strategiat, ihmisen tarkistus</td></tr></tbody></table>
+<div style="background:color-mix(in oklab, var(--color-brand) 12%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-brand) 25%, var(--color-border));border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:800;font-size:0.9rem;color:var(--color-brand);margin:0 0 0.5rem 0;display:flex;align-items:center;gap:0.5rem"><span style="font-size:1.2rem">🎯</span>Miksi tällä on väliä?</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Miksi tällä on väliä?</strong> Multimodaalisuus on seuraava iso askel AI-sovelluksissa.
+Yhä useampi käyttötapaus vaatii sekä tekstin, kuvien että äänen käsittelyä.
+Arkkitehtuurin on tuettava eri modaliteetteja joustavasti — ja ennen kaikkea
+<em>oikealla hinnalla</em>. Ei kannata lähettää kuvaa analysoitavaksi, jos teksti riittää.</p></div></div>
+<sup><a href="https://arxiv.org/abs/2103.00020" target="_blank" rel="noopener noreferrer" title="Radford, A. et al. (2021). Learning Transferable Visual Models From Natural Language Supervision (CLIP). ICML." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->radford2021<!-- -->]</a></sup>
+<sup><a href="https://arxiv.org/abs/2303.08774" target="_blank" rel="noopener noreferrer" title="OpenAI (2023). GPT-4 Technical Report. arXiv." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->openai2023<!-- -->]</a></sup>
+<hr/>
+<p><strong>Seuraavaksi:</strong> <a href="/AI-Koulu/ai-architecture/02-6-hybrid/">Hybridiarkkitehtuurit</a> — sääntöpohjaiset + neuroverkot yhdessä.</p> </div> <!-- Navigaatio seuraavaan/edelliseen --> <nav style="
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--space-3xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid var(--color-border);
+    "> <span></span> <a href="/AI-Koulu/ai-architecture/" style="
+        color: var(--color-brand);
+        text-decoration: none;
+        font-weight: 500;
+      ">
+← Takaisin sisällykseen
+</a> </nav> </article>  </main> <!-- Alaosa --> <footer class="container-wide" style="
+      border-top: 1px solid var(--color-border);
+      padding-block: var(--space-xl);
+      margin-top: var(--space-3xl);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    "> <p> <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
+</p> <p style="margin-top: var(--space-sm);">
+Sisältö perustuu vuoden 2024–2026 tutkimukseen. Lähdeviitteet jokaisen luvun yhteydessä.
+</p> </footer> <!-- Teemanvaihtaja-skripti --> <script type="module">const o="ai-edu-theme";function r(){return typeof localStorage>"u"?"system":localStorage.getItem(o)||"system"}function a(e){typeof localStorage>"u"||(localStorage.setItem(o,e),c(e))}function c(e){const t=document.documentElement;if(e==="system"){const n=window.matchMedia("(prefers-color-scheme: dark)").matches;t.setAttribute("data-theme",n?"dark":"light")}else t.setAttribute("data-theme",e)}function d(){const e=window.matchMedia("(prefers-color-scheme: dark)"),t=()=>{r()==="system"&&c("system")};return e.addEventListener("change",t),()=>e.removeEventListener("change",t)}const s=document.getElementById("theme-toggle");s&&s.addEventListener("click",()=>{const e=r(),n={light:"dark",dark:"system",system:"light"}[e]||"light";a(n),s.setAttribute("aria-label",`Teema: ${n}`)});const m=d();document.addEventListener("astro:before-swap",m);</script> </body> </html> 

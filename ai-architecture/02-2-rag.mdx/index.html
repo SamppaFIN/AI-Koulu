@@ -1,0 +1,253 @@
+<!DOCTYPE html><html lang="fi" data-theme="system"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Retrieval-Augmented Generation — tiedonhaun ja generoinnin yhdistäminen."><title>RAG-arkkitehtuurit | AI & UI/UX Edu</title><!-- Fontit --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><!-- Globaalit tyylit --><link rel="stylesheet" href="/src/styles/globals.css"><!-- Teema-skripti (suoritetaan ennen renderöintiä flashin estämiseksi) --><script>
+      (function() {
+        var theme = localStorage.getItem('ai-edu-theme') || 'system';
+        var root = document.documentElement;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', theme);
+      })();
+    </script><style>.mdx-content h2{margin-top:var(--space-2xl);color:var(--color-brand-dark)}.mdx-content h3{margin-top:var(--space-xl)}.mdx-content p{margin-block:var(--space-md)}.mdx-content ul,.mdx-content ol{margin-block:var(--space-md);padding-left:var(--space-lg)}.mdx-content li{margin-block:var(--space-xs)}.mdx-content code{background:var(--color-bg-code);padding:.15rem .4rem;border-radius:4px;font-size:.85em}.mdx-content pre{background:var(--color-bg-code);border:1px solid var(--color-border);border-radius:8px;padding:var(--space-md);overflow-x:auto;margin-block:var(--space-lg)}.mdx-content pre code{background:none;padding:0}.mdx-content blockquote{border-left:4px solid var(--color-brand-light);padding-left:var(--space-lg);margin-block:var(--space-lg);color:var(--color-text-secondary);font-style:italic}.mdx-content a{color:var(--color-brand);text-decoration:underline;text-underline-offset:2px}.mdx-content a:hover{color:var(--color-brand-dark)}.mdx-content img{max-width:100%;border-radius:8px;margin-block:var(--space-lg)}.mdx-content hr{border:none;border-top:1px solid var(--color-border);margin-block:var(--space-2xl)}.mdx-content table{width:100%;border-collapse:collapse;margin-block:var(--space-lg)}.mdx-content th,.mdx-content td{padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);text-align:left}.mdx-content th{background:var(--color-bg-card);font-weight:600}
+</style></head> <body> <!-- Yläpalkki --> <header class="container-wide" style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+    "> <!-- Logo --> <a href="/AI-Koulu/" style="
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--color-brand);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      "> <span style="font-size: 1.5rem;">⚡</span>
+AI & UI/UX Edu
+</a> <!-- Navigaatio --> <nav aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);"> <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+AI-arkkitehtuurit
+</a> <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+UI/UX-käytännöt
+</a> <a href="/AI-Koulu/haku/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+Haku
+</a> <!-- Teemanvaihtaja --> <button id="theme-toggle" aria-label="Vaihda teemaa" style="
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--color-text);
+            font-size: 1rem;
+            line-height: 1;
+          ">
+🌓
+</button> </nav> </header> <!-- Pääsisältö --> <main>  <article class="container-content" style="padding-block: var(--space-2xl);"> <!-- Otsikko --> <header style="margin-bottom: var(--space-2xl);"> <p style="
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-brand);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-sm);
+      ">
+Luku 3 — Arkkitehtuurityypit </p> <h1 style="margin: 0 0 var(--space-sm) 0;">RAG-arkkitehtuurit</h1> <p style="color: var(--color-text-secondary); font-size: 1.1rem; margin: 0;"> Retrieval-Augmented Generation — tiedonhaun ja generoinnin yhdistäminen. </p> </header> <!-- Varsinainen sisältö (MDX renderöitynä) --> <div class="mdx-content"> <h2 id="perus-rag">Perus-RAG</h2>
+<p>Retrieval-Augmented Generation (RAG) on arkkitehtuuri, joka yhdistää
+<strong>tiedonhaun</strong> (retrieval) ja <strong>tekstin generoinnin</strong> (generation).
+Sen idea on yksinkertainen: sen sijaan, että kysytään LLM:ltä suoraan,
+haetaan ensin relevantti konteksti omasta tietokannasta ja annetaan se
+mallille mukaan.</p>
+<div style="background:var(--color-bg-card);border:2px dashed var(--color-border);border-radius:12px;padding:3rem 2rem;margin-block:1.5rem;text-align:center;color:var(--color-text-muted)"><p style="font-size:2rem;margin:0 0 0.5rem 0">📐</p><p style="font-weight:600;margin:0 0 0.25rem 0">Kaavio: <!-- -->rag-pipeline</p><p style="font-size:0.85rem;margin:0">Interaktiivinen diagrammi tulossa vaiheessa 3.</p></div>
+<p>RAG-putken vaiheet:</p>
+<ol>
+<li><strong>Datan valmistelu:</strong> dokumentit pilkotaan paloiksi (chunks)</li>
+<li><strong>Upotukset (embeddings):</strong> jokaisesta palasta luodaan vektoriesitys</li>
+<li><strong>Indeksointi:</strong> vektorit tallennetaan vektoritietokantaan</li>
+<li><strong>Kysely:</strong> käyttäjän kysymys muutetaan vektoriksi</li>
+<li><strong>Haku:</strong> lähimmät vektorit haetaan (kNN-haku)</li>
+<li><strong>Kontekstin muodostus:</strong> löydetyt palat lisätään promptiin</li>
+<li><strong>Generointi:</strong> LLM tuottaa vastauksen kontekstin perusteella</li>
+</ol>
+<div style="background:oklch(0.6 0.2 150 / 0.1);border:1px solid oklch(0.6 0.2 150 / 0.3);border-radius:12px;padding:1rem 1.25rem;margin-block:1.5rem;display:flex;gap:0.75rem;align-items:flex-start" role="alert"><span style="font-size:1.3rem;flex-shrink:0;margin-top:0.1rem">💡</span><div style="color:var(--color-text);line-height:1.6"><p><strong>Avainajatus:</strong> RAG on tapa antaa LLM:lle <em>pääsy omaan tietoon</em> ilman
+kalliista hienosäädöstä. Kun data muuttuu, päivität vektoritietokantaa,
+et mallia.</p></div></div>
+<h3 id="chunkkausstrategiat">Chunkkausstrategiat</h3>
+<p>Datan pilkkominen on kriittinen vaihe — liian isot palat hukuttavat
+relevantin tiedon, liian pienet menettävät kontekstin.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Strategia</th><th>Kuvaus</th><th>Parhaiten sopii</th></tr></thead><tbody><tr><td><strong>Kiinteä pituus</strong></td><td>N tokenia per chunk, limitys</td><td>Yksinkertainen teksti</td></tr><tr><td><strong>Lauseraja</strong></td><td>Pilkkoo virkkeiden mukaan</td><td>Luonnollinen teksti</td></tr><tr><td><strong>Kappaleraja</strong></td><td>Pilkkoo kappaleiden mukaan</td><td>Dokumentit, artikkelit</td></tr><tr><td><strong>Semanttinen</strong></td><td>Embedding-pohjainen rajaus</td><td>Monimutkainen sisältö</td></tr><tr><td><strong>Rekursiivinen</strong></td><td>Useita rajoja, valitsee parhaan</td><td>Yleiskäyttöinen</td></tr></tbody></table>
+<div style="background:color-mix(in oklab, var(--color-accent) 10%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-accent) 30%, var(--color-border));border-left:4px solid var(--color-accent);border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--color-accent);margin:0 0 0.5rem 0">💡 Reaalimaailman analogia</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Analogia:</strong> RAG on kuin kirjastonhoitaja, joka hakee sinulle oikeat
+kirjat ennen kuin kirjoitat esseen. Sen sijaan, että yrität muistaa
+kaiken ulkoa (hienosäätö), menet kirjastoon (vektoritietokanta),
+pyydät apua (haku), ja kirjastonhoitaja hakee oikeat kirjat (tulokset).
+Sitten kirjoitat esseen kirjojen pohjalta (generointi).</p><p><strong>Hyvä kirjastonhoitaja</strong> tietää tarkalleen mitkä kirjat ovat relevantteja
+ja osaa jättää epäolennaiset pois. <strong>Huono kirjastonhoitaja</strong> tuo
+satunnaisia kirjoja tai liian monta kirjaa, jolloin hukut tietoon.</p></div></div>
+<h3 id="vektoritietokannat">Vektoritietokannat</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Tietokanta</th><th>Tyyppi</th><th>Erityispiirre</th></tr></thead><tbody><tr><td><strong>Pinecone</strong></td><td>Pilvipalvelu</td><td>Täysin hallittu, skaalautuva, kallis</td></tr><tr><td><strong>Weaviate</strong></td><td>Itse isännöity/pilvi</td><td>Kubernetes, GraphQL, monikielinen</td></tr><tr><td><strong>Qdrant</strong></td><td>Itse isännöity/pilvi</td><td>Rust-pohjainen, nopea, tehokas</td></tr><tr><td><strong>Milvus</strong></td><td>Itse isännöity</td><td>Hajautettu, GPU-kiihdytetty</td></tr><tr><td><strong>pgvector</strong></td><td>PostgreSQL-lisäosa</td><td>Helppo integroida, ei erillistä infraa</td></tr></tbody></table>
+<h3 id="kehittyneet-rag-mallit">Kehittyneet RAG-mallit</h3>
+<p>Perus-RAG on vasta alkua. Käytännössä tarvitaan usein monimutkaisempia
+malleja:</p>
+<h4 id="agentic-rag">Agentic RAG</h4>
+<p>Agentti päättää <em>miten</em> haku suoritetaan:</p>
+<ul>
+<li><strong>Reititys:</strong> eri kyselyt → eri tietokannat (teksti, koodi, taulukot)</li>
+<li><strong>Kyselyn hajotus:</strong> monimutkainen kysymys pilkotaan osiin</li>
+<li><strong>Iteraatio:</strong> haku → tarkenna → haku uudelleen → generointi</li>
+</ul>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> agenticRAG</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">query</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">  // 1. Analysoi kyselyn tyyppi</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> type</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> classifyQuery</span><span style="color:#E1E4E8">(query);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  // 2. Reititä oikeaan tietokantaan</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (type </span><span style="color:#F97583">===</span><span style="color:#9ECBFF"> &quot;factual&quot;</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#B392F0"> searchVectorDB</span><span style="color:#E1E4E8">(query);</span></span>
+<span class="line"><span style="color:#E1E4E8">  } </span><span style="color:#F97583">else</span><span style="color:#F97583"> if</span><span style="color:#E1E4E8"> (type </span><span style="color:#F97583">===</span><span style="color:#9ECBFF"> &quot;tabular&quot;</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#B392F0"> searchTabularDB</span><span style="color:#E1E4E8">(query);</span></span>
+<span class="line"><span style="color:#E1E4E8">  } </span><span style="color:#F97583">else</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#B392F0"> searchHybrid</span><span style="color:#E1E4E8">(query);</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  // 3. Tarkenna tarvittaessa</span></span>
+<span class="line"><span style="color:#6A737D">  // 4. Generoi vastaus</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h4 id="multimodaalinen-rag">Multimodaalinen RAG</h4>
+<p>Tekstin lisäksi haetaan kuvia, taulukoita ja ääntä:</p>
+<ul>
+<li>Teksti upotetaan tekstienkooderilla (esim. text-embedding-3-small)</li>
+<li>Kuvat upotetaan kuvienkooderilla (esim. CLIP)</li>
+<li>Yhteinen upotusavaruus mahdollistaa “näytä kuva, joka muistuttaa tätä tekstiä”</li>
+</ul>
+<h4 id="graph-rag">Graph RAG</h4>
+<p>Tietograafit + vektorihaku:</p>
+<ul>
+<li>Entiteetit ja niiden väliset suhteet tallennetaan graafiin</li>
+<li>Vektorihaku löytää relevantit entiteetit</li>
+<li>Graafihaku löytää niiden väliset yhteydet</li>
+<li>Lopputulos: konteksti, joka ymmärtää <em>suhteet</em> eikä vain <em>samankaltaisuutta</em></li>
+</ul>
+<div style="background:color-mix(in oklab, var(--color-brand) 12%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-brand) 25%, var(--color-border));border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:800;font-size:0.9rem;color:var(--color-brand);margin:0 0 0.5rem 0;display:flex;align-items:center;gap:0.5rem"><span style="font-size:1.2rem">🎯</span>Miksi tällä on väliä?</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Miksi tällä on väliä?</strong> RAG on yleisin tapa tuoda oma data osaksi
+AI-sovellusta. Se on halvempi kuin hienosäätö, helpompi päivittää kuin
+agentit, ja se vähentää hallusinaatioita merkittävästi. Oikea RAG-arkkitehtuuri
+on kuitenkin paljon monimutkaisempi kuin “laita dokumentti embedding-palveluun”.
+Chunkkaus, haku ja kontekstin muodostus vaativat huolellista suunnittelua.</p></div></div>
+<h3 id="caching--ja-streaming-strategiat">Caching- ja streaming-strategiat</h3>
+<p>RAG-järjestelmän suorituskykyä voi parantaa merkittävästi:</p>
+<ul>
+<li><strong>Semanttinen cache:</strong> samankaltaiset kyselyt palauttavat välimuistista
+(GPTCache, Redis + embeddings)</li>
+<li><strong>Vastauksen streaming:</strong> tokenit välitetään käyttäjälle yksi kerrallaan
+koetun nopeuden parantamiseksi</li>
+<li><strong>Prefetching:</strong> hae seuraava todennäköisin konteksti etukäteen</li>
+</ul>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Semanttinen cache yksinkertaistettuna</span></span>
+<span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> getCachedOrFetch</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">query</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> queryEmbedding</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> embed</span><span style="color:#E1E4E8">(query);</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> cached</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> redis.</span><span style="color:#B392F0">similaritySearch</span><span style="color:#E1E4E8">(queryEmbedding, </span><span style="color:#79B8FF">0.95</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (cached) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> cached.answer; </span><span style="color:#6A737D">// Osuma! Palauta välimuistista</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> answer</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> fullRAGPipeline</span><span style="color:#E1E4E8">(query);</span></span>
+<span class="line"><span style="color:#F97583">  await</span><span style="color:#E1E4E8"> redis.</span><span style="color:#B392F0">store</span><span style="color:#E1E4E8">(queryEmbedding, answer);</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#E1E4E8"> answer;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<sup><a href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noopener noreferrer" title="Lewis, P. et al. (2020). Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. NeurIPS." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->lewis2020<!-- -->]</a></sup>
+<sup><a href="https://arxiv.org/abs/2312.10997" target="_blank" rel="noopener noreferrer" title="Gao, Y. et al. (2023). Retrieval-Augmented Generation for Large Language Models: A Survey. arXiv." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->gao2023<!-- -->]</a></sup>
+<sup><a href="https://aclanthology.org/Q19-1006/" target="_blank" rel="noopener noreferrer" title="Kwiatkowski, T. et al. (2019). Natural Questions: A Benchmark for Question Answering. ACL." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->kwiatkowski2019<!-- -->]</a></sup>
+<hr/>
+<p><strong>Seuraavaksi:</strong> <a href="/AI-Koulu/ai-architecture/02-3-agents/">Agenttipohjaiset arkkitehtuurit</a> — AI, joka toimii ja tekee päätöksiä.</p> </div> <!-- Navigaatio seuraavaan/edelliseen --> <nav style="
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--space-3xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid var(--color-border);
+    "> <span></span> <a href="/AI-Koulu/ai-architecture/" style="
+        color: var(--color-brand);
+        text-decoration: none;
+        font-weight: 500;
+      ">
+← Takaisin sisällykseen
+</a> </nav> </article>  </main> <!-- Alaosa --> <footer class="container-wide" style="
+      border-top: 1px solid var(--color-border);
+      padding-block: var(--space-xl);
+      margin-top: var(--space-3xl);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    "> <p> <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
+</p> <p style="margin-top: var(--space-sm);">
+Sisältö perustuu vuoden 2024–2026 tutkimukseen. Lähdeviitteet jokaisen luvun yhteydessä.
+</p> </footer> <!-- Teemanvaihtaja-skripti --> <script type="module">const o="ai-edu-theme";function r(){return typeof localStorage>"u"?"system":localStorage.getItem(o)||"system"}function a(e){typeof localStorage>"u"||(localStorage.setItem(o,e),c(e))}function c(e){const t=document.documentElement;if(e==="system"){const n=window.matchMedia("(prefers-color-scheme: dark)").matches;t.setAttribute("data-theme",n?"dark":"light")}else t.setAttribute("data-theme",e)}function d(){const e=window.matchMedia("(prefers-color-scheme: dark)"),t=()=>{r()==="system"&&c("system")};return e.addEventListener("change",t),()=>e.removeEventListener("change",t)}const s=document.getElementById("theme-toggle");s&&s.addEventListener("click",()=>{const e=r(),n={light:"dark",dark:"system",system:"light"}[e]||"light";a(n),s.setAttribute("aria-label",`Teema: ${n}`)});const m=d();document.addEventListener("astro:before-swap",m);</script> </body> </html> 

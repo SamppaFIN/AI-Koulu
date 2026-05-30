@@ -1,0 +1,266 @@
+<!DOCTYPE html><html lang="fi" data-theme="system"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Sääntöpohjaiset järjestelmät, neuroverkot ja ihmiskontrolli samassa putkessa."><title>Hybridiarkkitehtuurit | AI & UI/UX Edu</title><!-- Fontit --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><!-- Globaalit tyylit --><link rel="stylesheet" href="/src/styles/globals.css"><!-- Teema-skripti (suoritetaan ennen renderöintiä flashin estämiseksi) --><script>
+      (function() {
+        var theme = localStorage.getItem('ai-edu-theme') || 'system';
+        var root = document.documentElement;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', theme);
+      })();
+    </script><style>.mdx-content h2{margin-top:var(--space-2xl);color:var(--color-brand-dark)}.mdx-content h3{margin-top:var(--space-xl)}.mdx-content p{margin-block:var(--space-md)}.mdx-content ul,.mdx-content ol{margin-block:var(--space-md);padding-left:var(--space-lg)}.mdx-content li{margin-block:var(--space-xs)}.mdx-content code{background:var(--color-bg-code);padding:.15rem .4rem;border-radius:4px;font-size:.85em}.mdx-content pre{background:var(--color-bg-code);border:1px solid var(--color-border);border-radius:8px;padding:var(--space-md);overflow-x:auto;margin-block:var(--space-lg)}.mdx-content pre code{background:none;padding:0}.mdx-content blockquote{border-left:4px solid var(--color-brand-light);padding-left:var(--space-lg);margin-block:var(--space-lg);color:var(--color-text-secondary);font-style:italic}.mdx-content a{color:var(--color-brand);text-decoration:underline;text-underline-offset:2px}.mdx-content a:hover{color:var(--color-brand-dark)}.mdx-content img{max-width:100%;border-radius:8px;margin-block:var(--space-lg)}.mdx-content hr{border:none;border-top:1px solid var(--color-border);margin-block:var(--space-2xl)}.mdx-content table{width:100%;border-collapse:collapse;margin-block:var(--space-lg)}.mdx-content th,.mdx-content td{padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);text-align:left}.mdx-content th{background:var(--color-bg-card);font-weight:600}
+</style></head> <body> <!-- Yläpalkki --> <header class="container-wide" style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+    "> <!-- Logo --> <a href="/AI-Koulu/" style="
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--color-brand);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      "> <span style="font-size: 1.5rem;">⚡</span>
+AI & UI/UX Edu
+</a> <!-- Navigaatio --> <nav aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);"> <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+AI-arkkitehtuurit
+</a> <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+UI/UX-käytännöt
+</a> <a href="/AI-Koulu/haku/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+Haku
+</a> <!-- Teemanvaihtaja --> <button id="theme-toggle" aria-label="Vaihda teemaa" style="
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--color-text);
+            font-size: 1rem;
+            line-height: 1;
+          ">
+🌓
+</button> </nav> </header> <!-- Pääsisältö --> <main>  <article class="container-content" style="padding-block: var(--space-2xl);"> <!-- Otsikko --> <header style="margin-bottom: var(--space-2xl);"> <p style="
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-brand);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-sm);
+      ">
+Luku 7 — Arkkitehtuurityypit </p> <h1 style="margin: 0 0 var(--space-sm) 0;">Hybridiarkkitehtuurit</h1> <p style="color: var(--color-text-secondary); font-size: 1.1rem; margin: 0;"> Sääntöpohjaiset järjestelmät, neuroverkot ja ihmiskontrolli samassa putkessa. </p> </header> <!-- Varsinainen sisältö (MDX renderöitynä) --> <div class="mdx-content"> <h2 id="sääntöpohjaiset--neuroverkot">Sääntöpohjaiset + neuroverkot</h2>
+<p>Hybridiarkkitehtuurit yhdistävät <strong>perinteisen ohjelmoinnin</strong> (säännöt,
+logiikka, rajapinnat) ja <strong>neuroverkot</strong> (LLM:t, ML-mallit) samassa
+järjestelmässä. Tavoitteena on saada molempien maailmojen parhaat puolet.</p>
+<div style="background:var(--color-bg-card);border:2px dashed var(--color-border);border-radius:12px;padding:3rem 2rem;margin-block:1.5rem;text-align:center;color:var(--color-text-muted)"><p style="font-size:2rem;margin:0 0 0.5rem 0">📐</p><p style="font-weight:600;margin:0 0 0.25rem 0">Kaavio: <!-- -->hybrid-architecture</p><p style="font-size:0.85rem;margin:0">Interaktiivinen diagrammi tulossa vaiheessa 3.</p></div>
+<div style="background:oklch(0.6 0.18 240 / 0.1);border:1px solid oklch(0.6 0.18 240 / 0.3);border-radius:12px;padding:1rem 1.25rem;margin-block:1.5rem;display:flex;gap:0.75rem;align-items:flex-start" role="alert"><span style="font-size:1.3rem;flex-shrink:0;margin-top:0.1rem">ℹ️</span><div style="color:var(--color-text);line-height:1.6"><p><strong>Avainajatus:</strong> Neuroverkot ovat hyviä <em>joustavuudessa ja luovuudessa</em>,
+säännöt ovat hyviä <em>tarkkuudessa ja luotettavuudessa</em>. Hybridi yhdistää
+nämä: säännöt hoitavat sen, mihin ne sopivat, neuroverkot hoitavat loput.</p></div></div>
+<h3 id="sääntöpohjainen-reititin">Sääntöpohjainen reititin</h3>
+<p>Yksinkertaisin hybridi: ohjaa kysely oikeaan käsittelijään sääntöjen perusteella.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> hybridRouter</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">query</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">  // 1. Sääntöpohjainen luokittelu</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (query.</span><span style="color:#B392F0">includes</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;saldo&quot;</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">||</span><span style="color:#E1E4E8"> query.</span><span style="color:#B392F0">includes</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;tili&quot;</span><span style="color:#E1E4E8">)) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#B392F0"> handleBanking</span><span style="color:#E1E4E8">(query);      </span><span style="color:#6A737D">// Tarkka, säännöt takana</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (query.</span><span style="color:#B392F0">includes</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;sää&quot;</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">||</span><span style="color:#E1E4E8"> query.</span><span style="color:#B392F0">includes</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;lämpötila&quot;</span><span style="color:#E1E4E8">)) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#B392F0"> handleWeather</span><span style="color:#E1E4E8">(query);      </span><span style="color:#6A737D">// API-kutsu + LLM selitys</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">isComplexReasoning</span><span style="color:#E1E4E8">(query)) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#B392F0"> handleWithLLM</span><span style="color:#E1E4E8">(query);      </span><span style="color:#6A737D">// Vapaa päättely</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#6A737D">  // 2. Oletus: LLM</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#B392F0"> handleWithLLM</span><span style="color:#E1E4E8">(query);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<div style="background:color-mix(in oklab, var(--color-accent) 10%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-accent) 30%, var(--color-border));border-left:4px solid var(--color-accent);border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--color-accent);margin:0 0 0.5rem 0">💡 Reaalimaailman analogia</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Analogia:</strong> Hybridiarkkitehtuuri on kuin lentoaseman turvatarkastus.</p><ul>
+<li><strong>Säännöt</strong> = koneet ja automaatti (skannerit, metallinpaljastimet):
+nopeita, tarkkoja, eivät erehdy perusasioissa</li>
+<li><strong>Neuroverkot</strong> = turvatarkastajat (ihmiset, jotka tulkitsevat kuvia):
+joustavia, ymmärtävät kontekstia, osaavat arvioida poikkeustilanteita</li>
+<li><strong>Yhdessä:</strong> kone hoitaa 95% työstä, ihminen keskittyy poikkeuksiin</li>
+</ul><p>Ilman koneita tarkastus olisi hidasta. Ilman ihmisiä kone tekisi virheitä
+poikkeustilanteissa. Yhdessä ne ovat parempia kuin kumpikaan yksin.</p></div></div>
+<h3 id="klassinen-ml--llm-rinnakkain">Klassinen ML + LLM rinnakkain</h3>
+<p>Monet ongelmat ratkeavat paremmin klassisella ML:llä kuin LLM:llä:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Tehtävä</th><th>Klassinen ML</th><th>LLM</th><th>Hybridi</th></tr></thead><tbody><tr><td><strong>Roskapostin tunnistus</strong></td><td>99.5% tarkkuus</td><td>Hidas ja kallis</td><td>ML luokittelee, LLM selittää</td></tr><tr><td><strong>Tunneanalyysi</strong></td><td>90% tarkkuus</td><td>95% tarkkuus</td><td>ML seuloo, LLM analysoi vaikeat</td></tr><tr><td><strong>Tuotesuositukset</strong></td><td>10ms, hyvä</td><td>2s, parempi</td><td>ML suosittelee, LLM perustelee</td></tr><tr><td><strong>Kyselyluokittelu</strong></td><td>Nopea, 97%</td><td>Hidas, 99%</td><td>ML reitittää, LLM käsittelee vaikeat</td></tr></tbody></table>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># Hybridi: ML + LLM</span></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> hybrid_sentiment</span><span style="color:#E1E4E8">(text: </span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#6A737D">    # 1. Kevyt ML-malli luokittelee ensin</span></span>
+<span class="line"><span style="color:#E1E4E8">    ml_result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> light_model.predict(text)</span></span>
+<span class="line"><span style="color:#E1E4E8">    confidence </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> ml_result.confidence</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    # 2. Jos ML on epävarma, käytä LLM:ää</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> confidence </span><span style="color:#F97583">&lt;</span><span style="color:#79B8FF"> 0.8</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">        llm_result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> llm_analyze(text)</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> llm_result</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> ml_result.label</span></span></code></pre>
+<h3 id="symbolinen-päättely--neuroverkot">Symbolinen päättely + neuroverkot</h3>
+<p>Neuroverkot eivät osaa <em>varsinaisesti</em> päätellä — ne jäljittelevät
+päätelyä. Symbolinen AI (kuten graafit, logiikkaohjelmointi) sen sijaan
+on tarkkaa mutta joustamatonta.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Ominaisuus</th><th>Neuroverkot</th><th>Symbolinen</th><th>Hybridi</th></tr></thead><tbody><tr><td><strong>Joustavuus</strong></td><td>Korkea</td><td>Matala</td><td>Molemmat</td></tr><tr><td><strong>Tarkkuus</strong></td><td>Vaihteleva</td><td>Täydellinen</td><td>Tarkka joustava</td></tr><tr><td><strong>Selitettävyys</strong></td><td>Huono</td><td>Täydellinen</td><td>Hyvä</td></tr><tr><td><strong>Oppiminen</strong></td><td>Datasta</td><td>Käsin kirjoitettu</td><td>Molemmat</td></tr></tbody></table>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># Symbolinen + neuroverkot: matemaattinen päättely</span></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> solve_word_problem</span><span style="color:#E1E4E8">(problem: </span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#6A737D">    # 1. LLM tulkitsee ongelman</span></span>
+<span class="line"><span style="color:#E1E4E8">    math_expression </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> llm.extract_math(problem)</span></span>
+<span class="line"><span style="color:#6A737D">    # &quot;Matiaksella on 3 omenaa, hän saa 2 lisää&quot; → &quot;3 + 2&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    # 2. Symbolinen laskin ratkaisee tarkasti</span></span>
+<span class="line"><span style="color:#E1E4E8">    result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> sympy.solve(math_expression)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    # 3. LLM muotoilee vastauksen</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> llm.format_answer(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">&quot;Tulos on </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">result</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF">&quot;</span><span style="color:#E1E4E8">)</span></span></code></pre>
+<h3 id="ihmiskontrolli-silmukassa-human-in-the-loop">Ihmiskontrolli silmukassa (Human-in-the-Loop)</h3>
+<p>Kaikkein tärkein hybridimuoto: <strong>ihminen varmistaa ja ohjaa</strong>.</p>
+<div style="background:var(--color-bg-card);border:2px dashed var(--color-border);border-radius:12px;padding:3rem 2rem;margin-block:1.5rem;text-align:center;color:var(--color-text-muted)"><p style="font-size:2rem;margin:0 0 0.5rem 0">📐</p><p style="font-weight:600;margin:0 0 0.25rem 0">Kaavio: <!-- -->hitl-loop</p><p style="font-size:0.85rem;margin:0">Interaktiivinen diagrammi tulossa vaiheessa 3.</p></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Taso</th><th>Kuvaus</th><th>Milloin</th></tr></thead><tbody><tr><td><strong>Tarkkailu</strong></td><td>Ihminen näkee kaikki AI:n vastaukset</td><td>Korkean riskin sovellukset</td></tr><tr><td><strong>Hyväksyntä</strong></td><td>AI ehdottaa, ihminen hyväksyy</td><td>Asiakasviestintä, lääketiede</td></tr><tr><td><strong>Korjaus</strong></td><td>AI tekee, ihminen korjaa virheet</td><td>Dataputket, koodaus</td></tr><tr><td><strong>Ohjaus</strong></td><td>Ihminen antaa suuntaa, AI toteuttaa</td><td>Luova työ, suunnittelu</td></tr></tbody></table>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Human-in-the-Loop: varmistus ennen lähetystä</span></span>
+<span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> sendCustomerEmail</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">draft</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> approval</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> requestHumanApproval</span><span style="color:#E1E4E8">(draft);</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (approval.status </span><span style="color:#F97583">===</span><span style="color:#9ECBFF"> &quot;approved&quot;</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> emailService.</span><span style="color:#B392F0">send</span><span style="color:#E1E4E8">(draft);</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (approval.status </span><span style="color:#F97583">===</span><span style="color:#9ECBFF"> &quot;edited&quot;</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> emailService.</span><span style="color:#B392F0">send</span><span style="color:#E1E4E8">(approval.editedVersion);</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#6A737D">  // rejected: älä lähetä</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#E1E4E8"> { status: </span><span style="color:#9ECBFF">&quot;rejected&quot;</span><span style="color:#E1E4E8">, reason: approval.reason };</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<div style="background:color-mix(in oklab, var(--color-brand) 12%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-brand) 25%, var(--color-border));border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:800;font-size:0.9rem;color:var(--color-brand);margin:0 0 0.5rem 0;display:flex;align-items:center;gap:0.5rem"><span style="font-size:1.2rem">🎯</span>Miksi tällä on väliä?</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Miksi tällä on väliä?</strong> Harva tuotantosovellus käyttää pelkkää LLM:ää.
+Todellisuudessa parhaat järjestelmät ovat hybridejä: säännöt hoitavat
+rutiinit, LLM hoitaa poikkeukset, klassinen ML seuloo dataa, ja ihminen
+varmistaa tärkeimmät päätökset. Hybridiarkkitehtuurin suunnittelu —
+mikä menee mihinkin ja milloin — on yksi tärkeimmistä AI-arkkitehdin
+taidoista.</p></div></div>
+<sup><a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener noreferrer" title="Brown, T. B. et al. (2020). Language Models are Few-Shot Learners. NeurIPS." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->brown2020<!-- -->]</a></sup>
+<sup><a href="https://arxiv.org/abs/2201.11903" target="_blank" rel="noopener noreferrer" title="Wei, J. et al. (2022). Chain-of-Thought Prompting Elicits Reasoning in Large Language Models. NeurIPS." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->wei2022<!-- -->]</a></sup>
+<hr/>
+<p><strong>Seuraavaksi:</strong> <a href="/AI-Koulu/ai-architecture/03-infrastructure/">AI-infrastruktuuri ja alustat</a> — koulutus, inferenssi, MLOps.</p> </div> <!-- Navigaatio seuraavaan/edelliseen --> <nav style="
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--space-3xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid var(--color-border);
+    "> <span></span> <a href="/AI-Koulu/ai-architecture/" style="
+        color: var(--color-brand);
+        text-decoration: none;
+        font-weight: 500;
+      ">
+← Takaisin sisällykseen
+</a> </nav> </article>  </main> <!-- Alaosa --> <footer class="container-wide" style="
+      border-top: 1px solid var(--color-border);
+      padding-block: var(--space-xl);
+      margin-top: var(--space-3xl);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    "> <p> <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
+</p> <p style="margin-top: var(--space-sm);">
+Sisältö perustuu vuoden 2024–2026 tutkimukseen. Lähdeviitteet jokaisen luvun yhteydessä.
+</p> </footer> <!-- Teemanvaihtaja-skripti --> <script type="module">const o="ai-edu-theme";function r(){return typeof localStorage>"u"?"system":localStorage.getItem(o)||"system"}function a(e){typeof localStorage>"u"||(localStorage.setItem(o,e),c(e))}function c(e){const t=document.documentElement;if(e==="system"){const n=window.matchMedia("(prefers-color-scheme: dark)").matches;t.setAttribute("data-theme",n?"dark":"light")}else t.setAttribute("data-theme",e)}function d(){const e=window.matchMedia("(prefers-color-scheme: dark)"),t=()=>{r()==="system"&&c("system")};return e.addEventListener("change",t),()=>e.removeEventListener("change",t)}const s=document.getElementById("theme-toggle");s&&s.addEventListener("click",()=>{const e=r(),n={light:"dark",dark:"system",system:"light"}[e]||"light";a(n),s.setAttribute("aria-label",`Teema: ${n}`)});const m=d();document.addEventListener("astro:before-swap",m);</script> </body> </html> 

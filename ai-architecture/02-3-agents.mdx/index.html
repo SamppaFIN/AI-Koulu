@@ -1,0 +1,344 @@
+<!DOCTYPE html><html lang="fi" data-theme="system"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="ReAct-malli, työkalujen käyttö ja monen agentin järjestelmät."><title>Agenttipohjaiset arkkitehtuurit | AI & UI/UX Edu</title><!-- Fontit --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><!-- Globaalit tyylit --><link rel="stylesheet" href="/src/styles/globals.css"><!-- Teema-skripti (suoritetaan ennen renderöintiä flashin estämiseksi) --><script>
+      (function() {
+        var theme = localStorage.getItem('ai-edu-theme') || 'system';
+        var root = document.documentElement;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', theme);
+      })();
+    </script><style>.mdx-content h2{margin-top:var(--space-2xl);color:var(--color-brand-dark)}.mdx-content h3{margin-top:var(--space-xl)}.mdx-content p{margin-block:var(--space-md)}.mdx-content ul,.mdx-content ol{margin-block:var(--space-md);padding-left:var(--space-lg)}.mdx-content li{margin-block:var(--space-xs)}.mdx-content code{background:var(--color-bg-code);padding:.15rem .4rem;border-radius:4px;font-size:.85em}.mdx-content pre{background:var(--color-bg-code);border:1px solid var(--color-border);border-radius:8px;padding:var(--space-md);overflow-x:auto;margin-block:var(--space-lg)}.mdx-content pre code{background:none;padding:0}.mdx-content blockquote{border-left:4px solid var(--color-brand-light);padding-left:var(--space-lg);margin-block:var(--space-lg);color:var(--color-text-secondary);font-style:italic}.mdx-content a{color:var(--color-brand);text-decoration:underline;text-underline-offset:2px}.mdx-content a:hover{color:var(--color-brand-dark)}.mdx-content img{max-width:100%;border-radius:8px;margin-block:var(--space-lg)}.mdx-content hr{border:none;border-top:1px solid var(--color-border);margin-block:var(--space-2xl)}.mdx-content table{width:100%;border-collapse:collapse;margin-block:var(--space-lg)}.mdx-content th,.mdx-content td{padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);text-align:left}.mdx-content th{background:var(--color-bg-card);font-weight:600}
+</style></head> <body> <!-- Yläpalkki --> <header class="container-wide" style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+    "> <!-- Logo --> <a href="/AI-Koulu/" style="
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--color-brand);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      "> <span style="font-size: 1.5rem;">⚡</span>
+AI & UI/UX Edu
+</a> <!-- Navigaatio --> <nav aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);"> <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+AI-arkkitehtuurit
+</a> <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+UI/UX-käytännöt
+</a> <a href="/AI-Koulu/haku/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+Haku
+</a> <!-- Teemanvaihtaja --> <button id="theme-toggle" aria-label="Vaihda teemaa" style="
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--color-text);
+            font-size: 1rem;
+            line-height: 1;
+          ">
+🌓
+</button> </nav> </header> <!-- Pääsisältö --> <main>  <article class="container-content" style="padding-block: var(--space-2xl);"> <!-- Otsikko --> <header style="margin-bottom: var(--space-2xl);"> <p style="
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-brand);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-sm);
+      ">
+Luku 4 — Arkkitehtuurityypit </p> <h1 style="margin: 0 0 var(--space-sm) 0;">Agenttipohjaiset arkkitehtuurit</h1> <p style="color: var(--color-text-secondary); font-size: 1.1rem; margin: 0;"> ReAct-malli, työkalujen käyttö ja monen agentin järjestelmät. </p> </header> <!-- Varsinainen sisältö (MDX renderöitynä) --> <div class="mdx-content"> <h2 id="react-malli-reasoning--acting">ReAct-malli (Reasoning + Acting)</h2>
+<p>ReAct on arkkitehtuuri, jossa LLM vuorottelee <strong>päättelyn</strong> (Reasoning) ja
+<strong>toiminnan</strong> (Acting) välillä. Sen sijaan, että malli tuottaisi yhden
+vastauksen, se käy läpi silmukan:</p>
+<div style="background:var(--color-bg-card);border:2px dashed var(--color-border);border-radius:12px;padding:3rem 2rem;margin-block:1.5rem;text-align:center;color:var(--color-text-muted)"><p style="font-size:2rem;margin:0 0 0.5rem 0">📐</p><p style="font-weight:600;margin:0 0 0.25rem 0">Kaavio: <!-- -->react-loop</p><p style="font-size:0.85rem;margin:0">Interaktiivinen diagrammi tulossa vaiheessa 3.</p></div>
+<ol>
+<li><strong>Päättely (Thought):</strong> “Mitä minun pitää tehdä seuraavaksi?”</li>
+<li><strong>Toiminta (Action):</strong> “Kutsun sää-API:a saadakseni tämän päivän säätiedot”</li>
+<li><strong>Havainto (Observation):</strong> “Sää-API palautti: Aurinkoista, 22°C”</li>
+<li>→ Takaisin vaiheeseen 1, kunnes vastaus on valmis</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#F97583">interface</span><span style="color:#B392F0"> AgentState</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#FFAB70">  thought</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  action</span><span style="color:#F97583">:</span><span style="color:#B392F0"> ToolCall</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  observation</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  done</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> boolean</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> reactLoop</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">task</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">tools</span><span style="color:#F97583">:</span><span style="color:#B392F0"> Tool</span><span style="color:#E1E4E8">[]) {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> state</span><span style="color:#F97583">:</span><span style="color:#B392F0"> AgentState</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> { thought: </span><span style="color:#9ECBFF">&quot;&quot;</span><span style="color:#E1E4E8">, action: </span><span style="color:#79B8FF">null</span><span style="color:#E1E4E8">, observation: </span><span style="color:#9ECBFF">&quot;&quot;</span><span style="color:#E1E4E8">, done: </span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8"> };</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> messages</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> [</span></span>
+<span class="line"><span style="color:#E1E4E8">    { role: </span><span style="color:#9ECBFF">&quot;system&quot;</span><span style="color:#E1E4E8">, content: </span><span style="color:#9ECBFF">&quot;Olet avulias agentti. Käytä työkaluja harkiten.&quot;</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">    { role: </span><span style="color:#9ECBFF">&quot;user&quot;</span><span style="color:#E1E4E8">, content: task },</span></span>
+<span class="line"><span style="color:#E1E4E8">  ];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  while</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">!</span><span style="color:#E1E4E8">state.done) {</span></span>
+<span class="line"><span style="color:#F97583">    const</span><span style="color:#79B8FF"> response</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> llm</span><span style="color:#E1E4E8">(messages); </span><span style="color:#6A737D">// Päättely + toiminta</span></span>
+<span class="line"><span style="color:#F97583">    const</span><span style="color:#79B8FF"> action</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> parseAction</span><span style="color:#E1E4E8">(response);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (action.type </span><span style="color:#F97583">===</span><span style="color:#9ECBFF"> &quot;FINISH&quot;</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">      state.done </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">      return</span><span style="color:#E1E4E8"> response;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    // Suorita työkalu</span></span>
+<span class="line"><span style="color:#E1E4E8">    state.observation </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> executeTool</span><span style="color:#E1E4E8">(action);</span></span>
+<span class="line"><span style="color:#E1E4E8">    messages.</span><span style="color:#B392F0">push</span><span style="color:#E1E4E8">({ role: </span><span style="color:#9ECBFF">&quot;assistant&quot;</span><span style="color:#E1E4E8">, content: response });</span></span>
+<span class="line"><span style="color:#E1E4E8">    messages.</span><span style="color:#B392F0">push</span><span style="color:#E1E4E8">({ role: </span><span style="color:#9ECBFF">&quot;tool&quot;</span><span style="color:#E1E4E8">, content: state.observation });</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<div style="background:oklch(0.6 0.18 240 / 0.1);border:1px solid oklch(0.6 0.18 240 / 0.3);border-radius:12px;padding:1rem 1.25rem;margin-block:1.5rem;display:flex;gap:0.75rem;align-items:flex-start" role="alert"><span style="font-size:1.3rem;flex-shrink:0;margin-top:0.1rem">ℹ️</span><div style="color:var(--color-text);line-height:1.6"><p><strong>ReAct vs. Chain-of-Thought:</strong> CoT on pelkkää päättelyä (ajattele ääneen),
+ReAct on päättelyä + toimintaa. CoT sopii matematiikkaan ja logiikkaan,
+ReAct tilanteisiin, joissa tarvitaan ulkoisia työkaluja.</p></div></div>
+<h3 id="työkalujen-käyttö">Työkalujen käyttö</h3>
+<p>Agentin tärkein ominaisuus on kyky käyttää työkaluja (function calling).</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Työkalu</th><th>Käyttötapaus</th><th>Esimerkki</th></tr></thead><tbody><tr><td><strong>Laskin</strong></td><td>Matemaattiset laskut</td><td><code>calc(&quot;3 * 7 + 2&quot;)</code></td></tr><tr><td><strong>Sää-API</strong></td><td>Reaaliaikainen säätieto</td><td><code>getWeather(&quot;Helsinki&quot;)</code></td></tr><tr><td><strong>Vektorihaku</strong></td><td>Tiedonhaku omasta datasta</td><td><code>search(query: &quot;verotus 2026&quot;)</code></td></tr><tr><td><strong>Koodin suoritus</strong></td><td>Ohjelmointitehtävät</td><td><code>runPython(&quot;print(&#39;hello&#39;)&quot;)</code></td></tr><tr><td><strong>SQL-kysely</strong></td><td>Tietokantahaut</td><td><code>queryDB(&quot;SELECT * FROM users&quot;)</code></td></tr><tr><td><strong>Verkkohaku</strong></td><td>Reaaliaikainen internet-haku</td><td><code>webSearch(&quot;uutiset tänään&quot;)</code></td></tr></tbody></table>
+<div style="background:color-mix(in oklab, var(--color-accent) 10%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-accent) 30%, var(--color-border));border-left:4px solid var(--color-accent);border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--color-accent);margin:0 0 0.5rem 0">💡 Reaalimaailman analogia</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Analogia:</strong> Agentti on kuin ravintolan keittiömestari. Hän:</p><ol>
+<li><strong>Suunnittelee</strong> (päättely) — “Tarvitsen alkupalan, pääruoan ja jälkiruoan”</li>
+<li><strong>Delegoi</strong> (työkalut) — “Kokkaaja 1, tee alkupala. Kokkaaja 2, hoida pääruoka”</li>
+<li><strong>Tarkkailee</strong> (havainto) — “Alkupala on valmis, pääruoka on uunissa”</li>
+<li><strong>Oppii</strong> (muisti) — “Viimeksi asiakas piti enemmän kalasta kuin lihasta”</li>
+</ol><p>Ilman agenttia (pelkkä LLM) kokki yrittäisi tehdä kaiken itse — ja
+polttaisi ruoan. Agentin kanssa kokki hallinnoi tiimiä ja varmistaa
+että kaikki valmistuu ajallaan.</p></div></div>
+<h3 id="monen-agentin-järjestelmät">Monen agentin järjestelmät</h3>
+<p>Yhden agentin sijaan voidaan käyttää useita erikoistuneita agentteja.</p>
+<h4 id="hierarkkiset-järjestelmät">Hierarkkiset järjestelmät</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>Pääagentti (orkestraattori)</span></span>
+<span class="line"><span>├── Tutkimusagentti (hakee tietoa)</span></span>
+<span class="line"><span>├── Koodausagentti (kirjoittaa koodia)</span></span>
+<span class="line"><span>├── Testausagentti (testaa koodin)</span></span>
+<span class="line"><span>└── Dokumentaatioagentti (kirjoittaa selitykset)</span></span></code></pre>
+<p>Pääagentti jakaa tehtävät, valvoo edistymistä ja yhdistää tulokset.</p>
+<h4 id="vertaisverkot-peer-to-peer">Vertaisverkot (Peer-to-peer)</h4>
+<p>Agentit kommunikoivat keskenään ilman keskusohjausta:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>Agentti A: &quot;Tarvitsen dataa asiakkaista&quot;</span></span>
+<span class="line"><span>Agentti B: &quot;Minulla on pääsy asiakasdataan, haen sen&quot;</span></span>
+<span class="line"><span>Agentti C: &quot;Minä visualisoin datan, kun saat sen&quot;</span></span></code></pre>
+<h4 id="kommunikaatioprotokollat">Kommunikaatioprotokollat</h4>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Menetelmä</th><th>Kuvaus</th><th>Esimerkki</th></tr></thead><tbody><tr><td><strong>Viestipohjainen</strong></td><td>Agentit lähettävät toisilleen JSON-viestejä</td><td>RabbitMQ, Kafka</td></tr><tr><td><strong>Yhteinen tila</strong></td><td>Kaikki kirjoittavat jaettuun muistiin</td><td>Redis, tietokanta</td></tr><tr><td><strong>LLM-välitteinen</strong></td><td>Agentit keskustelevat LLM:n kautta</td><td>”Agentti A sanoo: …”</td></tr></tbody></table>
+<h3 id="kriittiset-ongelmat">Kriittiset ongelmat</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Ongelma</th><th>Oire</th><th>Ratkaisu</th></tr></thead><tbody><tr><td><strong>Päättelysilmukka</strong></td><td>Agentti jumittuu samaan toimintoon</td><td>Maksimi iteraatio, timeout</td></tr><tr><td><strong>Hallusinaatio</strong></td><td>Agentti keksii työkalun tuloksen</td><td>Pakota työkalun tulos, älä luota agenttiin</td></tr><tr><td><strong>Token-kustannukset</strong></td><td>Agentti tekee 20 turhaa API-kutsua</td><td>Rajaa päättelyä, käytä pieniä malleja osatehtäviin</td></tr><tr><td><strong>Kontekstin ylivuoto</strong></td><td>Keskusteluhistoria vie liikaa tilaa</td><td>Muistin yhteenveto, unohda vanha</td></tr></tbody></table>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Päättelysilmukan esto</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> MAX_ITERATIONS</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> startTime</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> Date.</span><span style="color:#B392F0">now</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> TIMEOUT_MS</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 30000</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">let</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&lt;</span><span style="color:#79B8FF"> MAX_ITERATIONS</span><span style="color:#E1E4E8">; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (Date.</span><span style="color:#B392F0">now</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> startTime </span><span style="color:#F97583">&gt;</span><span style="color:#79B8FF"> TIMEOUT_MS</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">    throw</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> Error</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;Agent timeout&quot;</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#6A737D">  // ... agentin logiikka</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="muistin-hallinta">Muistin hallinta</h3>
+<p>Agenteilla on kolme muistitasoa:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Muistityyppi</th><th>Kuvaus</th><th>Esimerkki</th></tr></thead><tbody><tr><td><strong>Työmuisti</strong> (working)</td><td>Nykyisen tehtävän konteksti</td><td>Keskusteluhistoria, väliaikaiset tulokset</td></tr><tr><td><strong>Episodinen muisti</strong> (episodic)</td><td>Aiemmat istunnot</td><td>”Viimeksi tämä käyttäjä kysyi X:stä”</td></tr><tr><td><strong>Semanttinen muisti</strong> (semantic)</td><td>Faktoja ja tietoa</td><td>”Yrityksen nimi on ABC, perustettu 2020”</td></tr></tbody></table>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Episodinen muisti: tallenna ja palauta</span></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> EpisodicMemory</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  async</span><span style="color:#B392F0"> store</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">userId</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">interaction</span><span style="color:#F97583">:</span><span style="color:#B392F0"> Interaction</span><span style="color:#E1E4E8">) { </span><span style="color:#6A737D">/* ... */</span><span style="color:#E1E4E8"> }</span></span>
+<span class="line"><span style="color:#F97583">  async</span><span style="color:#B392F0"> recall</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">userId</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">query</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">)</span><span style="color:#F97583">:</span><span style="color:#B392F0"> Promise</span><span style="color:#E1E4E8">&lt;</span><span style="color:#B392F0">Interaction</span><span style="color:#E1E4E8">[]&gt; {</span></span>
+<span class="line"><span style="color:#6A737D">    // Hae samankaltaiset interaktiot vektorihaulla</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="kehykset-frameworkit">Kehykset (Frameworkit)</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Kehys</th><th>Kieli</th><th>Vahvuus</th><th>Heikkous</th></tr></thead><tbody><tr><td><strong>LangChain</strong></td><td>Python/TS</td><td>Suuri ekosysteemi, paljon integraatioita</td><td>Monimutkainen, paljon abstraktioita</td></tr><tr><td><strong>LangGraph</strong></td><td>Python/TS</td><td>Graafipohjainen agenttien hallinta</td><td>Uusi, nopeasti muuttuva</td></tr><tr><td><strong>CrewAI</strong></td><td>Python</td><td>Yksinkertainen monen agentin malli</td><td>Rajoitettu joustavuus</td></tr><tr><td><strong>AutoGen</strong></td><td>Python</td><td>Microsoftin agenttikehys</td><td>Monimutkainen konfiguraatio</td></tr><tr><td><strong>Semantic Kernel</strong></td><td>C#/Python</td><td>Microsoftin AI-orkestraatio</td><td>Windows-painotteinen</td></tr></tbody></table>
+<div style="background:color-mix(in oklab, var(--color-brand) 12%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-brand) 25%, var(--color-border));border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:800;font-size:0.9rem;color:var(--color-brand);margin:0 0 0.5rem 0;display:flex;align-items:center;gap:0.5rem"><span style="font-size:1.2rem">🎯</span>Miksi tällä on väliä?</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Miksi tällä on väliä?</strong> Agentit ovat seuraava askel LLM-sovellusten
+kehityksessä — ne eivät vain <em>vastaa</em>, ne <em>toimivat</em>. Mutta agenttien
+rakentaminen on monimutkaista: päättelysilmukat, token-kustannukset ja
+hallusinaatiot ovat todellisia ongelmia, jotka vaativat huolellista
+arkkitehtuurisuunnittelua. Älä rakenna agenttia, jos pelkkä RAG riittää.</p></div></div>
+<sup><a href="https://arxiv.org/abs/2210.03629" target="_blank" rel="noopener noreferrer" title="Yao, S. et al. (2022). ReAct: Synergizing Reasoning and Acting in Language Models. ICLR." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->yao2022<!-- -->]</a></sup>
+<sup><a href="https://arxiv.org/abs/2201.11903" target="_blank" rel="noopener noreferrer" title="Wei, J. et al. (2022). Chain-of-Thought Prompting Elicits Reasoning in Large Language Models. NeurIPS." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->wei2022<!-- -->]</a></sup>
+<sup><a href="https://arxiv.org/abs/2308.11432" target="_blank" rel="noopener noreferrer" title="Wang, L. et al. (2023). A Survey on Large Language Model based Autonomous Agents. arXiv." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->wang2023<!-- -->]</a></sup>
+<sup><a href="https://arxiv.org/abs/2309.07864" target="_blank" rel="noopener noreferrer" title="Xi, Z. et al. (2023). The Rise and Potential of Large Language Model Based Agents: A Survey. arXiv." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->xi2023<!-- -->]</a></sup>
+<hr/>
+<p><strong>Seuraavaksi:</strong> <a href="/AI-Koulu/ai-architecture/02-4-finetuning/">Hienosäädetyt mallit</a> — milloin kouluttaa oma malli.</p> </div> <!-- Navigaatio seuraavaan/edelliseen --> <nav style="
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--space-3xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid var(--color-border);
+    "> <span></span> <a href="/AI-Koulu/ai-architecture/" style="
+        color: var(--color-brand);
+        text-decoration: none;
+        font-weight: 500;
+      ">
+← Takaisin sisällykseen
+</a> </nav> </article>  </main> <!-- Alaosa --> <footer class="container-wide" style="
+      border-top: 1px solid var(--color-border);
+      padding-block: var(--space-xl);
+      margin-top: var(--space-3xl);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    "> <p> <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
+</p> <p style="margin-top: var(--space-sm);">
+Sisältö perustuu vuoden 2024–2026 tutkimukseen. Lähdeviitteet jokaisen luvun yhteydessä.
+</p> </footer> <!-- Teemanvaihtaja-skripti --> <script type="module">const o="ai-edu-theme";function r(){return typeof localStorage>"u"?"system":localStorage.getItem(o)||"system"}function a(e){typeof localStorage>"u"||(localStorage.setItem(o,e),c(e))}function c(e){const t=document.documentElement;if(e==="system"){const n=window.matchMedia("(prefers-color-scheme: dark)").matches;t.setAttribute("data-theme",n?"dark":"light")}else t.setAttribute("data-theme",e)}function d(){const e=window.matchMedia("(prefers-color-scheme: dark)"),t=()=>{r()==="system"&&c("system")};return e.addEventListener("change",t),()=>e.removeEventListener("change",t)}const s=document.getElementById("theme-toggle");s&&s.addEventListener("click",()=>{const e=r(),n={light:"dark",dark:"system",system:"light"}[e]||"light";a(n),s.setAttribute("aria-label",`Teema: ${n}`)});const m=d();document.addEventListener("astro:before-swap",m);</script> </body> </html> 

@@ -1,0 +1,175 @@
+<!DOCTYPE html><html lang="fi" data-theme="system"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Käyttäjätutkimus, personat, empatiakartat ja esteettömyys osana ydinsuunnittelua."><title>Ihmiskeskeinen suunnittelu (HCD) | AI & UI/UX Edu</title><!-- Fontit --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><!-- Globaalit tyylit --><link rel="stylesheet" href="/src/styles/globals.css"><!-- Teema-skripti (suoritetaan ennen renderöintiä flashin estämiseksi) --><script>
+      (function() {
+        var theme = localStorage.getItem('ai-edu-theme') || 'system';
+        var root = document.documentElement;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', theme);
+      })();
+    </script><style>.mdx-content h2{margin-top:var(--space-2xl);color:var(--color-brand-dark)}.mdx-content h3{margin-top:var(--space-xl)}.mdx-content p{margin-block:var(--space-md)}.mdx-content ul,.mdx-content ol{margin-block:var(--space-md);padding-left:var(--space-lg)}.mdx-content li{margin-block:var(--space-xs)}.mdx-content code{background:var(--color-bg-code);padding:.15rem .4rem;border-radius:4px;font-size:.85em}.mdx-content pre{background:var(--color-bg-code);border:1px solid var(--color-border);border-radius:8px;padding:var(--space-md);overflow-x:auto;margin-block:var(--space-lg)}.mdx-content pre code{background:none;padding:0}.mdx-content blockquote{border-left:4px solid var(--color-brand-light);padding-left:var(--space-lg);margin-block:var(--space-lg);color:var(--color-text-secondary);font-style:italic}.mdx-content a{color:var(--color-brand);text-decoration:underline;text-underline-offset:2px}.mdx-content a:hover{color:var(--color-brand-dark)}.mdx-content img{max-width:100%;border-radius:8px;margin-block:var(--space-lg)}.mdx-content hr{border:none;border-top:1px solid var(--color-border);margin-block:var(--space-2xl)}.mdx-content table{width:100%;border-collapse:collapse;margin-block:var(--space-lg)}.mdx-content th,.mdx-content td{padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);text-align:left}.mdx-content th{background:var(--color-bg-card);font-weight:600}
+</style></head> <body> <!-- Yläpalkki --> <header class="container-wide" style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+    "> <!-- Logo --> <a href="/AI-Koulu/" style="
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--color-brand);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      "> <span style="font-size: 1.5rem;">⚡</span>
+AI & UI/UX Edu
+</a> <!-- Navigaatio --> <nav aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);"> <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+AI-arkkitehtuurit
+</a> <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+UI/UX-käytännöt
+</a> <a href="/AI-Koulu/haku/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+Haku
+</a> <!-- Teemanvaihtaja --> <button id="theme-toggle" aria-label="Vaihda teemaa" style="
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--color-text);
+            font-size: 1rem;
+            line-height: 1;
+          ">
+🌓
+</button> </nav> </header> <!-- Pääsisältö --> <main>  <article class="container-content" style="padding-block: var(--space-2xl);"> <!-- Otsikko --> <header style="margin-bottom: var(--space-2xl);"> <p style="
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-brand);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-sm);
+      ">
+Luku 1 — Perusperiaatteet </p> <h1 style="margin: 0 0 var(--space-sm) 0;">Ihmiskeskeinen suunnittelu (HCD)</h1> <p style="color: var(--color-text-secondary); font-size: 1.1rem; margin: 0;"> Käyttäjätutkimus, personat, empatiakartat ja esteettömyys osana ydinsuunnittelua. </p> </header> <!-- Varsinainen sisältö (MDX renderöitynä) --> <div class="mdx-content"> <h2 id="ihmiskeskeinen-suunnittelu">Ihmiskeskeinen suunnittelu</h2>
+<p>Ihmiskeskeinen suunnittelu (Human-Centered Design, HCD) on prosessi, jossa
+käyttäjä on kaiken keskiössä. Ei riitä, että tuote <em>toimii</em> — sen pitää
+toimia <em>oikeiden ihmisten arjessa</em>.</p>
+<div style="background:oklch(0.6 0.2 150 / 0.1);border:1px solid oklch(0.6 0.2 150 / 0.3);border-radius:12px;padding:1rem 1.25rem;margin-block:1.5rem;display:flex;gap:0.75rem;align-items:flex-start" role="alert"><span style="font-size:1.3rem;flex-shrink:0;margin-top:0.1rem">💡</span><div style="color:var(--color-text);line-height:1.6"><p><strong>Kultainen sääntö:</strong> “You are not your user.” — Sinun mieltymyksesi,
+taitosi ja kontekstisi eivät ole sama asia kuin käyttäjäsi.</p></div></div>
+<h3 id="käyttäjätutkimuksen-menetelmät">Käyttäjätutkimuksen menetelmät</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Menetelmä</th><th>Milloin käyttää</th><th>Vahvuudet</th><th>Heikkoudet</th></tr></thead><tbody><tr><td><strong>Haastattelut</strong></td><td>Alkuvaihe, syvä ymmärrys</td><td>Rikas data, yllättävät oivallukset</td><td>Pieni otos, ei skaalaudu</td></tr><tr><td><strong>Kontekstuaalinen tutkimus</strong></td><td>Kun käyttötapa on monimutkainen</td><td>Todellinen konteksti paljastuu</td><td>Resurssi-intensiivinen</td></tr><tr><td><strong>Kyselyt</strong></td><td>Laaja määrällinen data</td><td>Skaalautuu, tilastollinen merkitsevyys</td><td>Pinnallista, konteksti puuttuu</td></tr><tr><td><strong>Analytiikka</strong></td><td>Jatkuva seuranta</td><td>Objektiivista, isolla datalla</td><td>”Mitä” ei “miksi”</td></tr></tbody></table>
+<div style="background:color-mix(in oklab, var(--color-accent) 10%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-accent) 30%, var(--color-border));border-left:4px solid var(--color-accent);border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--color-accent);margin:0 0 0.5rem 0">💡 Reaalimaailman analogia</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Analogia:</strong> Käyttäjätutkimus on kuin kalaverkko — yksittäinen haastattelu
+on yksi silmä verkossa. Saatat saada kiinni ison kalan (tärkeän oivalluksen),
+mutta verkko toimii parhaiten, kun käytät useita menetelmiä rinnakkain.
+Jos luotat vain yhteen menetelmään, kalat uivat välistä.</p></div></div>
+<h3 id="personat-käyttäjäpolut-ja-palvelumuotoilu">Personat, käyttäjäpolut ja palvelumuotoilu</h3>
+<p><strong>Personat</strong> ovat fiktiivisiä, mutta tutkimukseen perustuvia käyttäjäprofiileja.
+Hyvä persona sisältää:</p>
+<ul>
+<li>Nimi, ikä, rooli</li>
+<li>Tavoitteet ja motivaatiot</li>
+<li>Kipupisteet ja turhautumat</li>
+<li>Tekninen osaamistaso</li>
+</ul>
+<p><strong>Käyttäjäpolut (User Journeys)</strong> kuvaavat käyttäjän matkan alusta loppuun.
+Jokaisessa vaiheessa dokumentoidaan:</p>
+<ol>
+<li><strong>Toiminta</strong> — mitä käyttäjä tekee</li>
+<li><strong>Ajatus</strong> — mitä käyttäjä ajattelee</li>
+<li><strong>Tunne</strong> — mitä käyttäjä tuntee (ilo, turhautuminen, hämmennys)</li>
+<li><strong>Mahdollisuus</strong> — miten voimme parantaa</li>
+</ol>
+<div style="background:color-mix(in oklab, var(--color-brand) 12%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-brand) 25%, var(--color-border));border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:800;font-size:0.9rem;color:var(--color-brand);margin:0 0 0.5rem 0;display:flex;align-items:center;gap:0.5rem"><span style="font-size:1.2rem">🎯</span>Miksi tällä on väliä?</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Miksi tällä on väliä?</strong> Suunnitteluratkaisut ovat vain arvauksia, ellet
+tunne käyttäjääsi. Jokainen euro käyttäjätutkimukseen säästää kymmenen euroa
+virheellisten ominaisuuksien kehittämisessä.</p></div></div>
+<h3 id="empatiakartat">Empatiakartat</h3>
+<p>Empatiakartta on yhden hengen työkalu, joka auttaa tiimiä asettumaan käyttäjän
+asemaan. Se jakautuu neljään osa-alueeseen:</p>
+<div style="background:var(--color-bg-card);border:2px dashed var(--color-border);border-radius:12px;padding:3rem 2rem;margin-block:1.5rem;text-align:center;color:var(--color-text-muted)"><p style="font-size:2rem;margin:0 0 0.5rem 0">📐</p><p style="font-weight:600;margin:0 0 0.25rem 0">Kaavio: <!-- -->empathy-map</p><p style="font-size:0.85rem;margin:0">Interaktiivinen diagrammi tulossa vaiheessa 3.</p></div>
+<ul>
+<li><strong>Sanoo</strong> — mitä käyttäjä sanoo ääneen</li>
+<li><strong>Ajattelee</strong> — mitä käyttäjä ajattelee (mutta ei ehkä sano)</li>
+<li><strong>Tekee</strong> — mitä käyttäjä tekee</li>
+<li><strong>Tuntee</strong> — mitä käyttäjä tuntee (tunteet, turhautumat, ilot)</li>
+</ul>
+<h3 id="esteettömyys-osana-ydinsuunnittelua">Esteettömyys osana ydinsuunnittelua</h3>
+<p>Esteettömyys (accessibility, a11y) ei ole lisäosa — se on perusedellytys.
+Noin 15–20 % maailman väestöstä elää jonkin vamman kanssa. Esteettömyys
+ei kuitenkaan hyödytä vain vammaisia:</p>
+<ul>
+<li><strong>Tekstitys</strong> auttaa myös meluisassa ympäristössä</li>
+<li><strong>Korkea kontrasti</strong> auttaa auringonpaisteessa</li>
+<li><strong>Näppäimistönavigaatio</strong> auttaa tehokäyttäjiä</li>
+</ul>
+<p>Keskeiset standardit:</p>
+<ul>
+<li><strong>WCAG 2.2</strong> — Web Content Accessibility Guidelines, AA-taso on tavoite</li>
+<li><strong>EN 301 549</strong> — EU:n saavutettavuusdirektiivi (pakolliinen julkisille toimijoille)</li>
+<li><strong>ARIA</strong> — Accessible Rich Internet Applications -attribuutit</li>
+</ul>
+<sup><a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener noreferrer" title="W3C (2023). Web Content Accessibility Guidelines (WCAG) 2.2. W3C Recommendation." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->w3c2023<!-- -->]</a></sup>
+<sup><a href="https://www.nngroup.com/books/design-everyday-things/" target="_blank" rel="noopener noreferrer" title="Norman, D. (2013). The Design of Everyday Things. Basic Books." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->norman2013<!-- -->]</a></sup>
+<sup><a href="https://www.nngroup.com/articles/usability-101-introduction-to-usability/" target="_blank" rel="noopener noreferrer" title="Nielsen, J. (2012). Usability 101: Introduction to Usability. Nielsen Norman Group." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->nielsen2012<!-- -->]</a></sup>
+<hr/>
+<h2 id="seuraavaksi">Seuraavaksi</h2>
+<p>Tutustu <a href="/AI-Koulu/ui-ux/02-visual-trends/">visuaalisiin trendeihin</a> — typografia, värit, animaatio ja tilallinen suunnittelu.</p> </div> <!-- Navigaatio seuraavaan/edelliseen --> <nav style="
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--space-3xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid var(--color-border);
+    "> <span></span> <a href="/AI-Koulu/ui-ux/" style="
+        color: var(--color-brand);
+        text-decoration: none;
+        font-weight: 500;
+      ">
+← Takaisin sisällykseen
+</a> </nav> </article>  </main> <!-- Alaosa --> <footer class="container-wide" style="
+      border-top: 1px solid var(--color-border);
+      padding-block: var(--space-xl);
+      margin-top: var(--space-3xl);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    "> <p> <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
+</p> <p style="margin-top: var(--space-sm);">
+Sisältö perustuu vuoden 2024–2026 tutkimukseen. Lähdeviitteet jokaisen luvun yhteydessä.
+</p> </footer> <!-- Teemanvaihtaja-skripti --> <script type="module">const o="ai-edu-theme";function r(){return typeof localStorage>"u"?"system":localStorage.getItem(o)||"system"}function a(e){typeof localStorage>"u"||(localStorage.setItem(o,e),c(e))}function c(e){const t=document.documentElement;if(e==="system"){const n=window.matchMedia("(prefers-color-scheme: dark)").matches;t.setAttribute("data-theme",n?"dark":"light")}else t.setAttribute("data-theme",e)}function d(){const e=window.matchMedia("(prefers-color-scheme: dark)"),t=()=>{r()==="system"&&c("system")};return e.addEventListener("change",t),()=>e.removeEventListener("change",t)}const s=document.getElementById("theme-toggle");s&&s.addEventListener("click",()=>{const e=r(),n={light:"dark",dark:"system",system:"light"}[e]||"light";a(n),s.setAttribute("aria-label",`Teema: ${n}`)});const m=d();document.addEventListener("astro:before-swap",m);</script> </body> </html> 

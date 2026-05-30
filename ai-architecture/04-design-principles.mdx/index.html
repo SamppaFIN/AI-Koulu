@@ -1,0 +1,324 @@
+<!DOCTYPE html><html lang="fi" data-theme="system"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Luotettavuus, skaalautuvuus, turvallisuus ja havainnoitavuus AI-järjestelmissä."><title>Arkkitehtuuriset suunnitteluperiaatteet | AI & UI/UX Edu</title><!-- Fontit --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><!-- Globaalit tyylit --><link rel="stylesheet" href="/src/styles/globals.css"><!-- Teema-skripti (suoritetaan ennen renderöintiä flashin estämiseksi) --><script>
+      (function() {
+        var theme = localStorage.getItem('ai-edu-theme') || 'system';
+        var root = document.documentElement;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', theme);
+      })();
+    </script><style>.mdx-content h2{margin-top:var(--space-2xl);color:var(--color-brand-dark)}.mdx-content h3{margin-top:var(--space-xl)}.mdx-content p{margin-block:var(--space-md)}.mdx-content ul,.mdx-content ol{margin-block:var(--space-md);padding-left:var(--space-lg)}.mdx-content li{margin-block:var(--space-xs)}.mdx-content code{background:var(--color-bg-code);padding:.15rem .4rem;border-radius:4px;font-size:.85em}.mdx-content pre{background:var(--color-bg-code);border:1px solid var(--color-border);border-radius:8px;padding:var(--space-md);overflow-x:auto;margin-block:var(--space-lg)}.mdx-content pre code{background:none;padding:0}.mdx-content blockquote{border-left:4px solid var(--color-brand-light);padding-left:var(--space-lg);margin-block:var(--space-lg);color:var(--color-text-secondary);font-style:italic}.mdx-content a{color:var(--color-brand);text-decoration:underline;text-underline-offset:2px}.mdx-content a:hover{color:var(--color-brand-dark)}.mdx-content img{max-width:100%;border-radius:8px;margin-block:var(--space-lg)}.mdx-content hr{border:none;border-top:1px solid var(--color-border);margin-block:var(--space-2xl)}.mdx-content table{width:100%;border-collapse:collapse;margin-block:var(--space-lg)}.mdx-content th,.mdx-content td{padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);text-align:left}.mdx-content th{background:var(--color-bg-card);font-weight:600}
+</style></head> <body> <!-- Yläpalkki --> <header class="container-wide" style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+    "> <!-- Logo --> <a href="/AI-Koulu/" style="
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--color-brand);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      "> <span style="font-size: 1.5rem;">⚡</span>
+AI & UI/UX Edu
+</a> <!-- Navigaatio --> <nav aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);"> <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+AI-arkkitehtuurit
+</a> <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+UI/UX-käytännöt
+</a> <a href="/AI-Koulu/haku/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+Haku
+</a> <!-- Teemanvaihtaja --> <button id="theme-toggle" aria-label="Vaihda teemaa" style="
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--color-text);
+            font-size: 1rem;
+            line-height: 1;
+          ">
+🌓
+</button> </nav> </header> <!-- Pääsisältö --> <main>  <article class="container-content" style="padding-block: var(--space-2xl);"> <!-- Otsikko --> <header style="margin-bottom: var(--space-2xl);"> <p style="
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-brand);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-sm);
+      ">
+Luku 9 — Suunnitteluperiaatteet </p> <h1 style="margin: 0 0 var(--space-sm) 0;">Arkkitehtuuriset suunnitteluperiaatteet</h1> <p style="color: var(--color-text-secondary); font-size: 1.1rem; margin: 0;"> Luotettavuus, skaalautuvuus, turvallisuus ja havainnoitavuus AI-järjestelmissä. </p> </header> <!-- Varsinainen sisältö (MDX renderöitynä) --> <div class="mdx-content"> <h2 id="41-luotettavuus-ja-virheensieto">4.1 Luotettavuus ja virheensieto</h2>
+<p>AI-järjestelmät ovat perusluonteeltaan epädeterministisiä. Tämä tarkoittaa,
+että perinteiset virheenkäsittelymallit eivät toimi.</p>
+<h3 id="epädeterminististen-komponenttien-käsittely">Epädeterminististen komponenttien käsittely</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Perinteinen: oleta että toimii</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> result</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> api.</span><span style="color:#B392F0">call</span><span style="color:#E1E4E8">(data);</span></span>
+<span class="line"><span style="color:#B392F0">assert</span><span style="color:#E1E4E8">(result.isValid);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// AI-maailma: oleta että voi epäonnistua</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> result</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> ai.</span><span style="color:#B392F0">call</span><span style="color:#E1E4E8">(data);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// Tarkista ensin, luota sitten</span></span>
+<span class="line"><span style="color:#F97583">if</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">!</span><span style="color:#B392F0">isValidResult</span><span style="color:#E1E4E8">(result)) {</span></span>
+<span class="line"><span style="color:#E1E4E8">  result </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> fallbackStrategy</span><span style="color:#E1E4E8">(data);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="fallback-strategiat">Fallback-strategiat</h3>
+<p>Kun LLM epäonnistuu, sinulla pitää olla suunnitelma:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Taso</th><th>Strategia</th><th>Latenssi</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>Yritä uudelleen (retry)</td><td>+1×</td></tr><tr><td><strong>2</strong></td><td>Pienempi malli (gpt-4o → gpt-4o-mini)</td><td>−50%</td></tr><tr><td><strong>3</strong></td><td>Välimuistista (aiempi samankaltainen vastaus)</td><td>−90%</td></tr><tr><td><strong>4</strong></td><td>Sääntöpohjainen (template + parametrit)</td><td>−99%</td></tr><tr><td><strong>5</strong></td><td>Virheilmoitus käyttäjälle</td><td>—</td></tr></tbody></table>
+<div style="background:oklch(0.7 0.2 85 / 0.1);border:1px solid oklch(0.7 0.2 85 / 0.3);border-radius:12px;padding:1rem 1.25rem;margin-block:1.5rem;display:flex;gap:0.75rem;align-items:flex-start" role="alert"><span style="font-size:1.3rem;flex-shrink:0;margin-top:0.1rem">⚠️</span><div style="color:var(--color-text);line-height:1.6"><p><strong>Tärkeää:</strong> Fallback-strategia pitää testata <em>ennen</em> tuotantoonmenoa.
+Jos LLM epäonnistuu, tiedätkö mitä tapahtuu? Moni järjestelmä kaatuu
+hiljaa siksi, että fallbackia ei ole koskaan testattu.</p></div></div>
+<h3 id="uudelleenyrityslogiikka-ja-piirikatkaisijat">Uudelleenyrityslogiikka ja piirikatkaisijat</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Piirikatkaisija (Circuit Breaker)</span></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> CircuitBreaker</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  private</span><span style="color:#FFAB70"> failures</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">  private</span><span style="color:#FFAB70"> threshold</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 5</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">  private</span><span style="color:#FFAB70"> state</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> &quot;closed&quot;</span><span style="color:#F97583"> |</span><span style="color:#9ECBFF"> &quot;open&quot;</span><span style="color:#F97583"> |</span><span style="color:#9ECBFF"> &quot;half-open&quot;</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> &quot;closed&quot;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  async</span><span style="color:#B392F0"> call</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">fn</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> () </span><span style="color:#F97583">=&gt;</span><span style="color:#B392F0"> Promise</span><span style="color:#E1E4E8">&lt;</span><span style="color:#79B8FF">any</span><span style="color:#E1E4E8">&gt;) {</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (</span><span style="color:#79B8FF">this</span><span style="color:#E1E4E8">.state </span><span style="color:#F97583">===</span><span style="color:#9ECBFF"> &quot;open&quot;</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">      throw</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> Error</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;Circuit breaker open&quot;</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">      const</span><span style="color:#79B8FF"> result</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> fn</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#79B8FF">      this</span><span style="color:#E1E4E8">.failures </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">      return</span><span style="color:#E1E4E8"> result;</span></span>
+<span class="line"><span style="color:#E1E4E8">    } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (e) {</span></span>
+<span class="line"><span style="color:#79B8FF">      this</span><span style="color:#E1E4E8">.failures</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">      if</span><span style="color:#E1E4E8"> (</span><span style="color:#79B8FF">this</span><span style="color:#E1E4E8">.failures </span><span style="color:#F97583">&gt;=</span><span style="color:#79B8FF"> this</span><span style="color:#E1E4E8">.threshold) {</span></span>
+<span class="line"><span style="color:#79B8FF">        this</span><span style="color:#E1E4E8">.state </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> &quot;open&quot;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#B392F0">        setTimeout</span><span style="color:#E1E4E8">(() </span><span style="color:#F97583">=&gt;</span><span style="color:#E1E4E8"> { </span><span style="color:#79B8FF">this</span><span style="color:#E1E4E8">.state </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> &quot;half-open&quot;</span><span style="color:#E1E4E8">; }, </span><span style="color:#79B8FF">30000</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">      }</span></span>
+<span class="line"><span style="color:#F97583">      throw</span><span style="color:#E1E4E8"> e;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="defensive-design-probabilistisessa-maailmassa">”Defensive design” probabilistisessa maailmassa</h3>
+<ol>
+<li><strong>Älä luota mihinkään</strong> — tarkista jokainen vastaus</li>
+<li><strong>Rajoita vahinkoja</strong> — minimoi mitä malli voi tehdä</li>
+<li><strong>Oleta pahinta</strong> — malli hallusinoi, toimi sen mukaisesti</li>
+</ol>
+<h2 id="42-skaalautuvuus">4.2 Skaalautuvuus</h2>
+<h3 id="tilattomat-vs-tilalliset-komponentit">Tilattomat vs. tilalliset komponentit</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Komponentti</th><th>Tila</th><th>Skaalautuvuus</th></tr></thead><tbody><tr><td><strong>LLM-palvelin</strong></td><td>Tilaton (ei tallenna mitään)</td><td>Helppo, vaakasuora</td></tr><tr><td><strong>Vektoritietokanta</strong></td><td>Tilallinen (indeksi)</td><td>Vaikea, vaatii jakamista</td></tr><tr><td><strong>Keskusteluhistoria</strong></td><td>Tilallinen (säilytettävä)</td><td>Puskuroitu, Redis</td></tr><tr><td><strong>Agenttiprosessi</strong></td><td>Tilallinen (muisti)</td><td>Vaikea, istuntosidonnainen</td></tr></tbody></table>
+<h3 id="viestijonot-ja-asynkroninen-käsittely">Viestijonot ja asynkroninen käsittely</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Event-driven AI: jono erottaa kutsun ja käsittelyn</span></span>
+<span class="line"><span style="color:#F97583">interface</span><span style="color:#B392F0"> AIRequest</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#FFAB70">  id</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  prompt</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  callbackUrl</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// Lähetä jono</span></span>
+<span class="line"><span style="color:#F97583">await</span><span style="color:#E1E4E8"> queue.</span><span style="color:#B392F0">send</span><span style="color:#E1E4E8">({ id: </span><span style="color:#9ECBFF">&quot;123&quot;</span><span style="color:#E1E4E8">, prompt: </span><span style="color:#9ECBFF">&quot;Analysoi...&quot;</span><span style="color:#E1E4E8">, callbackUrl: </span><span style="color:#9ECBFF">&quot;/webhook&quot;</span><span style="color:#E1E4E8"> });</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// Vastaanota tulos</span></span>
+<span class="line"><span style="color:#E1E4E8">app.</span><span style="color:#B392F0">post</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;/webhook&quot;</span><span style="color:#E1E4E8">, (</span><span style="color:#FFAB70">req</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">res</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=&gt;</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> result</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> req.body;</span></span>
+<span class="line"><span style="color:#6A737D">  // Lähetä vastaus käyttäjälle (WebSocket, SSE)</span></span>
+<span class="line"><span style="color:#E1E4E8">});</span></span></code></pre>
+<h3 id="hajautetut-vektoritietokannat-ja-globaali-latenssi">Hajautetut vektoritietokannat ja globaali latenssi</h3>
+<ul>
+<li><strong>Pinecone:</strong> automaattinen replikointi eri alueille</li>
+<li><strong>Weaviate:</strong> multi-tenancy, Kubernetes-pohjainen</li>
+<li><strong>Milvus:</strong> shardaus + replikointi manuaalisesti</li>
+</ul>
+<h2 id="43-turvallisuus-ja-vastuullinen-ai">4.3 Turvallisuus ja vastuullinen AI</h2>
+<h3 id="arkkitehtuuritason-suojamekanismit">Arkkitehtuuritason suojamekanismit</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Syötevalidointi</span></span>
+<span class="line"><span style="color:#F97583">function</span><span style="color:#B392F0"> validateInput</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">input</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">  // 1. Estä jailbreak-yritykset</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">containsJailbreak</span><span style="color:#E1E4E8">(input)) </span><span style="color:#F97583">return</span><span style="color:#B392F0"> reject</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#6A737D">  // 2. Poista PII</span></span>
+<span class="line"><span style="color:#E1E4E8">  input </span><span style="color:#F97583">=</span><span style="color:#B392F0"> removePII</span><span style="color:#E1E4E8">(input);</span></span>
+<span class="line"><span style="color:#6A737D">  // 3. Rajoita pituus</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (input.</span><span style="color:#79B8FF">length</span><span style="color:#F97583"> &gt;</span><span style="color:#79B8FF"> 4000</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">return</span><span style="color:#B392F0"> reject</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#E1E4E8"> input;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="sisäänrakennettu-auditointi-ja-selitettävyys">Sisäänrakennettu auditointi ja selitettävyys</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#F97583">interface</span><span style="color:#B392F0"> AuditLog</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#FFAB70">  timestamp</span><span style="color:#F97583">:</span><span style="color:#B392F0"> Date</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  user</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  input</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  output</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  model</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  tokens</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> number</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  cost</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> number</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  latency</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> number</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="pääsynhallinta">Pääsynhallinta</h3>
+<ul>
+<li><strong>Kuka saa kutsua mitäkin mallia?</strong> — kalliimmat mallit vaativat hyväksynnän</li>
+<li><strong>Kuka voi nähdä mitä dataa?</strong> — sensitiivinen data rajatuille käyttäjille</li>
+</ul>
+<h3 id="tietovuotojen-esto">Tietovuotojen esto</h3>
+<ul>
+<li>Älä koskaan lähetä sensitiivistä dataa kolmannen osapuolen API:in</li>
+<li>Anonymisoi ennen LLM-kutsua</li>
+<li>Tarkista vastauksista PII</li>
+</ul>
+<h3 id="eu-ai-act--vaatimukset">EU AI Act -vaatimukset</h3>
+<p>EU:n tekoälyasetus luokittelee AI-järjestelmät riskitasoihin. Korkean riskin
+järjestelmät vaativat:</p>
+<ul>
+<li>Riskienhallintajärjestelmän</li>
+<li>Teknisen dokumentaation</li>
+<li>Ihmiskontrollin</li>
+<li>Läpinäkyvyyden</li>
+</ul>
+<h2 id="44-havainnoitavuus-observability">4.4 Havainnoitavuus (Observability)</h2>
+<h3 id="hajautettu-jäljitys-ai-putkessa">Hajautettu jäljitys AI-putkessa</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// OpenTelemetry: jäljitä AI-kutsu</span></span>
+<span class="line"><span style="color:#E1E4E8">span.</span><span style="color:#B392F0">setAttribute</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;ai.prompt&quot;</span><span style="color:#E1E4E8">, prompt.</span><span style="color:#B392F0">substring</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">100</span><span style="color:#E1E4E8">));</span></span>
+<span class="line"><span style="color:#E1E4E8">span.</span><span style="color:#B392F0">setAttribute</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;ai.model&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">&quot;gpt-4o&quot;</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">span.</span><span style="color:#B392F0">setAttribute</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;ai.tokens&quot;</span><span style="color:#E1E4E8">, completion.usage.total_tokens);</span></span></code></pre>
+<h3 id="token-tason-monitorointi">Token-tason monitorointi</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>Graafi 1: Token-kulutus / käyttäjä / päivä</span></span>
+<span class="line"><span>Graafi 2: Kustannus / käyttäjä / päivä</span></span>
+<span class="line"><span>Graafi 3: Top-10 kalleimmat kyselyt</span></span></code></pre>
+<h3 id="kustannusperäinen-havainnointi">Kustannusperäinen havainnointi</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#6A737D">-- Esimerkki: kalleimmat käyttäjät</span></span>
+<span class="line"><span style="color:#F97583">SELECT</span></span>
+<span class="line"><span style="color:#E1E4E8">  user_id,</span></span>
+<span class="line"><span style="color:#79B8FF">  SUM</span><span style="color:#E1E4E8">(tokens) </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> total_tokens,</span></span>
+<span class="line"><span style="color:#79B8FF">  SUM</span><span style="color:#E1E4E8">(cost) </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> total_cost,</span></span>
+<span class="line"><span style="color:#79B8FF">  COUNT</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">*</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> request_count</span></span>
+<span class="line"><span style="color:#F97583">FROM</span><span style="color:#E1E4E8"> ai_logs</span></span>
+<span class="line"><span style="color:#F97583">WHERE</span><span style="color:#F97583"> date</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> CURRENT_DATE</span></span>
+<span class="line"><span style="color:#F97583">GROUP BY</span><span style="color:#E1E4E8"> user_id</span></span>
+<span class="line"><span style="color:#F97583">ORDER BY</span><span style="color:#E1E4E8"> total_cost </span><span style="color:#F97583">DESC</span></span>
+<span class="line"><span style="color:#F97583">LIMIT</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">;</span></span></code></pre>
+<h3 id="laatumetriikat">Laatumetriikat</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Metriikka</th><th>Kuvaus</th><th>Miten mitataan</th></tr></thead><tbody><tr><td><strong>Relevanssi</strong></td><td>Onko vastaus aiheeseen?</td><td>Käyttäjäpalaute, nosta/älä</td></tr><tr><td><strong>Factuality</strong></td><td>Onko vastaus totta?</td><td>Eval-joukko, manuaalinen tarkistus</td></tr><tr><td><strong>Turvallisuus</strong></td><td>Onko vastaus turvallinen?</td><td>Moderointi-API</td></tr><tr><td><strong>Kohteliaisuus</strong></td><td>Onko vastaus asiallinen?</td><td>Kielenkäytön analyysi</td></tr></tbody></table>
+<div style="background:color-mix(in oklab, var(--color-brand) 12%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-brand) 25%, var(--color-border));border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:800;font-size:0.9rem;color:var(--color-brand);margin:0 0 0.5rem 0;display:flex;align-items:center;gap:0.5rem"><span style="font-size:1.2rem">🎯</span>Miksi tällä on väliä?</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Miksi tällä on väliä?</strong> Nämä neljä periaatetta — luotettavuus,
+skaalautuvuus, turvallisuus ja havainnoitavuus — ovat niitä, jotka
+erottavat leikkikalun tuotantojärjestelmästä. Yksikään näistä ei ole
+“kiva lisä” vaan välttämättömyys, jos järjestelmän on tarkoitus
+palvella oikeita käyttäjiä oikeassa maailmassa.</p></div></div>
+<sup><a href="https://web.dev/articles/vitals" target="_blank" rel="noopener noreferrer" title="Google (2024). Web Vitals. web.dev." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->google2024<!-- -->]</a></sup>
+<hr/>
+<p><strong>Seuraavaksi:</strong> <a href="/AI-Koulu/ai-architecture/05-reference-architectures/">Viitearkkitehtuurit</a> — konkreettiset esimerkit.</p> </div> <!-- Navigaatio seuraavaan/edelliseen --> <nav style="
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--space-3xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid var(--color-border);
+    "> <span></span> <a href="/AI-Koulu/ai-architecture/" style="
+        color: var(--color-brand);
+        text-decoration: none;
+        font-weight: 500;
+      ">
+← Takaisin sisällykseen
+</a> </nav> </article>  </main> <!-- Alaosa --> <footer class="container-wide" style="
+      border-top: 1px solid var(--color-border);
+      padding-block: var(--space-xl);
+      margin-top: var(--space-3xl);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    "> <p> <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
+</p> <p style="margin-top: var(--space-sm);">
+Sisältö perustuu vuoden 2024–2026 tutkimukseen. Lähdeviitteet jokaisen luvun yhteydessä.
+</p> </footer> <!-- Teemanvaihtaja-skripti --> <script type="module">const o="ai-edu-theme";function r(){return typeof localStorage>"u"?"system":localStorage.getItem(o)||"system"}function a(e){typeof localStorage>"u"||(localStorage.setItem(o,e),c(e))}function c(e){const t=document.documentElement;if(e==="system"){const n=window.matchMedia("(prefers-color-scheme: dark)").matches;t.setAttribute("data-theme",n?"dark":"light")}else t.setAttribute("data-theme",e)}function d(){const e=window.matchMedia("(prefers-color-scheme: dark)"),t=()=>{r()==="system"&&c("system")};return e.addEventListener("change",t),()=>e.removeEventListener("change",t)}const s=document.getElementById("theme-toggle");s&&s.addEventListener("click",()=>{const e=r(),n={light:"dark",dark:"system",system:"light"}[e]||"light";a(n),s.setAttribute("aria-label",`Teema: ${n}`)});const m=d();document.addEventListener("astro:before-swap",m);</script> </body> </html> 

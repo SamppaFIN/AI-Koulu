@@ -1,0 +1,298 @@
+<!DOCTYPE html><html lang="fi" data-theme="system"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Milloin hienosäätö kannattaa ja miten malleja palvellaan tuotannossa."><title>Hienosäädettyjen mallien arkkitehtuurit | AI & UI/UX Edu</title><!-- Fontit --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><!-- Globaalit tyylit --><link rel="stylesheet" href="/src/styles/globals.css"><!-- Teema-skripti (suoritetaan ennen renderöintiä flashin estämiseksi) --><script>
+      (function() {
+        var theme = localStorage.getItem('ai-edu-theme') || 'system';
+        var root = document.documentElement;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', theme);
+      })();
+    </script><style>.mdx-content h2{margin-top:var(--space-2xl);color:var(--color-brand-dark)}.mdx-content h3{margin-top:var(--space-xl)}.mdx-content p{margin-block:var(--space-md)}.mdx-content ul,.mdx-content ol{margin-block:var(--space-md);padding-left:var(--space-lg)}.mdx-content li{margin-block:var(--space-xs)}.mdx-content code{background:var(--color-bg-code);padding:.15rem .4rem;border-radius:4px;font-size:.85em}.mdx-content pre{background:var(--color-bg-code);border:1px solid var(--color-border);border-radius:8px;padding:var(--space-md);overflow-x:auto;margin-block:var(--space-lg)}.mdx-content pre code{background:none;padding:0}.mdx-content blockquote{border-left:4px solid var(--color-brand-light);padding-left:var(--space-lg);margin-block:var(--space-lg);color:var(--color-text-secondary);font-style:italic}.mdx-content a{color:var(--color-brand);text-decoration:underline;text-underline-offset:2px}.mdx-content a:hover{color:var(--color-brand-dark)}.mdx-content img{max-width:100%;border-radius:8px;margin-block:var(--space-lg)}.mdx-content hr{border:none;border-top:1px solid var(--color-border);margin-block:var(--space-2xl)}.mdx-content table{width:100%;border-collapse:collapse;margin-block:var(--space-lg)}.mdx-content th,.mdx-content td{padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);text-align:left}.mdx-content th{background:var(--color-bg-card);font-weight:600}
+</style></head> <body> <!-- Yläpalkki --> <header class="container-wide" style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+    "> <!-- Logo --> <a href="/AI-Koulu/" style="
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--color-brand);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      "> <span style="font-size: 1.5rem;">⚡</span>
+AI & UI/UX Edu
+</a> <!-- Navigaatio --> <nav aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);"> <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+AI-arkkitehtuurit
+</a> <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+UI/UX-käytännöt
+</a> <a href="/AI-Koulu/haku/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+Haku
+</a> <!-- Teemanvaihtaja --> <button id="theme-toggle" aria-label="Vaihda teemaa" style="
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--color-text);
+            font-size: 1rem;
+            line-height: 1;
+          ">
+🌓
+</button> </nav> </header> <!-- Pääsisältö --> <main>  <article class="container-content" style="padding-block: var(--space-2xl);"> <!-- Otsikko --> <header style="margin-bottom: var(--space-2xl);"> <p style="
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-brand);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-sm);
+      ">
+Luku 5 — Arkkitehtuurityypit </p> <h1 style="margin: 0 0 var(--space-sm) 0;">Hienosäädettyjen mallien arkkitehtuurit</h1> <p style="color: var(--color-text-secondary); font-size: 1.1rem; margin: 0;"> Milloin hienosäätö kannattaa ja miten malleja palvellaan tuotannossa. </p> </header> <!-- Varsinainen sisältö (MDX renderöitynä) --> <div class="mdx-content"> <h2 id="milloin-hienosäätö-kannattaa">Milloin hienosäätö kannattaa?</h2>
+<p>Hienosäätö (fine-tuning) on prosessi, jossa valmiiksi koulutettua mallia
+jatkokoulutetaan omalla datalla. Se ei ole ainoa tapa — ja harvoin se on
+ensimmäinen.</p>
+<div style="background:var(--color-bg-card);border:2px dashed var(--color-border);border-radius:12px;padding:3rem 2rem;margin-block:1.5rem;text-align:center;color:var(--color-text-muted)"><p style="font-size:2rem;margin:0 0 0.5rem 0">📐</p><p style="font-weight:600;margin:0 0 0.25rem 0">Kaavio: <!-- -->decision-tree</p><p style="font-size:0.85rem;margin:0">Interaktiivinen diagrammi tulossa vaiheessa 3.</p></div>
+<h3 id="päätöspuu-hienosäätö-vs-rag-vs-prompt-engineering">Päätöspuu: Hienosäätö vs. RAG vs. Prompt engineering</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Kriteeri</th><th>Prompt engineering</th><th>RAG</th><th>Hienosäätö</th></tr></thead><tbody><tr><td><strong>Tarvitaanko omaa dataa?</strong></td><td>Ei</td><td>Kyllä</td><td>Kyllä, paljon</td></tr><tr><td><strong>Muuttuuko data usein?</strong></td><td>—</td><td>Kyllä, paras valinta</td><td>Ei, data staattista</td></tr><tr><td><strong>Tarvitaanko tarkkaa muotoa?</strong></td><td>Ei</td><td>Ei</td><td>Kyllä (esim. JSON)</td></tr><tr><td><strong>Kustannus</strong></td><td>0 €</td><td>Vektoritietokanta + upotukset</td><td>Koulutus + palvelu</td></tr><tr><td><strong>Tarvittava datamäärä</strong></td><td>0</td><td>10–1000 dokumenttia</td><td>1000+ esimerkkiä</td></tr><tr><td><strong>Hallusinaatioriski</strong></td><td>Korkea</td><td>Matala</td><td>Keskitaso</td></tr></tbody></table>
+<div style="background:oklch(0.7 0.2 85 / 0.1);border:1px solid oklch(0.7 0.2 85 / 0.3);border-radius:12px;padding:1rem 1.25rem;margin-block:1.5rem;display:flex;gap:0.75rem;align-items:flex-start" role="alert"><span style="font-size:1.3rem;flex-shrink:0;margin-top:0.1rem">⚠️</span><div style="color:var(--color-text);line-height:1.6"><p><strong>Yleinen virhe:</strong> Yritetään hienosäätää mallia, kun oikea ratkaisu olisi
+RAG. Hienosäätö opettaa mallille <em>muotoa ja tyyliä</em>, ei faktoja.
+Jos haluat mallin tietävän asioita, käytä RAG:ia. Jos haluat mallin
+<em>vastaavan tietyssä muodossa</em>, hienosäätö voi olla oikea valinta.</p></div></div>
+<h3 id="milloin-hienosäätö-on-oikea-valinta">Milloin hienosäätö on oikea valinta?</h3>
+<ol>
+<li><strong>Tietty ulosoton muoto</strong> — haluat aina JSON-muotoisen vastauksen</li>
+<li><strong>Oman äänensävyn oppiminen</strong> — brändin mukainen kirjoitustyyli</li>
+<li><strong>Tehtäväkohtainen suorituskyky</strong> — esim. koodin korjaus tietylle kielelle</li>
+<li><strong>Mallin kutistaminen</strong> — iso malli → pieni malli (distillaatio)</li>
+</ol>
+<div style="background:color-mix(in oklab, var(--color-accent) 10%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-accent) 30%, var(--color-border));border-left:4px solid var(--color-accent);border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--color-accent);margin:0 0 0.5rem 0">💡 Reaalimaailman analogia</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Analogia:</strong> Hienosäätö on kuin lähettäisi lapsen erikoiskouluun.
+Peruskoulutus (perusmalli) antaa yleiset taidot, mutta erikoiskoulu
+(hienosäätö) opettaa tiettyä erikoisalaa.</p><ul>
+<li><strong>Prompt engineering</strong> on kuin antaisi tarkat ohjeet: “Kirjoita tiivistelmä, max 100 sanaa”</li>
+<li><strong>RAG</strong> on kuin antaisi tueksi kirjan: “Tässä on faktat, tee niistä tiivistelmä”</li>
+<li><strong>Hienosäätö</strong> on kuin kouluttaisi lapsesta juristin: “Nyt osaat lakikielen automaattisesti”</li>
+</ul><p>Kaikilla on paikkansa, mutta koulutus maksaa eniten.</p></div></div>
+<h3 id="mallien-palveluarkkitehtuurit">Mallien palveluarkkitehtuurit</h3>
+<p>Kun malli on hienosäädetty, se pitää saada tuotantoon.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Työkalu</th><th>Kuvaus</th><th>Parasta</th></tr></thead><tbody><tr><td><strong>vLLM</strong></td><td>Tehokas LLM-palvelin PagedAttentioilla</td><td>Suorituskyky, suuret mallit</td></tr><tr><td><strong>TGI</strong> (Text Generation Inference)</td><td>Hugging Facen palvelin</td><td>Integraatio Hugging Face -ekosysteemiin</td></tr><tr><td><strong>Ollama</strong></td><td>Paikallinen LLM-ajuri</td><td>Helppo asennus, kehitys</td></tr><tr><td><strong>llama.cpp</strong></td><td>C++-pohjainen optimoitu inferenssi</td><td>CPU:lla toimivat mallit</td></tr></tbody></table>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># vLLM-palvelin (yksinkertaistettu)</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> vllm </span><span style="color:#F97583">import</span><span style="color:#79B8FF"> LLM</span><span style="color:#E1E4E8">, SamplingParams</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">llm </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> LLM(</span><span style="color:#FFAB70">model</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;meta-llama/Llama-3-70B&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">tensor_parallel_size</span><span style="color:#F97583">=</span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">params </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> SamplingParams(</span><span style="color:#FFAB70">temperature</span><span style="color:#F97583">=</span><span style="color:#79B8FF">0.7</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">max_tokens</span><span style="color:#F97583">=</span><span style="color:#79B8FF">512</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">output </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> llm.generate(</span><span style="color:#9ECBFF">&quot;Keksi tarina AI:sta&quot;</span><span style="color:#E1E4E8">, params)</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(output[</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">].outputs[</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">].text)</span></span></code></pre>
+<h3 id="mallien-rinnakkaisuus">Mallien rinnakkaisuus</h3>
+<p>Isoja malleja ei voi ajaa yhdellä GPU:lla. Tarvitaan rinnakkaisuutta.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Menetelmä</th><th>Kuvaus</th><th>Milloin käyttää</th></tr></thead><tbody><tr><td><strong>Tensor parallelism</strong></td><td>Malli jaetaan GPU:iden kesken</td><td>Yksi iso malli, monta GPU:ta</td></tr><tr><td><strong>Pipeline parallelism</strong></td><td>Kerrokset eri GPU:ille</td><td>Erittäin syvät mallit</td></tr><tr><td><strong>Data parallelism</strong></td><td>Sama malli, eri dataa</td><td>Suuri määrä samanaikaisia pyyntöjä</td></tr></tbody></table>
+<h3 id="kvanttisointi-ja-optimointi">Kvanttisointi ja optimointi</h3>
+<p>Mallin kokoa voi pienentää merkittävästi ilman suurta laadun heikkenemistä.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Menetelmä</th><th>Tarkkuus</th><th>Koonpienennys</th><th>Laatu (vs. FP16)</th></tr></thead><tbody><tr><td><strong>FP16</strong></td><td>16-bit</td><td>1×</td><td>—</td></tr><tr><td><strong>INT8</strong></td><td>8-bit</td><td>2×</td><td>Lähes identtinen</td></tr><tr><td><strong>INT4</strong> (AWQ/GPTQ)</td><td>4-bit</td><td>4×</td><td>Hieman heikompi</td></tr><tr><td><strong>GGUF Q4_K_M</strong></td><td>4-bit (kvantisointi)</td><td>~4×</td><td>Hyvä laatu</td></tr></tbody></table>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># AWQ-kvantisointi</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> awq </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> AutoAWQForCausalLM</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">model </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> AutoAWQForCausalLM.from_pretrained(</span><span style="color:#9ECBFF">&quot;meta-llama/Llama-3-8B&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">model.quantize(tokenizer, </span><span style="color:#FFAB70">quant_config</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{</span><span style="color:#9ECBFF">&quot;bits&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">&quot;group_size&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">128</span><span style="color:#E1E4E8">})</span></span>
+<span class="line"><span style="color:#E1E4E8">model.save_pretrained(</span><span style="color:#9ECBFF">&quot;llama-3-8b-awq&quot;</span><span style="color:#E1E4E8">)</span></span></code></pre>
+<h3 id="mallien-ab-testaus-ja-canary-julkaisut">Mallien A/B-testaus ja canary-julkaisut</h3>
+<p>Tuotannossa haluat testata uutta mallia ennen täyttä käyttöönottoa.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Yksinkertainen canary-julkaisu</span></span>
+<span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> getCompletion</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">prompt</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> useCanary</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> Math.</span><span style="color:#B392F0">random</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">&lt;</span><span style="color:#79B8FF"> 0.1</span><span style="color:#E1E4E8">; </span><span style="color:#6A737D">// 10% liikenteestä</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (useCanary) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#B392F0"> callModel</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;gpt-4o-canary&quot;</span><span style="color:#E1E4E8">); </span><span style="color:#6A737D">// Uusi malli</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#B392F0"> callModel</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;gpt-4o-stable&quot;</span><span style="color:#E1E4E8">); </span><span style="color:#6A737D">// Nykyinen malli</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// Mittaa: laatu, latenssi, kustannus, virhetilanteet</span></span></code></pre>
+<h3 id="lokaalit-mallit-osana-arkkitehtuuria">Lokaalit mallit osana arkkitehtuuria</h3>
+<p>Lokaalit mallit (Ollama, llama.cpp) ovat yhä tärkeämpiä:</p>
+<ul>
+<li><strong>Yksityisyys:</strong> data ei poistu koneelta</li>
+<li><strong>Latenssi:</strong> ei verkkokutsua</li>
+<li><strong>Offline:</strong> toimii ilman internetyhteyttä</li>
+<li><strong>Kustannus:</strong> ei token-maksuja</li>
+</ul>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Hybridiarkkitehtuuri: lokaali + pilvi</span></span>
+<span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> getCompletion</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">prompt</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">sensitive</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> boolean</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (sensitive </span><span style="color:#F97583">||</span><span style="color:#F97583"> !</span><span style="color:#E1E4E8">navigator.onLine) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#B392F0"> localModel</span><span style="color:#E1E4E8">(prompt); </span><span style="color:#6A737D">// Ollama lokaalisti</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#B392F0"> cloudModel</span><span style="color:#E1E4E8">(prompt);   </span><span style="color:#6A737D">// GPT-4o pilvessä</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<div style="background:color-mix(in oklab, var(--color-brand) 12%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-brand) 25%, var(--color-border));border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:800;font-size:0.9rem;color:var(--color-brand);margin:0 0 0.5rem 0;display:flex;align-items:center;gap:0.5rem"><span style="font-size:1.2rem">🎯</span>Miksi tällä on väliä?</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Miksi tällä on väliä?</strong> Hienosäätö on tehokas mutta kallis työkalu.
+Usein RAG tai prompt engineering riittää. Kun kuitenkin hienosäädät,
+sinun on mietittävä koko palveluarkkitehtuuri: kvanttisointi, rinnakkaisuus,
+A/B-testaus ja lokaali vs. pilvi. Huono palveluarkkitehtuuri tekee
+hyvästäkin mallista käyttökelvottoman.</p></div></div>
+<sup><a href="https://arxiv.org/abs/2302.13971" target="_blank" rel="noopener noreferrer" title="Touvron, H. et al. (2023). LLaMA: Open and Efficient Foundation Language Models. arXiv." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->touvron2023<!-- -->]</a></sup>
+<hr/>
+<p><strong>Seuraavaksi:</strong> <a href="/AI-Koulu/ai-architecture/02-5-multimodal/">Multimodaaliset arkkitehtuurit</a> — teksti, kuvat, ääni yhdessä.</p> </div> <!-- Navigaatio seuraavaan/edelliseen --> <nav style="
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--space-3xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid var(--color-border);
+    "> <span></span> <a href="/AI-Koulu/ai-architecture/" style="
+        color: var(--color-brand);
+        text-decoration: none;
+        font-weight: 500;
+      ">
+← Takaisin sisällykseen
+</a> </nav> </article>  </main> <!-- Alaosa --> <footer class="container-wide" style="
+      border-top: 1px solid var(--color-border);
+      padding-block: var(--space-xl);
+      margin-top: var(--space-3xl);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    "> <p> <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
+</p> <p style="margin-top: var(--space-sm);">
+Sisältö perustuu vuoden 2024–2026 tutkimukseen. Lähdeviitteet jokaisen luvun yhteydessä.
+</p> </footer> <!-- Teemanvaihtaja-skripti --> <script type="module">const o="ai-edu-theme";function r(){return typeof localStorage>"u"?"system":localStorage.getItem(o)||"system"}function a(e){typeof localStorage>"u"||(localStorage.setItem(o,e),c(e))}function c(e){const t=document.documentElement;if(e==="system"){const n=window.matchMedia("(prefers-color-scheme: dark)").matches;t.setAttribute("data-theme",n?"dark":"light")}else t.setAttribute("data-theme",e)}function d(){const e=window.matchMedia("(prefers-color-scheme: dark)"),t=()=>{r()==="system"&&c("system")};return e.addEventListener("change",t),()=>e.removeEventListener("change",t)}const s=document.getElementById("theme-toggle");s&&s.addEventListener("click",()=>{const e=r(),n={light:"dark",dark:"system",system:"light"}[e]||"light";a(n),s.setAttribute("aria-label",`Teema: ${n}`)});const m=d();document.addEventListener("astro:before-swap",m);</script> </body> </html> 

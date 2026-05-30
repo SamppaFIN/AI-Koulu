@@ -1,0 +1,244 @@
+<!DOCTYPE html><html lang="fi" data-theme="system"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Nykyajan AI-kehityksen ohjelmistoarkkitehtuurimallit"><title>AI-arkkitehtuurit | AI & UI/UX Edu</title><!-- Fontit --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><!-- Globaalit tyylit --><link rel="stylesheet" href="/src/styles/globals.css"><!-- Teema-skripti (suoritetaan ennen renderöintiä flashin estämiseksi) --><script>
+      (function() {
+        var theme = localStorage.getItem('ai-edu-theme') || 'system';
+        var root = document.documentElement;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', theme);
+      })();
+    </script><style>.chapter-link{text-decoration:none;color:inherit}.chapter-link:hover article{transform:translate(4px);box-shadow:var(--shadow-md);border-color:var(--color-brand-light)}
+</style></head> <body> <!-- Yläpalkki --> <header class="container-wide" style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+    "> <!-- Logo --> <a href="/AI-Koulu/" style="
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--color-brand);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      "> <span style="font-size: 1.5rem;">⚡</span>
+AI & UI/UX Edu
+</a> <!-- Navigaatio --> <nav aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);"> <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+AI-arkkitehtuurit
+</a> <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+UI/UX-käytännöt
+</a> <a href="/AI-Koulu/haku/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+Haku
+</a> <!-- Teemanvaihtaja --> <button id="theme-toggle" aria-label="Vaihda teemaa" style="
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--color-text);
+            font-size: 1rem;
+            line-height: 1;
+          ">
+🌓
+</button> </nav> </header> <!-- Pääsisältö --> <main>  <section class="container-content" style="padding-block: var(--space-3xl);"> <h1 style="color: var(--color-brand);">AI-arkkitehtuurit</h1> <p style="color: var(--color-text-secondary); font-size: 1.2rem; margin-bottom: var(--space-2xl);">
+Nykyajan AI-kehityksen ohjelmistoarkkitehtuurimallit — API-kääreistä agenttijärjestelmiin.
+</p> <div style="
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+    "> <a href="/AI-Koulu/ai-architecture/01-johdanto.mdx/" class="chapter-link"> <article style="
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-lg);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            transition: transform 0.2s, box-shadow 0.2s;
+          "> <div style="
+              font-size: 0.8rem;
+              font-weight: 700;
+              color: var(--color-brand);
+              background: color-mix(in oklab, var(--color-brand) 15%, transparent);
+              padding: 0.2rem 0.6rem;
+              border-radius: 999px;
+              white-space: nowrap;
+            ">
+Luku 1 </div> <div> <h2 style="margin: 0 0 var(--space-xs) 0; font-size: 1.2rem;"> Johdanto AI-arkkitehtuureihin </h2> <p style="margin: 0; color: var(--color-text-secondary);"> Mitä AI-ohjelmistoarkkitehtuuri tarkoittaa nyt (2024–2026) ja miksi sillä on väliä. </p> </div> </article> </a><a href="/AI-Koulu/ai-architecture/02-1-api-wrappers.mdx/" class="chapter-link"> <article style="
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-lg);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            transition: transform 0.2s, box-shadow 0.2s;
+          "> <div style="
+              font-size: 0.8rem;
+              font-weight: 700;
+              color: var(--color-brand);
+              background: color-mix(in oklab, var(--color-brand) 15%, transparent);
+              padding: 0.2rem 0.6rem;
+              border-radius: 999px;
+              white-space: nowrap;
+            ">
+Luku 2 </div> <div> <h2 style="margin: 0 0 var(--space-xs) 0; font-size: 1.2rem;"> API-kääremallit (Thin Wrappers) </h2> <p style="margin: 0; color: var(--color-text-secondary);"> Yksinkertaisin tapa rakentaa AI-sovellus: UI + prompt + API-kutsu. </p> </div> </article> </a><a href="/AI-Koulu/ai-architecture/02-2-rag.mdx/" class="chapter-link"> <article style="
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-lg);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            transition: transform 0.2s, box-shadow 0.2s;
+          "> <div style="
+              font-size: 0.8rem;
+              font-weight: 700;
+              color: var(--color-brand);
+              background: color-mix(in oklab, var(--color-brand) 15%, transparent);
+              padding: 0.2rem 0.6rem;
+              border-radius: 999px;
+              white-space: nowrap;
+            ">
+Luku 3 </div> <div> <h2 style="margin: 0 0 var(--space-xs) 0; font-size: 1.2rem;"> RAG-arkkitehtuurit </h2> <p style="margin: 0; color: var(--color-text-secondary);"> Retrieval-Augmented Generation — tiedonhaun ja generoinnin yhdistäminen. </p> </div> </article> </a><a href="/AI-Koulu/ai-architecture/02-3-agents.mdx/" class="chapter-link"> <article style="
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-lg);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            transition: transform 0.2s, box-shadow 0.2s;
+          "> <div style="
+              font-size: 0.8rem;
+              font-weight: 700;
+              color: var(--color-brand);
+              background: color-mix(in oklab, var(--color-brand) 15%, transparent);
+              padding: 0.2rem 0.6rem;
+              border-radius: 999px;
+              white-space: nowrap;
+            ">
+Luku 4 </div> <div> <h2 style="margin: 0 0 var(--space-xs) 0; font-size: 1.2rem;"> Agenttipohjaiset arkkitehtuurit </h2> <p style="margin: 0; color: var(--color-text-secondary);"> ReAct-malli, työkalujen käyttö ja monen agentin järjestelmät. </p> </div> </article> </a><a href="/AI-Koulu/ai-architecture/02-4-finetuning.mdx/" class="chapter-link"> <article style="
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-lg);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            transition: transform 0.2s, box-shadow 0.2s;
+          "> <div style="
+              font-size: 0.8rem;
+              font-weight: 700;
+              color: var(--color-brand);
+              background: color-mix(in oklab, var(--color-brand) 15%, transparent);
+              padding: 0.2rem 0.6rem;
+              border-radius: 999px;
+              white-space: nowrap;
+            ">
+Luku 5 </div> <div> <h2 style="margin: 0 0 var(--space-xs) 0; font-size: 1.2rem;"> Hienosäädettyjen mallien arkkitehtuurit </h2> <p style="margin: 0; color: var(--color-text-secondary);"> Milloin hienosäätö kannattaa ja miten malleja palvellaan tuotannossa. </p> </div> </article> </a><a href="/AI-Koulu/ai-architecture/02-5-multimodal.mdx/" class="chapter-link"> <article style="
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-lg);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            transition: transform 0.2s, box-shadow 0.2s;
+          "> <div style="
+              font-size: 0.8rem;
+              font-weight: 700;
+              color: var(--color-brand);
+              background: color-mix(in oklab, var(--color-brand) 15%, transparent);
+              padding: 0.2rem 0.6rem;
+              border-radius: 999px;
+              white-space: nowrap;
+            ">
+Luku 6 </div> <div> <h2 style="margin: 0 0 var(--space-xs) 0; font-size: 1.2rem;"> Multimodaaliset arkkitehtuurit </h2> <p style="margin: 0; color: var(--color-text-secondary);"> Kuva+teksti, video+ääni+teksti -putket ja yhteinen upotusavaruus. </p> </div> </article> </a><a href="/AI-Koulu/ai-architecture/02-6-hybrid.mdx/" class="chapter-link"> <article style="
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-lg);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            transition: transform 0.2s, box-shadow 0.2s;
+          "> <div style="
+              font-size: 0.8rem;
+              font-weight: 700;
+              color: var(--color-brand);
+              background: color-mix(in oklab, var(--color-brand) 15%, transparent);
+              padding: 0.2rem 0.6rem;
+              border-radius: 999px;
+              white-space: nowrap;
+            ">
+Luku 7 </div> <div> <h2 style="margin: 0 0 var(--space-xs) 0; font-size: 1.2rem;"> Hybridiarkkitehtuurit </h2> <p style="margin: 0; color: var(--color-text-secondary);"> Sääntöpohjaiset järjestelmät, neuroverkot ja ihmiskontrolli samassa putkessa. </p> </div> </article> </a><a href="/AI-Koulu/ai-architecture/03-infrastructure.mdx/" class="chapter-link"> <article style="
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-lg);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            transition: transform 0.2s, box-shadow 0.2s;
+          "> <div style="
+              font-size: 0.8rem;
+              font-weight: 700;
+              color: var(--color-brand);
+              background: color-mix(in oklab, var(--color-brand) 15%, transparent);
+              padding: 0.2rem 0.6rem;
+              border-radius: 999px;
+              white-space: nowrap;
+            ">
+Luku 8 </div> <div> <h2 style="margin: 0 0 var(--space-xs) 0; font-size: 1.2rem;"> AI-infrastruktuuri ja alustat </h2> <p style="margin: 0; color: var(--color-text-secondary);"> Koulutus, inferenssi, MLOps ja kustannustenhallinta tuotannossa. </p> </div> </article> </a><a href="/AI-Koulu/ai-architecture/04-design-principles.mdx/" class="chapter-link"> <article style="
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-lg);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            transition: transform 0.2s, box-shadow 0.2s;
+          "> <div style="
+              font-size: 0.8rem;
+              font-weight: 700;
+              color: var(--color-brand);
+              background: color-mix(in oklab, var(--color-brand) 15%, transparent);
+              padding: 0.2rem 0.6rem;
+              border-radius: 999px;
+              white-space: nowrap;
+            ">
+Luku 9 </div> <div> <h2 style="margin: 0 0 var(--space-xs) 0; font-size: 1.2rem;"> Arkkitehtuuriset suunnitteluperiaatteet </h2> <p style="margin: 0; color: var(--color-text-secondary);"> Luotettavuus, skaalautuvuus, turvallisuus ja havainnoitavuus AI-järjestelmissä. </p> </div> </article> </a><a href="/AI-Koulu/ai-architecture/05-reference-architectures.mdx/" class="chapter-link"> <article style="
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-lg);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            transition: transform 0.2s, box-shadow 0.2s;
+          "> <div style="
+              font-size: 0.8rem;
+              font-weight: 700;
+              color: var(--color-brand);
+              background: color-mix(in oklab, var(--color-brand) 15%, transparent);
+              padding: 0.2rem 0.6rem;
+              border-radius: 999px;
+              white-space: nowrap;
+            ">
+Luku 10 </div> <div> <h2 style="margin: 0 0 var(--space-xs) 0; font-size: 1.2rem;"> Viitearkkitehtuurit </h2> <p style="margin: 0; color: var(--color-text-secondary);"> Konkreettiset esimerkit ja teknologiavalinnat: RAG, agentti, Copilot ja dokumenttianalyysi. </p> </div> </article> </a> </div> </section>  </main> <!-- Alaosa --> <footer class="container-wide" style="
+      border-top: 1px solid var(--color-border);
+      padding-block: var(--space-xl);
+      margin-top: var(--space-3xl);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    "> <p> <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
+</p> <p style="margin-top: var(--space-sm);">
+Sisältö perustuu vuoden 2024–2026 tutkimukseen. Lähdeviitteet jokaisen luvun yhteydessä.
+</p> </footer> <!-- Teemanvaihtaja-skripti --> <script type="module">const o="ai-edu-theme";function r(){return typeof localStorage>"u"?"system":localStorage.getItem(o)||"system"}function a(e){typeof localStorage>"u"||(localStorage.setItem(o,e),c(e))}function c(e){const t=document.documentElement;if(e==="system"){const n=window.matchMedia("(prefers-color-scheme: dark)").matches;t.setAttribute("data-theme",n?"dark":"light")}else t.setAttribute("data-theme",e)}function d(){const e=window.matchMedia("(prefers-color-scheme: dark)"),t=()=>{r()==="system"&&c("system")};return e.addEventListener("change",t),()=>e.removeEventListener("change",t)}const s=document.getElementById("theme-toggle");s&&s.addEventListener("click",()=>{const e=r(),n={light:"dark",dark:"system",system:"light"}[e]||"light";a(n),s.setAttribute("aria-label",`Teema: ${n}`)});const m=d();document.addEventListener("astro:before-swap",m);</script> </body> </html> 

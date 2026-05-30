@@ -1,0 +1,318 @@
+<!DOCTYPE html><html lang="fi" data-theme="system"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Konkreettiset esimerkit ja teknologiavalinnat: RAG, agentti, Copilot ja dokumenttianalyysi."><title>Viitearkkitehtuurit | AI & UI/UX Edu</title><!-- Fontit --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><!-- Globaalit tyylit --><link rel="stylesheet" href="/src/styles/globals.css"><!-- Teema-skripti (suoritetaan ennen renderöintiä flashin estämiseksi) --><script>
+      (function() {
+        var theme = localStorage.getItem('ai-edu-theme') || 'system';
+        var root = document.documentElement;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', theme);
+      })();
+    </script><style>.mdx-content h2{margin-top:var(--space-2xl);color:var(--color-brand-dark)}.mdx-content h3{margin-top:var(--space-xl)}.mdx-content p{margin-block:var(--space-md)}.mdx-content ul,.mdx-content ol{margin-block:var(--space-md);padding-left:var(--space-lg)}.mdx-content li{margin-block:var(--space-xs)}.mdx-content code{background:var(--color-bg-code);padding:.15rem .4rem;border-radius:4px;font-size:.85em}.mdx-content pre{background:var(--color-bg-code);border:1px solid var(--color-border);border-radius:8px;padding:var(--space-md);overflow-x:auto;margin-block:var(--space-lg)}.mdx-content pre code{background:none;padding:0}.mdx-content blockquote{border-left:4px solid var(--color-brand-light);padding-left:var(--space-lg);margin-block:var(--space-lg);color:var(--color-text-secondary);font-style:italic}.mdx-content a{color:var(--color-brand);text-decoration:underline;text-underline-offset:2px}.mdx-content a:hover{color:var(--color-brand-dark)}.mdx-content img{max-width:100%;border-radius:8px;margin-block:var(--space-lg)}.mdx-content hr{border:none;border-top:1px solid var(--color-border);margin-block:var(--space-2xl)}.mdx-content table{width:100%;border-collapse:collapse;margin-block:var(--space-lg)}.mdx-content th,.mdx-content td{padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);text-align:left}.mdx-content th{background:var(--color-bg-card);font-weight:600}
+</style></head> <body> <!-- Yläpalkki --> <header class="container-wide" style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+    "> <!-- Logo --> <a href="/AI-Koulu/" style="
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--color-brand);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      "> <span style="font-size: 1.5rem;">⚡</span>
+AI & UI/UX Edu
+</a> <!-- Navigaatio --> <nav aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);"> <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+AI-arkkitehtuurit
+</a> <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+UI/UX-käytännöt
+</a> <a href="/AI-Koulu/haku/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+Haku
+</a> <!-- Teemanvaihtaja --> <button id="theme-toggle" aria-label="Vaihda teemaa" style="
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--color-text);
+            font-size: 1rem;
+            line-height: 1;
+          ">
+🌓
+</button> </nav> </header> <!-- Pääsisältö --> <main>  <article class="container-content" style="padding-block: var(--space-2xl);"> <!-- Otsikko --> <header style="margin-bottom: var(--space-2xl);"> <p style="
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-brand);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-sm);
+      ">
+Luku 10 — Viitearkkitehtuurit </p> <h1 style="margin: 0 0 var(--space-sm) 0;">Viitearkkitehtuurit</h1> <p style="color: var(--color-text-secondary); font-size: 1.1rem; margin: 0;"> Konkreettiset esimerkit ja teknologiavalinnat: RAG, agentti, Copilot ja dokumenttianalyysi. </p> </header> <!-- Varsinainen sisältö (MDX renderöitynä) --> <div class="mdx-content"> <h2 id="51-yritystason-rag-järjestelmä">5.1 Yritystason RAG-järjestelmä</h2>
+<p>Täydellinen arkkitehtuuri yrityksen dokumenttien kyselyjärjestelmälle.</p>
+<h3 id="arkkitehtuurikaavio">Arkkitehtuurikaavio</h3>
+<div style="background:var(--color-bg-card);border:2px dashed var(--color-border);border-radius:12px;padding:3rem 2rem;margin-block:1.5rem;text-align:center;color:var(--color-text-muted)"><p style="font-size:2rem;margin:0 0 0.5rem 0">📐</p><p style="font-weight:600;margin:0 0 0.25rem 0">Kaavio: <!-- -->enterprise-rag</p><p style="font-size:0.85rem;margin:0">Interaktiivinen diagrammi tulossa vaiheessa 3.</p></div>
+<h3 id="komponentit">Komponentit</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Kerros</th><th>Teknologia</th><th>Tehtävä</th></tr></thead><tbody><tr><td><strong>Datalähteet</strong></td><td>SharePoint, Confluence, S3</td><td>Lähdedokumentit</td></tr><tr><td><strong>ETL-putki</strong></td><td>Airflow + Python</td><td>Hae, chunkkaa, upota</td></tr><tr><td><strong>Vektoritietokanta</strong></td><td>Pinecone / Weaviate</td><td>Indeksoi ja hae</td></tr><tr><td><strong>API</strong></td><td>FastAPI / Express</td><td>Reititä kyselyt</td></tr><tr><td><strong>UI</strong></td><td>React / Streamlit</td><td>Käyttöliittymä</td></tr><tr><td><strong>Monitorointi</strong></td><td>LangSmith / MLflow</td><td>Seuraa laatua</td></tr></tbody></table>
+<h3 id="skaalautuvuus">Skaalautuvuus</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#6A737D"># Kubernetes-konfiguraatio</span></span>
+<span class="line"><span style="color:#85E89D">apiVersion</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">apps/v1</span></span>
+<span class="line"><span style="color:#85E89D">kind</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">Deployment</span></span>
+<span class="line"><span style="color:#85E89D">metadata</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">  name</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">rag-api</span></span>
+<span class="line"><span style="color:#85E89D">spec</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">  replicas</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">3</span></span>
+<span class="line"><span style="color:#85E89D">  resources</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">    requests</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">      memory</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;1Gi&quot;</span></span>
+<span class="line"><span style="color:#85E89D">    limits</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">      memory</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;2Gi&quot;</span></span>
+<span class="line"><span style="color:#B392F0">---</span></span>
+<span class="line"><span style="color:#85E89D">apiVersion</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">autoscaling/v2</span></span>
+<span class="line"><span style="color:#85E89D">kind</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">HorizontalPodAutoscaler</span></span>
+<span class="line"><span style="color:#85E89D">metadata</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">  name</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">rag-api-hpa</span></span>
+<span class="line"><span style="color:#85E89D">spec</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">  minReplicas</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">3</span></span>
+<span class="line"><span style="color:#85E89D">  maxReplicas</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">20</span></span>
+<span class="line"><span style="color:#85E89D">  metrics</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">    - </span><span style="color:#85E89D">type</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">Resource</span></span>
+<span class="line"><span style="color:#85E89D">      resource</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">        name</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">cpu</span></span>
+<span class="line"><span style="color:#85E89D">        target</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">          type</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">Utilization</span></span>
+<span class="line"><span style="color:#85E89D">          averageUtilization</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">70</span></span></code></pre>
+<h3 id="turvallisuus">Turvallisuus</h3>
+<ul>
+<li><strong>Dokumenttitason pääsynhallinta:</strong> käyttäjä näkee vain dokumentit, joihin hänellä on oikeus</li>
+<li><strong>PII-poisto:</strong> automatisoi henkilötietojen poisto ennen indeksointia</li>
+<li><strong>Audit-loki:</strong> kaikki kyselyt ja vastaukset lokitetaan</li>
+</ul>
+<div style="background:oklch(0.6 0.18 240 / 0.1);border:1px solid oklch(0.6 0.18 240 / 0.3);border-radius:12px;padding:1rem 1.25rem;margin-block:1.5rem;display:flex;gap:0.75rem;align-items:flex-start" role="alert"><span style="font-size:1.3rem;flex-shrink:0;margin-top:0.1rem">ℹ️</span><div style="color:var(--color-text);line-height:1.6"><p><strong>Kriittinen oivallus:</strong> Yritys-RAGissa suurin haaste ei ole tekniikka
+vaan <em>pääsynhallinta</em>. Jos et ole tarkkana, käyttäjä voi kysellä
+dokumenteista, joihin hänellä ei ole pääsyä, RAG:n kautta.</p></div></div>
+<h2 id="52-asiakaspalvelun-ai-agentti">5.2 Asiakaspalvelun AI-agentti</h2>
+<h3 id="putki">Putki</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>Puheentunnistus → LLM → Tietokantahaut → Puhesynteesi</span></span></code></pre>
+<h3 id="teknologiavalinnat">Teknologiavalinnat</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Vaihe</th><th>Teknologia</th><th>Vaihtoehtoja</th></tr></thead><tbody><tr><td><strong>Puheentunnistus (STT)</strong></td><td>Whisper / Azure Speech</td><td>Speechmatics, Deepgram</td></tr><tr><td><strong>Päätely</strong></td><td>GPT-4o / Claude</td><td>Mikä tahansa LLM</td></tr><tr><td><strong>Tietokantahaku</strong></td><td>pgvector / Qdrant</td><td>Asiakkasdata, tilaukset</td></tr><tr><td><strong>Puhesynteesi (TTS)</strong></td><td>ElevenLabs / Azure Speech</td><td>OpenAI TTS, WellSaid</td></tr><tr><td><strong>Puhelinintegraatio</strong></td><td>Twilio / Vonage</td><td>Voximplant</td></tr></tbody></table>
+<h3 id="ihmiskontrolli-ja-eskalaatio">Ihmiskontrolli ja eskalaatio</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Eskalaatio ihmiselle</span></span>
+<span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> handleConversation</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">input</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">context</span><span style="color:#F97583">:</span><span style="color:#B392F0"> Context</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> intent</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> classifyIntent</span><span style="color:#E1E4E8">(input);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (intent.confidence </span><span style="color:#F97583">&lt;</span><span style="color:#79B8FF"> 0.7</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">    // En ole varma → kysy tarkennusta</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#B392F0"> askClarification</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (intent.type </span><span style="color:#F97583">===</span><span style="color:#9ECBFF"> &quot;complaint&quot;</span><span style="color:#F97583"> ||</span><span style="color:#E1E4E8"> intent.sentiment </span><span style="color:#F97583">===</span><span style="color:#9ECBFF"> &quot;angry&quot;</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">    // Valitus tai vihainen asiakas → heti ihmiselle</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#B392F0"> escalateToHuman</span><span style="color:#E1E4E8">(intent);</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> response</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> getAIResponse</span><span style="color:#E1E4E8">(input, context);</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#E1E4E8"> response;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="muistin-hallinta-pitkissä-keskusteluissa">Muistin hallinta pitkissä keskusteluissa</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Yhteenveto-muisti: tiivistä vanha keskustelu</span></span>
+<span class="line"><span style="color:#F97583">if</span><span style="color:#E1E4E8"> (messages.</span><span style="color:#79B8FF">length</span><span style="color:#F97583"> &gt;</span><span style="color:#79B8FF"> 20</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> summary</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> llm.</span><span style="color:#B392F0">summarize</span><span style="color:#E1E4E8">(messages.</span><span style="color:#B392F0">slice</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">-</span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">));</span></span>
+<span class="line"><span style="color:#E1E4E8">  messages </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span></span>
+<span class="line"><span style="color:#E1E4E8">    { role: </span><span style="color:#9ECBFF">&quot;system&quot;</span><span style="color:#E1E4E8">, content: </span><span style="color:#9ECBFF">`Aiempi keskustelu: ${</span><span style="color:#E1E4E8">summary</span><span style="color:#9ECBFF">}`</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#F97583">    ...</span><span style="color:#E1E4E8">messages.</span><span style="color:#B392F0">slice</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">-</span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">  ];</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h2 id="53-koodiavustaja-copilot-tyyppinen">5.3 Koodiavustaja (Copilot-tyyppinen)</h2>
+<h3 id="kontekstin-keräys-repo-tasolla">Kontekstin keräys repo-tasolla</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#F97583">interface</span><span style="color:#B392F0"> RepoContext</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#FFAB70">  openFiles</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">[];           </span><span style="color:#6A737D">// Tällä hetkellä avoimet tiedostot</span></span>
+<span class="line"><span style="color:#FFAB70">  currentFile</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;           </span><span style="color:#6A737D">// Aktiivinen tiedosto</span></span>
+<span class="line"><span style="color:#FFAB70">  cursorPosition</span><span style="color:#F97583">:</span><span style="color:#B392F0"> Position</span><span style="color:#E1E4E8">;      </span><span style="color:#6A737D">// Kursori</span></span>
+<span class="line"><span style="color:#FFAB70">  imports</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">[];             </span><span style="color:#6A737D">// Importit lähellä kursoria</span></span>
+<span class="line"><span style="color:#FFAB70">  similarCode</span><span style="color:#F97583">:</span><span style="color:#B392F0"> CodeSnippet</span><span style="color:#E1E4E8">[];    </span><span style="color:#6A737D">// Samankaltainen koodi muualta reposta</span></span>
+<span class="line"><span style="color:#FFAB70">  gitBlame</span><span style="color:#F97583">:</span><span style="color:#B392F0"> GitBlame</span><span style="color:#E1E4E8">[];          </span><span style="color:#6A737D">// Kuka kirjoitti mitäkin</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="rag-kooditietokantaan">RAG kooditietokantaan</h3>
+<ul>
+<li>Koodi jaetaan funktio- ja luokkatasoisiin chunkkeihin</li>
+<li>Jokainen chunk upotetaan kommentteineen</li>
+<li>Haku: käyttäjän koodi → samankaltainen koodi → konteksti</li>
+</ul>
+<h3 id="integraatio-idehen-ja-cicd-putkeen">Integraatio IDE:hen ja CI/CD-putkeen</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>IDE (VS Code, JetBrains) → API → AI-palvelu → IDE</span></span>
+<span class="line"><span>                                ↓</span></span>
+<span class="line"><span>                           CI/CD (GitHub Actions)</span></span>
+<span class="line"><span>                                ↓</span></span>
+<span class="line"><span>                           Testit → Build → Deploy</span></span></code></pre>
+<h2 id="54-multimodaalinen-dokumenttianalyysi">5.4 Multimodaalinen dokumenttianalyysi</h2>
+<h3 id="putki-1">Putki</h3>
+<div style="background:var(--color-bg-card);border:2px dashed var(--color-border);border-radius:12px;padding:3rem 2rem;margin-block:1.5rem;text-align:center;color:var(--color-text-muted)"><p style="font-size:2rem;margin:0 0 0.5rem 0">📐</p><p style="font-weight:600;margin:0 0 0.25rem 0">Kaavio: <!-- -->document-analysis</p><p style="font-size:0.85rem;margin:0">Interaktiivinen diagrammi tulossa vaiheessa 3.</p></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Vaihe</th><th>Teknologia</th></tr></thead><tbody><tr><td><strong>PDF-skannaus</strong></td><td>Tesseract, Azure Document Intelligence</td></tr><tr><td><strong>OCR</strong></td><td>Tesseract, Google Cloud Vision</td></tr><tr><td><strong>Taulukoiden irrotus</strong></td><td>Camelot, Tabula</td></tr><tr><td><strong>Semanttinen indeksointi</strong></td><td>CLIP + vektoritietokanta</td></tr><tr><td><strong>Kysy dokumentilta</strong></td><td>GPT-4o / Claude multimodaali</td></tr></tbody></table>
+<h3 id="visuaalisten-elementtien-semanttinen-indeksointi">Visuaalisten elementtien semanttinen indeksointi</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Indeksoi kaaviot ja kuvat</span></span>
+<span class="line"><span style="color:#F97583">interface</span><span style="color:#B392F0"> IndexedVisual</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#FFAB70">  image</span><span style="color:#F97583">:</span><span style="color:#B392F0"> Buffer</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  caption</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  embedding</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> number</span><span style="color:#E1E4E8">[];       </span><span style="color:#6A737D">// CLIP-vektori</span></span>
+<span class="line"><span style="color:#FFAB70">  pageNumber</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> number</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  documentId</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  type</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> &quot;chart&quot;</span><span style="color:#F97583"> |</span><span style="color:#9ECBFF"> &quot;diagram&quot;</span><span style="color:#F97583"> |</span><span style="color:#9ECBFF"> &quot;photo&quot;</span><span style="color:#F97583"> |</span><span style="color:#9ECBFF"> &quot;table&quot;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="kysy-dokumentista--tyylinen-käyttöliittymä">”Kysy dokumentista” -tyylinen käyttöliittymä</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> askDocument</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">question</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">documentId</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">  // 1. Hae relevantit tekstiosuudet</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> textChunks</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> vectorDB.</span><span style="color:#B392F0">search</span><span style="color:#E1E4E8">(question, { documentId });</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  // 2. Hae relevantit visuaaliset elementit</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> visuals</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> vectorDB.</span><span style="color:#B392F0">searchVisual</span><span style="color:#E1E4E8">(question, { documentId });</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  // 3. Yhdistä konteksti</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> context</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> buildMultimodalContext</span><span style="color:#E1E4E8">(textChunks, visuals);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  // 4. Generoi vastaus</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> answer</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> multimodalLLM</span><span style="color:#E1E4E8">(question, context);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#E1E4E8"> { answer, sources: [</span><span style="color:#F97583">...</span><span style="color:#E1E4E8">textChunks, </span><span style="color:#F97583">...</span><span style="color:#E1E4E8">visuals] };</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<div style="background:color-mix(in oklab, var(--color-brand) 12%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-brand) 25%, var(--color-border));border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:800;font-size:0.9rem;color:var(--color-brand);margin:0 0 0.5rem 0;display:flex;align-items:center;gap:0.5rem"><span style="font-size:1.2rem">🎯</span>Miksi tällä on väliä?</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Miksi tällä on väliä?</strong> Viitearkkitehtuurit eivät ole kopioitavia
+reseptejä vaan <em>lähtökohtia</em>. Jokainen projekti on erilainen, mutta
+nämä esimerkit antavat sinulle käsityksen siitä, mitä komponentteja
+tarvitset ja miten ne voivat liittyä toisiinsa. Kopioi ideat, mukauta
+tarpeisiisi.</p></div></div>
+<sup><a href="https://arxiv.org/abs/2107.03374" target="_blank" rel="noopener noreferrer" title="Chen, M. et al. (2021). Evaluating Large Language Models Trained on Code. arXiv." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->chen2021<!-- -->]</a></sup>
+<sup><a href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noopener noreferrer" title="Lewis, P. et al. (2020). Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. NeurIPS." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->lewis2020<!-- -->]</a></sup>
+<sup><a href="https://arxiv.org/abs/2210.03629" target="_blank" rel="noopener noreferrer" title="Yao, S. et al. (2022). ReAct: Synergizing Reasoning and Acting in Language Models. ICLR." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->yao2022<!-- -->]</a></sup>
+<hr/>
+<p><strong>Osa 1 on nyt käsitelty!</strong> Siirry <a href="/AI-Koulu/ui-ux/01-hcd/">UI/UX-käytäntöihin</a> tai valitse jokin AI-arkkitehtuuriluku uudelleen luettavaksi.</p> </div> <!-- Navigaatio seuraavaan/edelliseen --> <nav style="
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--space-3xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid var(--color-border);
+    "> <span></span> <a href="/AI-Koulu/ai-architecture/" style="
+        color: var(--color-brand);
+        text-decoration: none;
+        font-weight: 500;
+      ">
+← Takaisin sisällykseen
+</a> </nav> </article>  </main> <!-- Alaosa --> <footer class="container-wide" style="
+      border-top: 1px solid var(--color-border);
+      padding-block: var(--space-xl);
+      margin-top: var(--space-3xl);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    "> <p> <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
+</p> <p style="margin-top: var(--space-sm);">
+Sisältö perustuu vuoden 2024–2026 tutkimukseen. Lähdeviitteet jokaisen luvun yhteydessä.
+</p> </footer> <!-- Teemanvaihtaja-skripti --> <script type="module">const o="ai-edu-theme";function r(){return typeof localStorage>"u"?"system":localStorage.getItem(o)||"system"}function a(e){typeof localStorage>"u"||(localStorage.setItem(o,e),c(e))}function c(e){const t=document.documentElement;if(e==="system"){const n=window.matchMedia("(prefers-color-scheme: dark)").matches;t.setAttribute("data-theme",n?"dark":"light")}else t.setAttribute("data-theme",e)}function d(){const e=window.matchMedia("(prefers-color-scheme: dark)"),t=()=>{r()==="system"&&c("system")};return e.addEventListener("change",t),()=>e.removeEventListener("change",t)}const s=document.getElementById("theme-toggle");s&&s.addEventListener("click",()=>{const e=r(),n={light:"dark",dark:"system",system:"light"}[e]||"light";a(n),s.setAttribute("aria-label",`Teema: ${n}`)});const m=d();document.addEventListener("astro:before-swap",m);</script> </body> </html> 

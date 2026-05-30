@@ -1,0 +1,402 @@
+<!DOCTYPE html><html lang="fi" data-theme="system"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Koulutus, inferenssi, MLOps ja kustannustenhallinta tuotannossa."><title>AI-infrastruktuuri ja alustat | AI & UI/UX Edu</title><!-- Fontit --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><!-- Globaalit tyylit --><link rel="stylesheet" href="/src/styles/globals.css"><!-- Teema-skripti (suoritetaan ennen renderöintiä flashin estämiseksi) --><script>
+      (function() {
+        var theme = localStorage.getItem('ai-edu-theme') || 'system';
+        var root = document.documentElement;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', theme);
+      })();
+    </script><style>.mdx-content h2{margin-top:var(--space-2xl);color:var(--color-brand-dark)}.mdx-content h3{margin-top:var(--space-xl)}.mdx-content p{margin-block:var(--space-md)}.mdx-content ul,.mdx-content ol{margin-block:var(--space-md);padding-left:var(--space-lg)}.mdx-content li{margin-block:var(--space-xs)}.mdx-content code{background:var(--color-bg-code);padding:.15rem .4rem;border-radius:4px;font-size:.85em}.mdx-content pre{background:var(--color-bg-code);border:1px solid var(--color-border);border-radius:8px;padding:var(--space-md);overflow-x:auto;margin-block:var(--space-lg)}.mdx-content pre code{background:none;padding:0}.mdx-content blockquote{border-left:4px solid var(--color-brand-light);padding-left:var(--space-lg);margin-block:var(--space-lg);color:var(--color-text-secondary);font-style:italic}.mdx-content a{color:var(--color-brand);text-decoration:underline;text-underline-offset:2px}.mdx-content a:hover{color:var(--color-brand-dark)}.mdx-content img{max-width:100%;border-radius:8px;margin-block:var(--space-lg)}.mdx-content hr{border:none;border-top:1px solid var(--color-border);margin-block:var(--space-2xl)}.mdx-content table{width:100%;border-collapse:collapse;margin-block:var(--space-lg)}.mdx-content th,.mdx-content td{padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);text-align:left}.mdx-content th{background:var(--color-bg-card);font-weight:600}
+</style></head> <body> <!-- Yläpalkki --> <header class="container-wide" style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+    "> <!-- Logo --> <a href="/AI-Koulu/" style="
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--color-brand);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      "> <span style="font-size: 1.5rem;">⚡</span>
+AI & UI/UX Edu
+</a> <!-- Navigaatio --> <nav aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);"> <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+AI-arkkitehtuurit
+</a> <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+UI/UX-käytännöt
+</a> <a href="/AI-Koulu/haku/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+Haku
+</a> <!-- Teemanvaihtaja --> <button id="theme-toggle" aria-label="Vaihda teemaa" style="
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--color-text);
+            font-size: 1rem;
+            line-height: 1;
+          ">
+🌓
+</button> </nav> </header> <!-- Pääsisältö --> <main>  <article class="container-content" style="padding-block: var(--space-2xl);"> <!-- Otsikko --> <header style="margin-bottom: var(--space-2xl);"> <p style="
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-brand);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-sm);
+      ">
+Luku 8 — AI-infrastruktuuri </p> <h1 style="margin: 0 0 var(--space-sm) 0;">AI-infrastruktuuri ja alustat</h1> <p style="color: var(--color-text-secondary); font-size: 1.1rem; margin: 0;"> Koulutus, inferenssi, MLOps ja kustannustenhallinta tuotannossa. </p> </header> <!-- Varsinainen sisältö (MDX renderöitynä) --> <div class="mdx-content"> <h2 id="31-koulutusinfrastruktuuri">3.1 Koulutusinfrastruktuuri</h2>
+<p>Suurten kielimallien koulutus on infrastruktuuriltaan äärimmäisen vaativaa.</p>
+<h3 id="hajautettu-koulutus">Hajautettu koulutus</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Työkalu</th><th>Kuvaus</th><th>Milloin käyttää</th></tr></thead><tbody><tr><td><strong>DeepSpeed</strong> (Microsoft)</td><td>ZeRO-optimointi, muistin tehokkuus</td><td>Suurten mallien koulutus</td></tr><tr><td><strong>FSDP</strong> (PyTorch)</td><td>Fully Sharded Data Parallel</td><td>PyTorch-käyttäjät</td></tr><tr><td><strong>Megatron-LM</strong> (NVIDIA)</td><td>Tensor + pipeline parallelism</td><td>Erittäin suuret mallit (&gt;100B)</td></tr></tbody></table>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># DeepSpeed ZeRO-3: jaa optimoijan tila GPU:iden kesken</span></span>
+<span class="line"><span style="color:#E1E4E8">deepspeed_config </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">    &quot;zero_optimization&quot;</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#9ECBFF">        &quot;stage&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        &quot;offload_optimizer&quot;</span><span style="color:#E1E4E8">: {</span><span style="color:#9ECBFF">&quot;device&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;cpu&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#9ECBFF">    &quot;train_batch_size&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">32</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    &quot;gradient_accumulation_steps&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="gpu-klusterit-ja-orkestrointi">GPU-klusterit ja orkestrointi</h3>
+<ul>
+<li><strong>Kubernetes + GPU-lisäosa</strong> — dynaaminen GPU:iden allokointi</li>
+<li><strong>Slurm</strong> — perinteinen HPC-orkestraattori</li>
+<li><strong>SkyPilot</strong> — monipilviorkestraattori (AWS, GCP, Azure)</li>
+</ul>
+<h3 id="kokeilujen-seuranta">Kokeilujen seuranta</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Työkalu</th><th>Vahvuus</th></tr></thead><tbody><tr><td><strong>MLflow</strong></td><td>Avoin, laaja käyttäjäkunta, helppo</td></tr><tr><td><strong>Weights &amp; Biases</strong></td><td>Kaunis UI, hyvä yhteistyö</td></tr><tr><td><strong>Neptune</strong></td><td>Keskitetty, monipuolinen</td></tr></tbody></table>
+<div style="background:oklch(0.6 0.2 150 / 0.1);border:1px solid oklch(0.6 0.2 150 / 0.3);border-radius:12px;padding:1rem 1.25rem;margin-block:1.5rem;display:flex;gap:0.75rem;align-items:flex-start" role="alert"><span style="font-size:1.3rem;flex-shrink:0;margin-top:0.1rem">💡</span><div style="color:var(--color-text);line-height:1.6"><p><strong>Suositus:</strong> Aloita MLflow’lla, se on avointa ja riittää useimmille
+tiimeille. Päivitä W&amp;B:hen tai Neptunelle, kun tarvitset parempaa
+visualisointia ja tiimiyhteistyötä.</p></div></div>
+<h2 id="32-inferenssipalvelut">3.2 Inferenssipalvelut</h2>
+<p>Kun malli on koulutettu, se pitää saada tuotantoon.</p>
+<h3 id="arkkitehtuurimallit">Arkkitehtuurimallit</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Tila</th><th>Kuvaus</th><th>Latenssi</th><th>Hinta</th><th>Milloin</th></tr></thead><tbody><tr><td><strong>Reaaliaikainen</strong></td><td>Synkroninen, odota vastausta</td><td>&lt;1s</td><td>Korkea</td><td>Chatbot, API</td></tr><tr><td><strong>Eräkäsittely</strong></td><td>Useita pyyntöjä kerralla</td><td>Minuutteja</td><td>Matala</td><td>Analyysi, raportointi</td></tr><tr><td><strong>Striimaus</strong></td><td>Tokenit tulevat yksi kerrallaan</td><td>0.1s/token</td><td>Keskitaso</td><td>Keskustelu, kirjoitus</td></tr></tbody></table>
+<h3 id="kylmäkäynnistys-ja-lämmittely">Kylmäkäynnistys ja lämmittely</h3>
+<p>Mallin lataaminen muistiin kestää. Ratkaisut:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#6A737D"># Kubernetes HPA: pysy lämpimänä</span></span>
+<span class="line"><span style="color:#85E89D">minReplicas</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">2</span><span style="color:#6A737D">          # Aina vähintään 2 palvelinta</span></span>
+<span class="line"><span style="color:#85E89D">maxReplicas</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">10</span></span>
+<span class="line"><span style="color:#85E89D">targetCPUUtilization</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">70</span></span></code></pre>
+<ul>
+<li><strong>Keep-alive:</strong> pidä vähintään yksi palvelin aina päällä</li>
+<li><strong>Pre-warming:</strong> esilataa malli muistiin ennen liikennettä</li>
+<li><strong>Serverless:</strong> (esim. Modal, Replicate) — lataa tarvittaessa, hyvä kehitykseen</li>
+</ul>
+<h3 id="autoskaalaus-gpu-kuormalle">Autoskaalaus GPU-kuormalle</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#6A737D"># GPU-pohjainen autoskaalaus K8s:ssa</span></span>
+<span class="line"><span style="color:#85E89D">metrics</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">  - </span><span style="color:#85E89D">type</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">External</span></span>
+<span class="line"><span style="color:#85E89D">    metric</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">      name</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">gpu_utilization</span></span>
+<span class="line"><span style="color:#85E89D">      target</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">        type</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">AverageValue</span></span>
+<span class="line"><span style="color:#85E89D">        averageValue</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">70</span></span></code></pre>
+<h3 id="edge-inferenssi">Edge-inferenssi</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Teknologia</th><th>Laite</th><th>Käyttötapaus</th></tr></thead><tbody><tr><td><strong>CoreML</strong></td><td>Apple (iPhone, Mac)</td><td>Mobiili iOS-sovellukset</td></tr><tr><td><strong>ONNX Runtime</strong></td><td>Windows, Linux, macOS</td><td>Ristiinalusta, optimoitu</td></tr><tr><td><strong>WebGPU</strong></td><td>Selain</td><td>AI selaimessa (Chrome, Edge)</td></tr><tr><td><strong>TensorRT</strong></td><td>NVIDIA GPU</td><td>Tehokkain NVIDIA-laitteilla</td></tr></tbody></table>
+<h2 id="33-mlops-ja-llmops">3.3 MLOps ja LLMOps</h2>
+<p>AI-järjestelmän ylläpito on erilaista kuin perinteisen softan.</p>
+<h3 id="dataputket">Dataputket</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>Keräys → Puhdistus → Versiointi → Validointi → Käyttöön</span></span></code></pre>
+<p>Jokaisen vaiheen pitää olla:</p>
+<ul>
+<li><strong>Toistettava</strong> — sama data → sama tulos aina</li>
+<li><strong>Versioitu</strong> — tiedetään millä datalla malli on koulutettu</li>
+<li><strong>Monitoroitu</strong> — tiedetään jos datan laatu heikkenee</li>
+</ul>
+<h3 id="mallirekisterit-ja-elinkaarihallinta">Mallirekisterit ja elinkaarihallinta</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#6A737D"># Mallirekisterimerkintä (MLflow)</span></span>
+<span class="line"><span style="color:#85E89D">model</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">  name</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;asiakaspalvelu-agentti&quot;</span></span>
+<span class="line"><span style="color:#85E89D">  version</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">3</span></span>
+<span class="line"><span style="color:#85E89D">  stage</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;production&quot;</span><span style="color:#6A737D">  # staging, production, archived</span></span>
+<span class="line"><span style="color:#85E89D">  metrics</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">    accuracy</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0.94</span></span>
+<span class="line"><span style="color:#85E89D">    latency_ms</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">450</span></span>
+<span class="line"><span style="color:#85E89D">  data_hash</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;abc123def456&quot;</span></span></code></pre>
+<h3 id="promptien-hallinta-ja-versiointi">Promptien hallinta ja versiointi</h3>
+<p>Promptit ovat yhtä tärkeitä kuin koodi — niitä pitää versioida.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Työkalu</th><th>Kuvaus</th></tr></thead><tbody><tr><td><strong>LangSmith</strong></td><td>Kattava promptien hallinta</td></tr><tr><td><strong>PromptLayer</strong></td><td>Promptien lokitus ja versiointi</td></tr><tr><td><strong>Oma registry</strong></td><td>Git-pohjainen, YAML-muoto</td></tr></tbody></table>
+<h3 id="monitorointi">Monitorointi</h3>
+<p>AI-järjestelmässä seurataan täysin uusia asioita:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Mittari</th><th>Kuvaus</th><th>Miten havaitaan</th></tr></thead><tbody><tr><td><strong>Ajautuminen (drift)</strong></td><td>Datan jakauma muuttuu</td><td>Tilastolliset testit (KS-testi)</td></tr><tr><td><strong>Myrkyllisyys</strong></td><td>Malli tuottaa loukkaavaa sisältöä</td><td>Moderointi-API (esim. Azure Content Safety)</td></tr><tr><td><strong>Laatu</strong></td><td>Vastausten relevanssi</td><td>Käyttäjäpalaute, eval-joukot</td></tr><tr><td><strong>Latenssi</strong></td><td>Vastausaika</td><td>P50/P95/P99 -seuranta</td></tr></tbody></table>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Ajautumisen tunnistus</span></span>
+<span class="line"><span style="color:#F97583">function</span><span style="color:#B392F0"> detectDrift</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">baseline</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> number</span><span style="color:#E1E4E8">[], </span><span style="color:#FFAB70">current</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> number</span><span style="color:#E1E4E8">[]) {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> statistic</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> kolmogorovSmirnovTest</span><span style="color:#E1E4E8">(baseline, current);</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (statistic.pValue </span><span style="color:#F97583">&lt;</span><span style="color:#79B8FF"> 0.05</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#B392F0">    alertTeam</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;Data drift detected!&quot;</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="turvallisuus">Turvallisuus</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Riski</th><th>Ratkaisu</th></tr></thead><tbody><tr><td><strong>Jailbreak</strong></td><td>Prompt-suodatus, syötteen validointi</td></tr><tr><td><strong>PII-vuoto</strong></td><td>PII-suodatin ennen ja jälkeen LLM:n</td></tr><tr><td><strong>Sisällön moderointi</strong></td><td>Moderointi-API jokaiselle vastaukselle</td></tr></tbody></table>
+<h2 id="34-kustannusten-hallinta-ja-optimointi">3.4 Kustannusten hallinta ja optimointi</h2>
+<p>AI-sovellusten suurin menoerä on usein ei itse kehitys vaan <em>ajokustannukset</em>.</p>
+<h3 id="token-pohjainen-hinnoittelu-ja-budjetointi">Token-pohjainen hinnoittelu ja budjetointi</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#F97583">function</span><span style="color:#B392F0"> estimateCost</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">tokens</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> number</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">model</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> rates</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">    &quot;gpt-4o&quot;</span><span style="color:#E1E4E8">: { input: </span><span style="color:#79B8FF">0.01</span><span style="color:#E1E4E8">, output: </span><span style="color:#79B8FF">0.03</span><span style="color:#E1E4E8"> },  </span><span style="color:#6A737D">// $/1K tokens</span></span>
+<span class="line"><span style="color:#9ECBFF">    &quot;claude-3.5&quot;</span><span style="color:#E1E4E8">: { input: </span><span style="color:#79B8FF">0.008</span><span style="color:#E1E4E8">, output: </span><span style="color:#79B8FF">0.024</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">  };</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> rate</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> rates[model];</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#E1E4E8"> (tokens </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> rate.output) </span><span style="color:#F97583">/</span><span style="color:#79B8FF"> 1000</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="välimuististrategiat">Välimuististrategiat</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Strategia</th><th>Säästö</th><th>Esimerkki</th></tr></thead><tbody><tr><td><strong>Semanttinen cache</strong></td><td>30–50%</td><td>GPTCache, Redis + embeddings</td></tr><tr><td><strong>Tarkka välimuisti</strong></td><td>10–20%</td><td>Täsmälleen sama kysely</td></tr><tr><td><strong>Vastausten välimuisti</strong></td><td>5–15%</td><td>CDN, selaimen cache</td></tr></tbody></table>
+<h3 id="pienempien-mallien-ketjutus-vs-yksi-iso-malli">Pienempien mallien ketjutus vs. yksi iso malli</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// Kalliimpi: yksi iso malli kaikkeen</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> answer</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> gpt4o</span><span style="color:#E1E4E8">(prompt);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// Halvempi: pieni malli seuloo, iso malli vastaa tarpeen mukaan</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> isComplex</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> gpt4oMini</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">`Onko tämä monimutkainen? ${</span><span style="color:#E1E4E8">prompt</span><span style="color:#9ECBFF">}`</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#F97583">if</span><span style="color:#E1E4E8"> (isComplex) {</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#B392F0"> gpt4o</span><span style="color:#E1E4E8">(prompt);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#F97583">return</span><span style="color:#B392F0"> gpt4oMini</span><span style="color:#E1E4E8">(prompt);</span></span></code></pre>
+<h3 id="hybridipilvi-ja-lokaali-inferenssi">Hybridipilvi ja lokaali inferenssi</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>Tavalliset kyselyt:      Lokaali malli (Ollama)         — 0€/kysely</span></span>
+<span class="line"><span>Monimutkaiset kyselyt:   Pilvimalli (GPT-4o)             — 0.03€/kysely</span></span>
+<span class="line"><span>Sensitiivinen data:      Lokaali malli (Ollama)          — 0€, tietoturva</span></span></code></pre>
+<div style="background:color-mix(in oklab, var(--color-brand) 12%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-brand) 25%, var(--color-border));border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:800;font-size:0.9rem;color:var(--color-brand);margin:0 0 0.5rem 0;display:flex;align-items:center;gap:0.5rem"><span style="font-size:1.2rem">🎯</span>Miksi tällä on väliä?</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Miksi tällä on väliä?</strong> Infrastruktuuri määrittää, pääseekö AI-sovellus
+koskaan tuotantoon. 90% projekteista kaatuu siihen, että malli toimii
+kehittäjän koneella mutta ei tuotannossa. MLOps, kustannusten hallinta
+ja oikea inferenssiarkkitehtuuri ovat yhtä tärkeitä kuin itse malli.</p></div></div>
+<sup><a href="https://arxiv.org/abs/2302.13971" target="_blank" rel="noopener noreferrer" title="Touvron, H. et al. (2023). LLaMA: Open and Efficient Foundation Language Models. arXiv." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->touvron2023<!-- -->]</a></sup>
+<hr/>
+<p><strong>Seuraavaksi:</strong> <a href="/AI-Koulu/ai-architecture/04-design-principles/">Suunnitteluperiaatteet</a> — luotettavuus, skaalautuvuus ja turvallisuus.</p> </div> <!-- Navigaatio seuraavaan/edelliseen --> <nav style="
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--space-3xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid var(--color-border);
+    "> <span></span> <a href="/AI-Koulu/ai-architecture/" style="
+        color: var(--color-brand);
+        text-decoration: none;
+        font-weight: 500;
+      ">
+← Takaisin sisällykseen
+</a> </nav> </article>  </main> <!-- Alaosa --> <footer class="container-wide" style="
+      border-top: 1px solid var(--color-border);
+      padding-block: var(--space-xl);
+      margin-top: var(--space-3xl);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    "> <p> <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
+</p> <p style="margin-top: var(--space-sm);">
+Sisältö perustuu vuoden 2024–2026 tutkimukseen. Lähdeviitteet jokaisen luvun yhteydessä.
+</p> </footer> <!-- Teemanvaihtaja-skripti --> <script type="module">const o="ai-edu-theme";function r(){return typeof localStorage>"u"?"system":localStorage.getItem(o)||"system"}function a(e){typeof localStorage>"u"||(localStorage.setItem(o,e),c(e))}function c(e){const t=document.documentElement;if(e==="system"){const n=window.matchMedia("(prefers-color-scheme: dark)").matches;t.setAttribute("data-theme",n?"dark":"light")}else t.setAttribute("data-theme",e)}function d(){const e=window.matchMedia("(prefers-color-scheme: dark)"),t=()=>{r()==="system"&&c("system")};return e.addEventListener("change",t),()=>e.removeEventListener("change",t)}const s=document.getElementById("theme-toggle");s&&s.addEventListener("click",()=>{const e=r(),n={light:"dark",dark:"system",system:"light"}[e]||"light";a(n),s.setAttribute("aria-label",`Teema: ${n}`)});const m=d();document.addEventListener("astro:before-swap",m);</script> </body> </html> 

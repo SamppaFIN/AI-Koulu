@@ -1,0 +1,166 @@
+<!DOCTYPE html><html lang="fi" data-theme="system"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Mitä AI-ohjelmistoarkkitehtuuri tarkoittaa nyt (2024–2026) ja miksi sillä on väliä."><title>Johdanto AI-arkkitehtuureihin | AI & UI/UX Edu</title><!-- Fontit --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><!-- Globaalit tyylit --><link rel="stylesheet" href="/src/styles/globals.css"><!-- Teema-skripti (suoritetaan ennen renderöintiä flashin estämiseksi) --><script>
+      (function() {
+        var theme = localStorage.getItem('ai-edu-theme') || 'system';
+        var root = document.documentElement;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', theme);
+      })();
+    </script><style>.mdx-content h2{margin-top:var(--space-2xl);color:var(--color-brand-dark)}.mdx-content h3{margin-top:var(--space-xl)}.mdx-content p{margin-block:var(--space-md)}.mdx-content ul,.mdx-content ol{margin-block:var(--space-md);padding-left:var(--space-lg)}.mdx-content li{margin-block:var(--space-xs)}.mdx-content code{background:var(--color-bg-code);padding:.15rem .4rem;border-radius:4px;font-size:.85em}.mdx-content pre{background:var(--color-bg-code);border:1px solid var(--color-border);border-radius:8px;padding:var(--space-md);overflow-x:auto;margin-block:var(--space-lg)}.mdx-content pre code{background:none;padding:0}.mdx-content blockquote{border-left:4px solid var(--color-brand-light);padding-left:var(--space-lg);margin-block:var(--space-lg);color:var(--color-text-secondary);font-style:italic}.mdx-content a{color:var(--color-brand);text-decoration:underline;text-underline-offset:2px}.mdx-content a:hover{color:var(--color-brand-dark)}.mdx-content img{max-width:100%;border-radius:8px;margin-block:var(--space-lg)}.mdx-content hr{border:none;border-top:1px solid var(--color-border);margin-block:var(--space-2xl)}.mdx-content table{width:100%;border-collapse:collapse;margin-block:var(--space-lg)}.mdx-content th,.mdx-content td{padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);text-align:left}.mdx-content th{background:var(--color-bg-card);font-weight:600}
+</style></head> <body> <!-- Yläpalkki --> <header class="container-wide" style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+    "> <!-- Logo --> <a href="/AI-Koulu/" style="
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--color-brand);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      "> <span style="font-size: 1.5rem;">⚡</span>
+AI & UI/UX Edu
+</a> <!-- Navigaatio --> <nav aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);"> <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+AI-arkkitehtuurit
+</a> <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+UI/UX-käytännöt
+</a> <a href="/AI-Koulu/haku/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
+Haku
+</a> <!-- Teemanvaihtaja --> <button id="theme-toggle" aria-label="Vaihda teemaa" style="
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            color: var(--color-text);
+            font-size: 1rem;
+            line-height: 1;
+          ">
+🌓
+</button> </nav> </header> <!-- Pääsisältö --> <main>  <article class="container-content" style="padding-block: var(--space-2xl);"> <!-- Otsikko --> <header style="margin-bottom: var(--space-2xl);"> <p style="
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-brand);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-sm);
+      ">
+Luku 1 — Johdanto </p> <h1 style="margin: 0 0 var(--space-sm) 0;">Johdanto AI-arkkitehtuureihin</h1> <p style="color: var(--color-text-secondary); font-size: 1.1rem; margin: 0;"> Mitä AI-ohjelmistoarkkitehtuuri tarkoittaa nyt (2024–2026) ja miksi sillä on väliä. </p> </header> <!-- Varsinainen sisältö (MDX renderöitynä) --> <div class="mdx-content"> <h2 id="mitä-ai-ohjelmistoarkkitehtuuri-tarkoittaa-nyt">Mitä AI-ohjelmistoarkkitehtuuri tarkoittaa nyt?</h2>
+<p>Tekoäly on siirtynyt laboratorioista tuotantoon. Vuosina 2024–2026 AI-ohjelmistoarkkitehtuuri ei tarkoita enää pelkästään “lisää API-kutsu tähän” — se on oma
+tieteenalansa, jossa yhdistyvät perinteinen ohjelmistosuunnittelu, koneoppimisen
+tuotantoonvienti (MLOps) ja täysin uudet probabilististen järjestelmien haasteet.</p>
+<div style="background:oklch(0.6 0.18 240 / 0.1);border:1px solid oklch(0.6 0.18 240 / 0.3);border-radius:12px;padding:1rem 1.25rem;margin-block:1.5rem;display:flex;gap:0.75rem;align-items:flex-start" role="alert"><span style="font-size:1.3rem;flex-shrink:0;margin-top:0.1rem">ℹ️</span><div style="color:var(--color-text);line-height:1.6"><p><strong>Avainajatus:</strong> AI-järjestelmät ovat luonnostaan <em>epädeterministisiä</em> — sama syöte
+voi tuottaa eri tuloksen joka kerta. Tämä mullistaa kaiken, mitä tiedämme
+testaamisesta, virheidenkäsittelystä ja luotettavuudesta.</p></div></div>
+<h3 id="perinteinen-softa-vs-ai-natiivisovellus">Perinteinen softa vs. AI-natiivisovellus</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Ominaisuus</th><th>Perinteinen sovellus</th><th>AI-natiivisovellus</th></tr></thead><tbody><tr><td><strong>Logiikka</strong></td><td>Deterministinen (sama syöte = sama tulo)</td><td>Probabilistinen (sama syöte ≠ sama tulo)</td></tr><tr><td><strong>Virheet</strong></td><td>Poikkeukset (Exception)</td><td>Hiljainen virheellinen tulos, hallusinaatio</td></tr><tr><td><strong>Testaus</strong></td><td>Yksikkötestit, assertiot</td><td>Evaluaatiojoukot, laatumetriikat, A/B-testaus</td></tr><tr><td><strong>Suorituskyky</strong></td><td>CPU-aika, muisti</td><td>Latenssi, token-määrä, kontekstin koko</td></tr><tr><td><strong>Ylläpito</strong></td><td>Bugikorjaukset</td><td>Mallin ajautuminen (drift), uudelleenkoulutus</td></tr></tbody></table>
+<h3 id="miksi-arkkitehtuurivalinnoilla-on-valtava-merkitys">Miksi arkkitehtuurivalinnoilla on valtava merkitys?</h3>
+<p>Väärä arkkitehtuurivalinta voi tarkoittaa:</p>
+<ul>
+<li><strong>Kustannukset 10–100x kalliimpia</strong> — yksi turha LLM-kutsu voi maksaa enemmän
+kuin koko perinteisen backendin kuukausikulut</li>
+<li><strong>Vendor lock-in</strong> — jos koko systeemi on rakennettu yhden mallin ympärille,
+vaihto toiseen toimittajaan on massiivinen projekti</li>
+<li><strong>Käyttäjäkokemus kärsii</strong> — 3 sekunnin latenssi keskustelussa tappaa käyttäjäkokemuksen</li>
+</ul>
+<div style="background:color-mix(in oklab, var(--color-accent) 10%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-accent) 30%, var(--color-border));border-left:4px solid var(--color-accent);border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--color-accent);margin:0 0 0.5rem 0">💡 Reaalimaailman analogia</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Analogia:</strong> Hyvä AI-arkkitehtuuri on kuin ravintolan keittiö. Perinteinen
+ohjelmisto on pikaruokala — sama annos joka kerta, tarkat reseptit.
+AI-järjestelmä on fine dining -keittiö: kokki tulkitsee annoksen joka kerta
+uudelleen, käyttää eri raaka-aineita sesongin mukaan, ja saattaa joskus
+onnistua paremmin kuin toiste. Keittiön (arkkitehtuurin) pitää tukea tätä
+joustavuutta mutta varmistaa, että annos on aina turvallinen ja laadukas.</p></div></div>
+<div style="background:color-mix(in oklab, var(--color-brand) 12%, var(--color-bg-card));border:1px solid color-mix(in oklab, var(--color-brand) 25%, var(--color-border));border-radius:12px;padding:1.25rem 1.5rem;margin-block:1.5rem"><p style="font-weight:800;font-size:0.9rem;color:var(--color-brand);margin:0 0 0.5rem 0;display:flex;align-items:center;gap:0.5rem"><span style="font-size:1.2rem">🎯</span>Miksi tällä on väliä?</p><div style="color:var(--color-text);line-height:1.7"><p><strong>Miksi tällä on väliä?</strong> Arkkitehtuurivalinnat ovat pysyvin päätös, jonka
+teet AI-projektissa. Mallia voit vaihtaa, prompteja voit hienosäätää, dataa
+voit parantaa — mutta huonon arkkitehtuurin purkaminen on massiivinen projekti.
+Sijoita arkkitehtuurisuunnitteluun aikaa ennen kuin kirjoitat ensimmäistäkään
+riviä koodia.</p></div></div>
+<h3 id="paradigman-muutos-deterministisestä-probabilistiseen">Paradigman muutos: deterministisestä probabilistiseen</h3>
+<p>Tämä on ehkä suurin yksittäinen asia, joka kehittäjän on omaksuttava:</p>
+<p><strong>Deterministinen maailma</strong> — “Jos syöte on X ja koodi on Y, tulos on aina Z.”
+Voit testata, voit luottaa, voit rakentaa varovasti.</p>
+<p><strong>Probabilistinen maailma</strong> — “Jos syöte on X, malli tuottaa todennäköisimmin Z,
+mutta se voi tuottaa A, B, C, D, tai E.” Et voi enää testata “toimiiko tämä” —
+voit vain mitata “toimiiko tämä tarpeeksi usein”.</p>
+<p>Tämä muuttaa kaiken:</p>
+<ol>
+<li><strong>Virheidenkäsittely:</strong> Sen sijaan, että mietit “mitä poikkeuksia tämä heittää”,
+mietit “mihin malli voi päätyä ja miten estämme sen”</li>
+<li><strong>Testaus:</strong> Yksikkötestien rinnalle tulevat eval-joukot, joilla mitataan
+mallin suorituskykyä tietyillä syötteillä</li>
+<li><strong>Monitorointi:</strong> Sen sijaan, että tarkkailet “onko palvelin pystyssä”,
+tarkkailet “onko vastausten laatu laskenut” (ajautuminen)</li>
+</ol>
+<p>Lähdeviitteet: <sup><a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener noreferrer" title="Brown, T. B. et al. (2020). Language Models are Few-Shot Learners. NeurIPS." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->brown2020<!-- -->]</a></sup>, <sup><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener noreferrer" title="Vaswani, A. et al. (2017). Attention Is All You Need. NeurIPS." style="color:var(--color-brand);text-decoration:none;font-weight:600;cursor:pointer">[<!-- -->vaswani2017<!-- -->]</a></sup></p>
+<hr/>
+<h2 id="mitä-seuraavaksi">Mitä seuraavaksi?</h2>
+<p>Tutustu eri arkkitehtuurityyppeihin seuraavissa luvuissa:</p>
+<ul>
+<li><a href="/AI-Koulu/ai-architecture/02-1-api-wrappers/">API-kääremallit (Thin Wrappers)</a> — yksinkertaisin tapa</li>
+<li><a href="/AI-Koulu/ai-architecture/02-2-rag/">RAG-arkkitehtuurit</a> — tiedonhaun ja generoinnin yhdistäminen</li>
+<li><a href="/AI-Koulu/ai-architecture/02-3-agents/">Agenttipohjaiset arkkitehtuurit</a> — AI, joka toimii</li>
+</ul> </div> <!-- Navigaatio seuraavaan/edelliseen --> <nav style="
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--space-3xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid var(--color-border);
+    "> <span></span> <a href="/AI-Koulu/ai-architecture/" style="
+        color: var(--color-brand);
+        text-decoration: none;
+        font-weight: 500;
+      ">
+← Takaisin sisällykseen
+</a> </nav> </article>  </main> <!-- Alaosa --> <footer class="container-wide" style="
+      border-top: 1px solid var(--color-border);
+      padding-block: var(--space-xl);
+      margin-top: var(--space-3xl);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    "> <p> <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
+</p> <p style="margin-top: var(--space-sm);">
+Sisältö perustuu vuoden 2024–2026 tutkimukseen. Lähdeviitteet jokaisen luvun yhteydessä.
+</p> </footer> <!-- Teemanvaihtaja-skripti --> <script type="module">const o="ai-edu-theme";function r(){return typeof localStorage>"u"?"system":localStorage.getItem(o)||"system"}function a(e){typeof localStorage>"u"||(localStorage.setItem(o,e),c(e))}function c(e){const t=document.documentElement;if(e==="system"){const n=window.matchMedia("(prefers-color-scheme: dark)").matches;t.setAttribute("data-theme",n?"dark":"light")}else t.setAttribute("data-theme",e)}function d(){const e=window.matchMedia("(prefers-color-scheme: dark)"),t=()=>{r()==="system"&&c("system")};return e.addEventListener("change",t),()=>e.removeEventListener("change",t)}const s=document.getElementById("theme-toggle");s&&s.addEventListener("click",()=>{const e=r(),n={light:"dark",dark:"system",system:"light"}[e]||"light";a(n),s.setAttribute("aria-label",`Teema: ${n}`)});const m=d();document.addEventListener("astro:before-swap",m);</script> </body> </html> 
