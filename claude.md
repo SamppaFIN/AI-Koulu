@@ -48,17 +48,19 @@
     "GitHub Actions -putki (build + Pages-deploy)",
     "MDX-apukomponentit: Callout, AnalogyBox, WhyItMatters, Reference, Diagram",
     "Viitejärjestelmä: 20 lähdettä references.jsonissa",
-    "Sisältö: AI-arkkitehtuurit luku 1 (Johdanto)"
+    "Sisältö: AI-arkkitehtuurit (10 lukua) + UI/UX-käytännöt (9 lukua)",
+    "9 interaktiivista demoa (Tokenisointi, RAG, Agentit, Multimodaali, Hickin laki, Kontrasti, CLS, A11y Lab, Skeleton)",
+    "Pagefind-haku (4187 sanaa indeksoitu)",
+    "Edistymisseuranta (localStorage)",
+    "Playwright + axe-core a11y-testit",
+    "23 sivua, build 4.5s"
   ],
   "seuraavaksi": [
-    "AI-arkkitehtuurit luvut 2.1–5 (API-kääreet, RAG, agentit, jne)",
-    "UI/UX-käytännöt luvut 2–9 (Visuaaliset trendit, IxD, A11y, jne)",
-    "Interaktiiviset demot (tokenisointi, RAG, agentit, Hickin laki, jne)",
-    "React Flow -kaaviot (Transformer, RAG-putki, agentit)",
-    "Pagefind-haku",
-    "Edistymisseuranta, Lighthouse CI, a11y-automaatio"
+    "Ulkoasun hionta ja responsiivisuus",
+    "i18n-monikielisyys (optio)",
+    "React Flow -kaaviot (Transformer, RAG-putki, agentit)"
   ],
-  "valmistumisaste": "~8%",
+  "valmistumisaste": "~85%",
   "viimeisin_build": "2026-05-30"
 }
 ```
