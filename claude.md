@@ -53,14 +53,17 @@
     "Pagefind-haku (4187 sanaa indeksoitu)",
     "Edistymisseuranta (localStorage)",
     "Playwright + axe-core a11y-testit",
-    "23 sivua, build 4.5s"
+    "23 sivua, build 4.5s",
+    "UI Remaster: Aurora/Cosmic-teema, glass-efektit, elävät komponentit (8 kpl)",
+    "Muistitestit: ChapterQuiz 18 skenaariokysymyksellä",
+    "ADHD-ominaisuudet: ContinueJourney, ProgressOrb"
   ],
   "seuraavaksi": [
-    "Ulkoasun hionta ja responsiivisuus",
-    "i18n-monikielisyys (optio)",
-    "React Flow -kaaviot (Transformer, RAG-putki, agentit)"
+    "Lisää quiz-kysymyksiä (nyt 6/19 luvulla)",
+    "React Flow -kaaviot (Transformer, RAG-putki, agentit)",
+    "i18n-monikielisyys (optio)"
   ],
-  "valmistumisaste": "~85%",
+  "valmistumisaste": "~92%",
   "viimeisin_build": "2026-05-30"
 }
 ```
