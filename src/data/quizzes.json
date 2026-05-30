@@ -267,6 +267,244 @@
     ],
     "correctIndex": 1,
     "explanation": "Headless-komponenttikirjastot antavat parhaan molemmista maailmoista: saavutettavuus ja toiminnallisuus ovat valmiina (se on vaikein osa), mutta ulkoasu on täysin sinun hallinnassasi. Oman saavutettavuuden rakentaminen alusta on erittäin työlästä.",
-    "adhdTip": "🧩 Headless-komponentti on kuin auton runko ja moottori (toiminnallisuus+saavutettavuus) — maalaus ja penkit (ulkoasu) ovat sinun päätettävissäsi. Omien komponenttien teko on kuin rakentaisit auton renkaista asti itse."
-  }
+    "adhdTip": "🧩 Headless-komponentti on kuin auton runko ja moottori (toiminnallisuus+saavutettavuus) — maalaus ja penkit (ulkoasu) ovat sinun päätettävissäsi. Omien komponenttien teko on kuin rakentaisit auton renkaista asti itse."  },
+  {
+    "id": "q-04-design-principles-1",
+    "chapterSlug": "04-design-principles",
+    "scenario": "AI-järjestelmäsi on toiminut hyvin 6 kuukautta, mutta nyt käyttäjät valittavat että vastausten laatu on huonontunut. Mitään koodia ei ole muutettu.",
+    "question": "Mikä on todennäköisin syy ja miten arkkitehtuurin pitäisi tukea tämän havaitsemista?",
+    "options": [
+      "Malli on vanhentunut, päivitä uudempaan versioon",
+      "Data on ajautunut (drift) — mallin syöttämä data on muuttunut ajan myötä. Havainnoitavuus (observability) drift-monitoroinnilla olisi havainnut tämän heti",
+      "Käyttäjät eivät osaa käyttää järjestelmää",
+      "Palvelin on liian hidas"
+    ],
+    "correctIndex": 1,
+    "explanation": "Data drift on yleisin syy siihen, että AI-järjestelmän laatu heikkenee ajan myötä — data muuttuu, mutta malli ei. Havainnoitavuus (observability) drift-monitoroinnilla on ainoa tapa havaita tämä automaattisesti ennen kuin käyttäjät valittavat.",
+    "adhdTip": "📉 Drift on kuin kuntosaliharjoittelu: se mikä toimi 6 kk sitten ei välttämättä toimi enää. Tarvitset mittareita (observability) jotka kertovat kun on aika vaihtaa ohjelmaa."
+  },
+  {
+    "id": "q-04-design-principles-2",
+    "chapterSlug": "04-design-principles",
+    "scenario": "Rakennat AI-järjestelmää, jossa LLM tuottaa virheellisen vastauksen ja tämä aiheuttaa ketjureaktion — seuraava komponentti kaatuu, sitten seuraava.",
+    "question": "Mikä arkkitehtuurikuvio estää tämän?",
+    "options": [
+      "Lisää lisää GPU-tehoa",
+      "Piirikatkaisija (Circuit Breaker): jos LLM epäonnistuu N kertaa peräkkäin, katkaise piiri ja käytä fallback-strategiaa",
+      "Käytä aina isointa mahdollista mallia",
+      "Lisää uudelleenyrityslogiikka ilman rajaa"
+    ],
+    "correctIndex": 1,
+    "explanation": "Piirikatkaisija estää ketjureaktion: kun virheitä tulee tarpeeksi, se 'avaa piirin' ja ohjaa liikenteen fallback-strategiaan. Uudelleenyritys ilman rajaa pahentaa tilannetta (enemmän kutsuja = enemmän virheitä = enemmän kustannuksia).",
+    "adhdTip": "⚡ Piirikatkaisija on kuin palohälytin: kun savua tulee tarpeeksi, se katkaisee sähköt ennen kuin koko talo palaa. Ilman sitä pieni ongelma leviää koko järjestelmään."
+  },
+  {
+    "id": "q-05-reference-architectures-1",
+    "chapterSlug": "05-reference-architectures",
+    "scenario": "Asiakas haluaa yritystason RAG-järjestelmän. Hän sanoo: \"Meillä on 100 000 dokumenttia SharePointissa, Confluencessa ja S3:ssa. Käyttäjien pitää pystyä kysymään niistä.\"",
+    "question": "Mikä on järkevin arkkitehtuuri?",
+    "options": [
+      "Laita kaikki dokumentit yhteen isoon tekstitiedostoon ja anna LLM:lle",
+      "Rakenna ETL-putki (Airflow), chunkkaa dokumentit, upota vektoritietokantaan (Weaviate), rakenna API (FastAPI) ja UI (React)",
+      "Osta valmis SaaS-tuote",
+      "Hienosäädä malli dokumenteilla"
+    ],
+    "correctIndex": 1,
+    "explanation": "Yritystason RAG tarvitsee ETL-putken (Airflow) datan valmisteluun, vektoritietokannan (Weaviate/Pinecone) indeksointiin, API:n reitittämiseen ja UI:n käyttäjille. SaaS voi olla vaihtoehto, mutta harvoin skaalautuu 100 000 dokumentille.",
+    "adhdTip": "🏗️ Yritys-RAG on kuin kirjaston automaattivarasto. Et mene itse hakemaan kirjoja — robotti (ETL) hakee, varastoi (vektoritietokanta) ja toimittaa ne pyynnöstä (API) tiskille (UI)."
+  },
+  {
+    "id": "q-01-hcd-1",
+    "chapterSlug": "01-hcd",
+    "scenario": "Suunnittelutiimi on rakentanut uuden ominaisuuden 3 kuukauden ajan. Kun se julkaistaan, käyttäjät eivät ymmärrä sitä. Yksi tiimin jäsen sanoo: \"Meidän pitäisi kouluttaa käyttäjiä paremmin.\"",
+    "question": "Mikä on oikea analyysi tilanteesta?",
+    "options": [
+      "Käyttäjät eivät vain osaa käyttää sitä — lisää ohjevideoita",
+      "Ongelma on suunnittelussa: tiimi ei tehnyt käyttäjätutkimusta eikä testannut prototyyppiä käyttäjillä ennen toteutusta. 'Sinä et ole käyttäjäsi'",
+      "Ominaisuus on liian monimutkainen, yksinkertaista sitä",
+      "Julkaise uusi versio viikon päästä"
+    ],
+    "correctIndex": 1,
+    "explanation": "HCD-periaate: 'You are not your user.' Jos tiimi ei testaa käyttäjillä ennen toteutusta, se tekee oletuksia jotka eivät pidä paikkaansa. Kolme kuukautta ilman käyttäjätestausta on liian pitkä aika.",
+    "adhdTip": "👥 'Sinä et ole käyttäjäsi' = sinä pidät kahvista, mutta et tee kahvia kaikille. Kysy ennen kuin tarjoilet."
+  },
+  {
+    "id": "q-01-hcd-2",
+    "chapterSlug": "01-hcd",
+    "scenario": "Asiakas sanoo: \"Meillä on jo analytiikka Google Analyticsissa. Tiedämme mitä käyttäjät tekevät. Se riittää.\"",
+    "question": "Mitä puuttuu, jos luotat pelkkään analytiikkaan?",
+    "options": [
+      "Analytiikka riittää — se on objektiivista dataa",
+      "Analytiikka kertoo mitä käyttäjät tekevät, mutta ei miksi. Tarvitaan kvalitatiivista tutkimusta (haastattelut, käytettävyystestit) ymmärtämään syitä",
+      "Tarvitaan isompi otoskoko",
+      "Analytiikka pitää yhdistää tekoälyyn"
+    ],
+    "correctIndex": 1,
+    "explanation": "Analytiikka on kvantitatiivista — se kertoo 'mitä' tapahtuu. Kvalitatiivinen tutkimus kertoo 'miksi'. Molempia tarvitaan: analytiikka osoittaa ongelman, käyttäjähaastattelu paljastaa syyn.",
+    "adhdTip": "📊 Analytiikka = verikoe (mitä). Haastattelu = lääkärin kysely (miksi). Verikoe yksin ei paranna ketään."
+  },
+  {
+    "id": "q-02-visual-trends-1",
+    "chapterSlug": "02-visual-trends",
+    "scenario": "Graafinen suunnittelija esittelee uuden designin, jossa on kauniita lasimaisia pintoja (glassmorphism), pastellivärejä ja pieni fonttikoko. SEO-spesialisti huomauttaa saavutettavuusongelmista.",
+    "question": "Mikä on todennäköisin saavutettavuusongelma glassmorphism-designissa?",
+    "options": [
+      "Lasipinnat eivät lataudu tarpeeksi nopeasti",
+      "Backdrop-filter + vaalea teksti läpinäkyvällä pinnalla voi aiheuttaa liian matalan kontrastin, erityisesti eri taustakuvilla",
+      "Mobiililla lasiefekti ei toimi",
+      "Lasipinta on liian painava prosessoida"
+    ],
+    "correctIndex": 1,
+    "explanation": "Glassmorphismin suurin riski on kontrasti: kun tausta vaihtuu, tekstin ja taustan välinen kontrasti voi muuttua dramaattisesti. APCA/WCAG-kontrastit pitää tarkistaa kaikilla mahdollisilla taustaväreillä.",
+    "adhdTip": "🪟 Lasipinta on kuin sumea ikkuna — mitä sumeampi lasi, sitä vaikeampi on lukea siihen kirjoitettua tekstiä. Testaa aina eri taustoilla."
+  },
+  {
+    "id": "q-03-interaction-design-1",
+    "chapterSlug": "03-interaction-design",
+    "scenario": "Käyttäjä täyttää pitkää lomaketta (10 kenttää). Hän painaa 'Lähetä' ja saa virheilmoituksen, mutta kenttää, jossa on virhe, ei ole merkitty. Käyttäjä täyttää koko lomakkeen uudelleen.",
+    "question": "Mikä IxD-periaate on rikottu?",
+    "options": [
+      "Lomake on liian pitkä",
+      "Virhetilojen ja palautumisen suunnittelu: virhe pitää näyttää inline (kentän vieressä), kentät eivät saa tyhjentyä, ja virheviestin pitää kertoa miten korjata",
+      "Nappi on väärän värinen",
+      "Lomakkeella ei ole tarpeeksi validaatiota"
+    ],
+    "correctIndex": 1,
+    "explanation": "Hyvä IxD: virhe näytetään välittömästi kentän vieressä (inline), kentät säilyttävät arvonsa, ja virheviesti kertoo tarkalleen mikä on pielessä ja miten se korjataan.",
+    "adhdTip": "❌ Hyvä virheviesti = 'Sähköposti on virheellinen, tarkista @-merkki'. Huono = 'Virhe lomakkeessa'. Kerro mitä korjata, älä että jokin on rikki."
+  },
+  {
+    "id": "q-04-accessibility-2",
+    "chapterSlug": "04-accessibility",
+    "scenario": "Sivustollasi on interaktiivinen kysely, jossa käyttäjä vastaa kyllä/ei-painikkeilla. Näkövammainen käyttäjä ei pysty vastaamaan ruudunlukijalla.",
+    "question": "Mikä on todennäköisin syy?",
+    "options": [
+      "Ruudunlukija on liian vanha",
+      "Painikkeet on toteutettu div-elementteinä ilman role='button', tabindexiä tai näppäimistökäsittelijää. Ruudunlukija ei tunnista niitä painikkeiksi",
+      "Värit ovat liian vaaleita",
+      "Sivu latautuu liian hitaasti"
+    ],
+    "correctIndex": 1,
+    "explanation": "Tämä on yleisin a11y-virhe: 'div-painikkeet'. Ilman role='button', tabindex='0' ja keydown-käsittelijää div-elementti on ruudunlukijalle vain 'sisältöalue'. Ratkaisu: käytä aina natiivia <button>-elementtiä jos mahdollista.",
+    "adhdTip": "🔘 Natiivi painike = oikea työkalu. Div-painike = jakoavain naulana. Sillä ehkä saa naulan seinään, mutta se ei ole tarkoitettu siihen."
+  },
+  {
+    "id": "q-05-performance-2",
+    "chapterSlug": "05-performance",
+    "scenario": "Sivustosi INP (Interaction to Next Frame) on 450ms. Käyttäjät valittavat, että klikkaus tuntuu hitaalta.",
+    "question": "Mikä on todennäköisin syy?",
+    "options": [
+      "Verkko on hidas",
+      "Raskas JavaScript estää pääsäiettä (main thread) — pitkä laskenta tai suuri DOM-muutos estää selainta vastaamasta käyttäjän toimintoon alle 200ms:ssä",
+      "CSS on liian monimutkainen",
+      "Palvelin on liian kaukana"
+    ],
+    "correctIndex": 1,
+    "explanation": "INP mittaa viivettä käyttäjän toiminnon ja selaimen vasteen välillä. Raskas JS pääsäikeellä (esim. suuri taulukon renderöinti, JSON-parsinta) estää selainta reagoimasta. Ratkaisu: siirrä raskas laskenta Web Workerille tai käytä requestIdleCallback.",
+    "adhdTip": "⏱️ INP on kuin oven kahva: kun käännät sitä, oven pitää aueta heti. Jos joudut odottamaan 450ms, luulet oven olevan jumissa. Pidä pääsäie vapaana!"
+  },
+  {
+    "id": "q-06-modern-ui-2",
+    "chapterSlug": "06-modern-ui",
+    "scenario": "Sinun piti näyttää 'Lataa...'-tekstiä datan haun aikana. Käytit useStatea ja useEffectia. Joskus teksti jää näkyviin, joskus ei, ja se vilkkuu.",
+    "question": "Mikä on parempi tapa hallita tämä tila?",
+    "options": [
+      "Käytä setTimeout-fixiä",
+      "Käytä TanStack Query (React Query) -kirjastoa, joka hallitsee automaattisesti lataus-, virhe- ja onnistumistilat ilman manuaalista useStatea",
+      "Lisää lisää useEffecteja",
+      "Käytä globaalia tilaa (Redux)"
+    ],
+    "correctIndex": 1,
+    "explanation": "Palvelimen tilan hallinta (server state) on eri asia kuin asiakkaan tila (UI-tila). TanStack Query hoitaa automaattisesti lataustilan, välimuistituksen, uudelleenhakutoiminnot ja virheenkäsittelyn — ilman että sinun tarvitsee kirjoittaa yhtään useStatea tai useEffectia datan hakemiseen.",
+    "adhdTip": "🔄 useState datalle = kokkaat itse joka aterian. TanStack Query = tilaat ruoan. Saat valmiin + virheenkäsittelyn + välimuistin ilmaiseksi."
+  },
+  {
+    "id": "q-07-ai-ux-1",
+    "chapterSlug": "07-ai-ux",
+    "scenario": "Olet rakentamassa AI-chatbotia. Käyttäjä kysyy henkilökohtaisen taloustietonsa. AI vastaa oikein, mutta käyttäjä järkyttyy: 'Mistä tiesit?'",
+    "question": "Mikä eettinen periaate on rikottu?",
+    "options": [
+      "Yksityisyys ja läpinäkyvyys: käyttäjän pitää aina tietää, mitä dataa AI käyttää ja mihin sitä käytetään. Läpinäkyvyys on luottamuksen perusta",
+      "AI ei saa vastata talouskysymyksiin",
+      "Chatbotin pitäisi aina kieltäytyä henkilökohtaisista kysymyksistä",
+      "Käyttäjän pitäisi lukea käyttöehdot"
+    ],
+    "correctIndex": 0,
+    "explanation": "AI-käyttöliittymien tärkein eettinen periaate on läpinäkyvyys. Käyttäjän pitää tietää mitä dataa järjestelmä käyttää, mihin se perustaa vastauksensa ja milloin se on AI:n eikä ihmisen tuottamaa. Ilman läpinäkyvyyttä luottamus menetetään.",
+    "adhdTip": "🔮 Läpinäkyvyys = taikuri joka kertoo temppunsa. Taika on yhtä hieno, mutta katsoja luottaa ettei häntä huijata."
+  },
+  {
+    "id": "q-07-ai-ux-2",
+    "chapterSlug": "07-ai-ux",
+    "scenario": "AI-chatbot alkaa ehdottaa tuotteita, joita käyttäjä ei ole koskaan hakenut — mutta jotka ovat todella osuvia. Käyttäjä tuntee olonsa 'läpinäkyväksi'.",
+    "question": "Miten personointi tehdään eettisesti?",
+    "options": [
+      "Älä personoi ollenkaan",
+      "Kerro käyttäjälle mihin ehdotukset perustuvat, anna mahdollisuus muokata profiilia ja kytkeä personointi pois päältä",
+      "Personoi mutta älä kerro — se pilaa yllätyksen",
+      "Kysy lupa ennen jokaista ehdotusta"
+    ],
+    "correctIndex": 1,
+    "explanation": "Personointi on hyvä — mutta sen pitää olla hallittavaa ja läpinäkyvää. Käyttäjän pitää nähdä mihin ehdotukset perustuvat, voida muokata niitä ja halutessaan kytkeä personointi pois. Tämä säilyttää käyttäjän autonomian.",
+    "adhdTip": "🎁 Personointi on kuin ystävä joka tietää syntymäpäivälahjasi. Se on ihanaa — mutta jos se tietää lahjan kertomatta miten, se on hiivistelyä."
+  },
+  {
+    "id": "q-08-ux-research-1",
+    "chapterSlug": "08-ux-research",
+    "scenario": "Tuotejohtaja sanoo: 'Meillä on tunne, että käyttäjät eivät löydä tuotteita hausta. Mutta analytiikka näyttää, että haku on kyllä käytössä.'",
+    "question": "Miten selvität onko ongelma todellinen?",
+    "options": [
+      "Lisää analytiikkaan seurantaa",
+      "Käytä useita menetelmiä: suppiloanalyysi (näyttää missä vaiheessa käyttäjät putoavat), puukoe (tree testing — testaa onko hakurakenne looginen) ja käytettävyystestaus (näyttää miksi käyttäjät eivät löydä)",
+      "Kysy käyttäjiltä suoraan sähköpostilla",
+      "Rakenna haku uudelleen"
+    ],
+    "correctIndex": 1,
+    "explanation": "Analytiikka kertoo mitä tapahtuu, mutta ei miksi. Suppiloanalyysi näyttää missä käyttäjät putoavat, puukoe testaa informaatioarkkitehtuurin, ja käytettävyystestaus paljastaa syyt. Yksi menetelmä ei riitä.",
+    "adhdTip": "🔍 Yksi tutkimusmenetelmä on kuin taskulamppu pimeässä huoneessa — näet yhden asian, mutta et kokonaisuutta. Useampi lamppu eri suunnista näyttää koko huoneen."
+  },
+  {
+    "id": "q-08-ux-research-2",
+    "chapterSlug": "08-ux-research",
+    "scenario": "Olet tehnyt A/B-testin: variantti B paransi konversiota 15%. Mutta se vaikuttaa negatiivisesti palaavien käyttäjien määrään (-20%).",
+    "question": "Mitä päätät ja miksi?",
+    "options": [
+      "Ota B käyttöön — konversio on tärkein",
+      "Älä ota B:tä käyttöön ilman lisäanalyysiä. HEART-mittareista Retention (paluu) on yhtä tärkeä kuin Task Success (konversio). Tutki miksi palaavat käyttäjät vähenevät",
+      "Ota molemmat käyttöön — A uusille, B palaaville",
+      "Jatka testiä 2 viikkoa"
+    ],
+    "correctIndex": 1,
+    "explanation": "HEART-mittarit muistuttavat, että yksi metriikka ei kerro koko tarinaa. Jos konversio nousee mutta paluu laskee, se voi tarkoittaa 'kertakäyttöistä' parannusta — käyttäjät ostavat kerran mutta eivät palaa. Se ei ole kestävää.",
+    "adhdTip": "📈 HEART = 5 mittaria, 1 totuus. Konversio on kuin treffien määrä. Paluu on kuin toiset treffit. Paljon treffejä mutta ei toisia = jokin pielessä."
+  },
+  {
+    "id": "q-09-tools-1",
+    "chapterSlug": "09-tools",
+    "scenario": "Suunnittelija on tehnyt Figmassa uuden komponentin. Kehittäjä rakentaa sen Reactissa. Lopputulos on eri näköinen — värit, välit ja fontit eivät täsmää.",
+    "question": "Mikä työnkulku estäisi tämän?",
+    "options": [
+      "Kehittäjän pitää kopioida tarkemmin",
+      "Design tokenit: suunnittelija määrittelee värit, välit ja typografian yhteisessä JSON-tiedostossa (esim. design tokens.json). Sekä Figma että koodi käyttävät samoja tokeneita",
+      "Parempi photoshop-ohjelma",
+      "Kehittäjä ja suunnittelija eivät saa koskaan muuttaa asioita itsenäisesti"
+    ],
+    "correctIndex": 1,
+    "explanation": "Design tokenit ovat yhteinen kieli suunnittelun ja kehityksen välillä. Kun tokenit on määritelty (värit, välit, typografia), kumpikin osapuoli käyttää samoja arvoja. Tämä estää tulkintaerot ja nopeuttaa kehitystä.",
+    "adhdTip": "🎨 Design tokenit = yhteinen värikartta. Suunnittelija ja kehittäjä värittävät samalla paletilla, joten lopputulos on aina sama. Ilman yhteistä palettia toinen käyttää sinistä, toinen turkoosia."
+  },
+  {
+    "id": "q-09-tools-2",
+    "chapterSlug": "09-tools",
+    "scenario": "Komponentti näyttää toimivan, mutta kun testaaja klikkaa 'Osta'-painiketta eri selaimella, painike ei tee mitään. Kehittäjän koneella toimii.",
+    "question": "Miten tämä olisi voitu havaita automaattisesti?",
+    "options": [
+      "Lisää enemmän käyttäjätestausta",
+      "Playwright E2E-testi: kirjoita testi joka avaa selaimen, klikkaa 'Osta'-painiketta ja varmistaa että tapahtuu oikea asia. Aja testi jokaisella PR:llä ja eri selaimilla",
+      "Käytä manuaalista testausta",
+      "Korjaa painike"
+    ],
+    "correctIndex": 1,
+    "explanation": "Playwright E2E-testit ajavat oikeaa selainta ja testaavat oikeita klikkauksia. Ne havaitsevat ongelmat, joita yksikkötestit eivät näe (selainyhteensopivuus, JS-virheet, verkko-ongelmat). Kun testi on CI-putkessa, jokainen koodimuutos testataan automaattisesti.",
+    "adhdTip": "🧪 Playwright = robotti joka testaa sivustoa puolestasi. Se klikkaa, kirjoittaa ja tarkistaa nopeammin kuin kukaan ihminen — eikä koskaan väsy."  }
 ]

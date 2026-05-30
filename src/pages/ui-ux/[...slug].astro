@@ -13,6 +13,7 @@ import CLSDemo from "../../components/demo/CLSDemo.tsx";
 import AccessibilityLab from "../../components/demo/AccessibilityLab.tsx";
 import SkeletonStudio from "../../components/demo/SkeletonStudio.tsx";
 import ChapterQuiz from "../../components/demo/ChapterQuiz.tsx";
+import RAGDiagram from "../../components/diagrams/RAGDiagram.tsx";
 
 export async function getStaticPaths() {
   const chapters = await getCollection("ui-ux");
@@ -24,7 +25,7 @@ export async function getStaticPaths() {
 
 const { chapter } = Astro.props;
 const { Content } = await chapter.render();
-const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, HicksLawGame, ContrastTool, CLSDemo, AccessibilityLab, SkeletonStudio, ChapterQuiz };
+const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, HicksLawGame, ContrastTool, CLSDemo, AccessibilityLab, SkeletonStudio, ChapterQuiz, RAGDiagram };
 ---
 
 <Layout title={chapter.data.title} description={chapter.data.description} entry={chapter}>

@@ -10,9 +10,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "lint": "tsc --noEmit",
-    "test": "npx playwright test",
-    "test:a11y": "npx playwright test tests/a11y.spec.ts",
     "test": "vitest run",
+    "test:a11y": "npx playwright test tests/a11y.spec.ts",
     "test:watch": "vitest"
   },
   "dependencies": {
@@ -23,7 +22,7 @@
     "@radix-ui/react-dropdown-menu": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.0",
-    "@xyflow/react": "^12.0.0",
+    "@xyflow/react": "^12.10.2",
     "astro": "^5.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
