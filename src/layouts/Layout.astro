@@ -44,16 +44,11 @@ const { title, description } = Astro.props;
     <AuroraBackground client:visible />
 
     <!-- Yläpalkki -->
-    <header class="container-wide" style="
+    <header class="container-wide header-glass" style="
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding-block: var(--space-md);
-      border-bottom: 1px solid var(--color-border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--color-bg);
     ">
       <!-- Logo -->
       <a href="/AI-Koulu/" style="
@@ -107,14 +102,7 @@ const { title, description } = Astro.props;
     </main>
 
     <!-- Alaosa -->
-    <footer class="container-wide" style="
-      border-top: 1px solid var(--color-border);
-      padding-block: var(--space-xl);
-      margin-top: var(--space-3xl);
-      text-align: center;
-      color: var(--color-text-muted);
-      font-size: 0.875rem;
-    ">
+    <footer class="container-wide footer-glass">
       <p>
         <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
       </p>

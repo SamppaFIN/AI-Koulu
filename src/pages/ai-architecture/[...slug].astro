@@ -135,16 +135,37 @@ const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, T
   }
   .mdx-content table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
     margin-block: var(--space-lg);
-  }
-  .mdx-content th, .mdx-content td {
-    padding: var(--space-sm) var(--space-md);
-    border: 1px solid var(--color-border);
-    text-align: left;
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
   }
   .mdx-content th {
-    background: var(--color-bg-card);
-    font-weight: 600;
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-brand);
+    text-align: left;
+    border-bottom: 1px solid var(--glass-border);
+    background: linear-gradient(135deg, oklch(0.55 0.24 280 / 0.12), oklch(0.65 0.28 350 / 0.08));
+  }
+  .mdx-content td {
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--color-border-light);
+    color: var(--color-text);
+  }
+  .mdx-content tbody tr:last-child td {
+    border-bottom: none;
+  }
+  .mdx-content tbody tr:hover {
+    background: oklch(0.55 0.24 280 / 0.04);
   }
 </style>
