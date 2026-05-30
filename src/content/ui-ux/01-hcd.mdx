@@ -1,0 +1,98 @@
+---
+title: "Ihmiskeskeinen suunnittelu (HCD)"
+description: "Käyttäjätutkimus, personat, empatiakartat ja esteettömyys osana ydinsuunnittelua."
+order: 1
+section: "Perusperiaatteet"
+tags: ["HCD", "UX", "käyttäjätutkimus", "esteettömyys"]
+published: true
+---
+
+## Ihmiskeskeinen suunnittelu
+
+Ihmiskeskeinen suunnittelu (Human-Centered Design, HCD) on prosessi, jossa
+käyttäjä on kaiken keskiössä. Ei riitä, että tuote *toimii* — sen pitää
+toimia *oikeiden ihmisten arjessa*.
+
+<Callout type="tip">
+  **Kultainen sääntö:** "You are not your user." — Sinun mieltymyksesi,
+  taitosi ja kontekstisi eivät ole sama asia kuin käyttäjäsi.
+</Callout>
+
+### Käyttäjätutkimuksen menetelmät
+
+| Menetelmä | Milloin käyttää | Vahvuudet | Heikkoudet |
+|---|---|---|---|
+| **Haastattelut** | Alkuvaihe, syvä ymmärrys | Rikas data, yllättävät oivallukset | Pieni otos, ei skaalaudu |
+| **Kontekstuaalinen tutkimus** | Kun käyttötapa on monimutkainen | Todellinen konteksti paljastuu | Resurssi-intensiivinen |
+| **Kyselyt** | Laaja määrällinen data | Skaalautuu, tilastollinen merkitsevyys | Pinnallista, konteksti puuttuu |
+| **Analytiikka** | Jatkuva seuranta | Objektiivista, isolla datalla | "Mitä" ei "miksi" |
+
+<AnalogyBox>
+  **Analogia:** Käyttäjätutkimus on kuin kalaverkko — yksittäinen haastattelu
+  on yksi silmä verkossa. Saatat saada kiinni ison kalan (tärkeän oivalluksen),
+  mutta verkko toimii parhaiten, kun käytät useita menetelmiä rinnakkain.
+  Jos luotat vain yhteen menetelmään, kalat uivat välistä.
+</AnalogyBox>
+
+### Personat, käyttäjäpolut ja palvelumuotoilu
+
+**Personat** ovat fiktiivisiä, mutta tutkimukseen perustuvia käyttäjäprofiileja.
+Hyvä persona sisältää:
+
+- Nimi, ikä, rooli
+- Tavoitteet ja motivaatiot
+- Kipupisteet ja turhautumat
+- Tekninen osaamistaso
+
+**Käyttäjäpolut (User Journeys)** kuvaavat käyttäjän matkan alusta loppuun.
+Jokaisessa vaiheessa dokumentoidaan:
+
+1. **Toiminta** — mitä käyttäjä tekee
+2. **Ajatus** — mitä käyttäjä ajattelee
+3. **Tunne** — mitä käyttäjä tuntee (ilo, turhautuminen, hämmennys)
+4. **Mahdollisuus** — miten voimme parantaa
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Suunnitteluratkaisut ovat vain arvauksia, ellet
+  tunne käyttäjääsi. Jokainen euro käyttäjätutkimukseen säästää kymmenen euroa
+  virheellisten ominaisuuksien kehittämisessä.
+</WhyItMatters>
+
+### Empatiakartat
+
+Empatiakartta on yhden hengen työkalu, joka auttaa tiimiä asettumaan käyttäjän
+asemaan. Se jakautuu neljään osa-alueeseen:
+
+<Diagram type="empathy-map">
+  {/* Tähän tulee myöhemmin React-komponentti */}
+</Diagram>
+
+- **Sanoo** — mitä käyttäjä sanoo ääneen
+- **Ajattelee** — mitä käyttäjä ajattelee (mutta ei ehkä sano)
+- **Tekee** — mitä käyttäjä tekee
+- **Tuntee** — mitä käyttäjä tuntee (tunteet, turhautumat, ilot)
+
+### Esteettömyys osana ydinsuunnittelua
+
+Esteettömyys (accessibility, a11y) ei ole lisäosa — se on perusedellytys.
+Noin 15–20 % maailman väestöstä elää jonkin vamman kanssa. Esteettömyys
+ei kuitenkaan hyödytä vain vammaisia:
+
+- **Tekstitys** auttaa myös meluisassa ympäristössä
+- **Korkea kontrasti** auttaa auringonpaisteessa
+- **Näppäimistönavigaatio** auttaa tehokäyttäjiä
+
+Keskeiset standardit:
+- **WCAG 2.2** — Web Content Accessibility Guidelines, AA-taso on tavoite
+- **EN 301 549** — EU:n saavutettavuusdirektiivi (pakolliinen julkisille toimijoille)
+- **ARIA** — Accessible Rich Internet Applications -attribuutit
+
+<Reference id="w3c2023" />
+<Reference id="norman2013" />
+<Reference id="nielsen2012" />
+
+---
+
+## Seuraavaksi
+
+Tutustu [visuaalisiin trendeihin](/AI-Koulu/ui-ux/02-visual-trends/) — typografia, värit, animaatio ja tilallinen suunnittelu.

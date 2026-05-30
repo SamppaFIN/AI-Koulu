@@ -1,6 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
+import Callout from "../../components/ui/Callout.tsx";
+import AnalogyBox from "../../components/ui/AnalogyBox.tsx";
+import WhyItMatters from "../../components/ui/WhyItMatters.tsx";
+import Reference from "../../components/ui/Reference.tsx";
+import Diagram from "../../components/ui/Diagram.tsx";
 
 export async function getStaticPaths() {
   const chapters = await getCollection("ui-ux");
@@ -12,6 +17,7 @@ export async function getStaticPaths() {
 
 const { chapter } = Astro.props;
 const { Content } = await chapter.render();
+const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram };
 ---
 
 <Layout title={chapter.data.title} description={chapter.data.description} entry={chapter}>
@@ -36,7 +42,7 @@ const { Content } = await chapter.render();
 
     <!-- Varsinainen sisältö (MDX renderöitynä) -->
     <div class="mdx-content">
-      <Content />
+      <Content components={mdxComponents} />
     </div>
 
     <!-- Navigaatio seuraavaan/edelliseen -->

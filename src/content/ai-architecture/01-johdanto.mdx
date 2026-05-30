@@ -1,0 +1,88 @@
+---
+title: "Johdanto AI-arkkitehtuureihin"
+description: "Mitä AI-ohjelmistoarkkitehtuuri tarkoittaa nyt (2024–2026) ja miksi sillä on väliä."
+order: 1
+section: "Johdanto"
+tags: ["AI", "arkkitehtuuri", "paradigma"]
+published: true
+---
+
+## Mitä AI-ohjelmistoarkkitehtuuri tarkoittaa nyt?
+
+Tekoäly on siirtynyt laboratorioista tuotantoon. Vuosina 2024–2026 AI-ohjelmistoarkkitehtuuri ei tarkoita enää pelkästään "lisää API-kutsu tähän" — se on oma
+tieteenalansa, jossa yhdistyvät perinteinen ohjelmistosuunnittelu, koneoppimisen
+tuotantoonvienti (MLOps) ja täysin uudet probabilististen järjestelmien haasteet.
+
+<Callout type="info">
+  **Avainajatus:** AI-järjestelmät ovat luonnostaan *epädeterministisiä* — sama syöte
+  voi tuottaa eri tuloksen joka kerta. Tämä mullistaa kaiken, mitä tiedämme
+  testaamisesta, virheidenkäsittelystä ja luotettavuudesta.
+</Callout>
+
+### Perinteinen softa vs. AI-natiivisovellus
+
+| Ominaisuus | Perinteinen sovellus | AI-natiivisovellus |
+|---|---|---|
+| **Logiikka** | Deterministinen (sama syöte = sama tulo) | Probabilistinen (sama syöte ≠ sama tulo) |
+| **Virheet** | Poikkeukset (Exception) | Hiljainen virheellinen tulos, hallusinaatio |
+| **Testaus** | Yksikkötestit, assertiot | Evaluaatiojoukot, laatumetriikat, A/B-testaus |
+| **Suorituskyky** | CPU-aika, muisti | Latenssi, token-määrä, kontekstin koko |
+| **Ylläpito** | Bugikorjaukset | Mallin ajautuminen (drift), uudelleenkoulutus |
+
+### Miksi arkkitehtuurivalinnoilla on valtava merkitys?
+
+Väärä arkkitehtuurivalinta voi tarkoittaa:
+
+- **Kustannukset 10–100x kalliimpia** — yksi turha LLM-kutsu voi maksaa enemmän
+  kuin koko perinteisen backendin kuukausikulut
+- **Vendor lock-in** — jos koko systeemi on rakennettu yhden mallin ympärille,
+  vaihto toiseen toimittajaan on massiivinen projekti
+- **Käyttäjäkokemus kärsii** — 3 sekunnin latenssi keskustelussa tappaa käyttäjäkokemuksen
+
+<AnalogyBox>
+  **Analogia:** Hyvä AI-arkkitehtuuri on kuin ravintolan keittiö. Perinteinen
+  ohjelmisto on pikaruokala — sama annos joka kerta, tarkat reseptit.
+  AI-järjestelmä on fine dining -keittiö: kokki tulkitsee annoksen joka kerta
+  uudelleen, käyttää eri raaka-aineita sesongin mukaan, ja saattaa joskus
+  onnistua paremmin kuin toiste. Keittiön (arkkitehtuurin) pitää tukea tätä
+  joustavuutta mutta varmistaa, että annos on aina turvallinen ja laadukas.
+</AnalogyBox>
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Arkkitehtuurivalinnat ovat pysyvin päätös, jonka
+  teet AI-projektissa. Mallia voit vaihtaa, prompteja voit hienosäätää, dataa
+  voit parantaa — mutta huonon arkkitehtuurin purkaminen on massiivinen projekti.
+  Sijoita arkkitehtuurisuunnitteluun aikaa ennen kuin kirjoitat ensimmäistäkään
+  riviä koodia.
+</WhyItMatters>
+
+### Paradigman muutos: deterministisestä probabilistiseen
+
+Tämä on ehkä suurin yksittäinen asia, joka kehittäjän on omaksuttava:
+
+**Deterministinen maailma** — "Jos syöte on X ja koodi on Y, tulos on aina Z."
+Voit testata, voit luottaa, voit rakentaa varovasti.
+
+**Probabilistinen maailma** — "Jos syöte on X, malli tuottaa todennäköisimmin Z,
+mutta se voi tuottaa A, B, C, D, tai E." Et voi enää testata "toimiiko tämä" —
+voit vain mitata "toimiiko tämä tarpeeksi usein".
+
+Tämä muuttaa kaiken:
+
+1. **Virheidenkäsittely:** Sen sijaan, että mietit "mitä poikkeuksia tämä heittää",
+   mietit "mihin malli voi päätyä ja miten estämme sen"
+2. **Testaus:** Yksikkötestien rinnalle tulevat eval-joukot, joilla mitataan
+   mallin suorituskykyä tietyillä syötteillä
+3. **Monitorointi:** Sen sijaan, että tarkkailet "onko palvelin pystyssä",
+   tarkkailet "onko vastausten laatu laskenut" (ajautuminen)
+
+Lähdeviitteet: <Reference id="brown2020" />, <Reference id="vaswani2017" />
+
+---
+
+## Mitä seuraavaksi?
+
+Tutustu eri arkkitehtuurityyppeihin seuraavissa luvuissa:
+- [API-kääremallit (Thin Wrappers)](/AI-Koulu/ai-architecture/02-1-api-wrappers/) — yksinkertaisin tapa
+- [RAG-arkkitehtuurit](/AI-Koulu/ai-architecture/02-2-rag/) — tiedonhaun ja generoinnin yhdistäminen
+- [Agenttipohjaiset arkkitehtuurit](/AI-Koulu/ai-architecture/02-3-agents/) — AI, joka toimii
