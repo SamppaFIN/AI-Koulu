@@ -1,0 +1,178 @@
+[
+  {
+    "id": "vaswani2017",
+    "authors": "Vaswani, A. et al.",
+    "title": "Attention Is All You Need",
+    "year": 2017,
+    "venue": "NeurIPS",
+    "url": "https://arxiv.org/abs/1706.03762",
+    "doi": "10.48550/arXiv.1706.03762"
+  },
+  {
+    "id": "brown2020",
+    "authors": "Brown, T. B. et al.",
+    "title": "Language Models are Few-Shot Learners",
+    "year": 2020,
+    "venue": "NeurIPS",
+    "url": "https://arxiv.org/abs/2005.14165",
+    "doi": "10.48550/arXiv.2005.14165"
+  },
+  {
+    "id": "lewis2020",
+    "authors": "Lewis, P. et al.",
+    "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+    "year": 2020,
+    "venue": "NeurIPS",
+    "url": "https://arxiv.org/abs/2005.11401",
+    "doi": "10.48550/arXiv.2005.11401"
+  },
+  {
+    "id": "yao2022",
+    "authors": "Yao, S. et al.",
+    "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+    "year": 2022,
+    "venue": "ICLR",
+    "url": "https://arxiv.org/abs/2210.03629",
+    "doi": "10.48550/arXiv.2210.03629"
+  },
+  {
+    "id": "wei2022",
+    "authors": "Wei, J. et al.",
+    "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+    "year": 2022,
+    "venue": "NeurIPS",
+    "url": "https://arxiv.org/abs/2201.11903",
+    "doi": "10.48550/arXiv.2201.11903"
+  },
+  {
+    "id": "chen2021",
+    "authors": "Chen, M. et al.",
+    "title": "Evaluating Large Language Models Trained on Code",
+    "year": 2021,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2107.03374",
+    "doi": "10.48550/arXiv.2107.03374"
+  },
+  {
+    "id": "openai2023",
+    "authors": "OpenAI",
+    "title": "GPT-4 Technical Report",
+    "year": 2023,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2303.08774",
+    "doi": "10.48550/arXiv.2303.08774"
+  },
+  {
+    "id": "anil2023",
+    "authors": "Anil, R. et al.",
+    "title": "PaLM 2 Technical Report",
+    "year": 2023,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2305.10403",
+    "doi": "10.48550/arXiv.2305.10403"
+  },
+  {
+    "id": "touvron2023",
+    "authors": "Touvron, H. et al.",
+    "title": "LLaMA: Open and Efficient Foundation Language Models",
+    "year": 2023,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2302.13971",
+    "doi": "10.48550/arXiv.2302.13971"
+  },
+  {
+    "id": "radford2021",
+    "authors": "Radford, A. et al.",
+    "title": "Learning Transferable Visual Models From Natural Language Supervision (CLIP)",
+    "year": 2021,
+    "venue": "ICML",
+    "url": "https://arxiv.org/abs/2103.00020",
+    "doi": "10.48550/arXiv.2103.00020"
+  },
+  {
+    "id": "wang2023",
+    "authors": "Wang, L. et al.",
+    "title": "A Survey on Large Language Model based Autonomous Agents",
+    "year": 2023,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2308.11432",
+    "doi": "10.48550/arXiv.2308.11432"
+  },
+  {
+    "id": "xi2023",
+    "authors": "Xi, Z. et al.",
+    "title": "The Rise and Potential of Large Language Model Based Agents: A Survey",
+    "year": 2023,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2309.07864",
+    "doi": "10.48550/arXiv.2309.07864"
+  },
+  {
+    "id": "gao2023",
+    "authors": "Gao, Y. et al.",
+    "title": "Retrieval-Augmented Generation for Large Language Models: A Survey",
+    "year": 2023,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2312.10997",
+    "doi": "10.48550/arXiv.2312.10997"
+  },
+  {
+    "id": "kwiatkowski2019",
+    "authors": "Kwiatkowski, T. et al.",
+    "title": "Natural Questions: A Benchmark for Question Answering",
+    "year": 2019,
+    "venue": "ACL",
+    "url": "https://aclanthology.org/Q19-1006/",
+    "doi": "10.1162/tacl_a_00276"
+  },
+  {
+    "id": "w3c2023",
+    "authors": "W3C",
+    "title": "Web Content Accessibility Guidelines (WCAG) 2.2",
+    "year": 2023,
+    "venue": "W3C Recommendation",
+    "url": "https://www.w3.org/TR/WCAG22/"
+  },
+  {
+    "id": "hick1952",
+    "authors": "Hick, W. E.",
+    "title": "On the rate of gain of information",
+    "year": 1952,
+    "venue": "Quarterly Journal of Experimental Psychology",
+    "url": "https://doi.org/10.1080/17470215208416600",
+    "doi": "10.1080/17470215208416600"
+  },
+  {
+    "id": "fitts1954",
+    "authors": "Fitts, P. M.",
+    "title": "The information capacity of the human motor system in controlling the amplitude of movement",
+    "year": 1954,
+    "venue": "Journal of Experimental Psychology",
+    "url": "https://doi.org/10.1037/h0055392",
+    "doi": "10.1037/h0055392"
+  },
+  {
+    "id": "nielsen2012",
+    "authors": "Nielsen, J.",
+    "title": "Usability 101: Introduction to Usability",
+    "year": 2012,
+    "venue": "Nielsen Norman Group",
+    "url": "https://www.nngroup.com/articles/usability-101-introduction-to-usability/"
+  },
+  {
+    "id": "norman2013",
+    "authors": "Norman, D.",
+    "title": "The Design of Everyday Things",
+    "year": 2013,
+    "venue": "Basic Books",
+    "url": "https://www.nngroup.com/books/design-everyday-things/"
+  },
+  {
+    "id": "google2024",
+    "authors": "Google",
+    "title": "Web Vitals",
+    "year": 2024,
+    "venue": "web.dev",
+    "url": "https://web.dev/articles/vitals"
+  }
+]

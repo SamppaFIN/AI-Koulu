@@ -1,0 +1,69 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const chapters = await getCollection("ai-architecture");
+const sorted = chapters.sort((a, b) => a.data.order - b.data.order);
+---
+
+<Layout title="AI-arkkitehtuurit" description="Nykyajan AI-kehityksen ohjelmistoarkkitehtuurimallit">
+  <section class="container-content" style="padding-block: var(--space-3xl);">
+    <h1 style="color: var(--color-brand);">AI-arkkitehtuurit</h1>
+    <p style="color: var(--color-text-secondary); font-size: 1.2rem; margin-bottom: var(--space-2xl);">
+      Nykyajan AI-kehityksen ohjelmistoarkkitehtuurimallit — API-kääreistä agenttijärjestelmiin.
+    </p>
+
+    <div style="
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+    ">
+      {sorted.map((chapter) => (
+        <a href={`/AI-Koulu/ai-architecture/${chapter.id}/`} class="chapter-link">
+          <article style="
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-lg);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            transition: transform 0.2s, box-shadow 0.2s;
+          ">
+            <div style="
+              font-size: 0.8rem;
+              font-weight: 700;
+              color: var(--color-brand);
+              background: color-mix(in oklab, var(--color-brand) 15%, transparent);
+              padding: 0.2rem 0.6rem;
+              border-radius: 999px;
+              white-space: nowrap;
+            ">
+              Luku {chapter.data.order}
+            </div>
+            <div>
+              <h2 style="margin: 0 0 var(--space-xs) 0; font-size: 1.2rem;">
+                {chapter.data.title}
+              </h2>
+              <p style="margin: 0; color: var(--color-text-secondary);">
+                {chapter.data.description}
+              </p>
+            </div>
+          </article>
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style is:global>
+  .chapter-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  .chapter-link:hover article {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-brand-light);
+  }
+</style>
