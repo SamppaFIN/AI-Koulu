@@ -12,6 +12,7 @@ import ContrastTool from "../../components/demo/ContrastTool.tsx";
 import CLSDemo from "../../components/demo/CLSDemo.tsx";
 import AccessibilityLab from "../../components/demo/AccessibilityLab.tsx";
 import SkeletonStudio from "../../components/demo/SkeletonStudio.tsx";
+import ChapterQuiz from "../../components/demo/ChapterQuiz.tsx";
 
 export async function getStaticPaths() {
   const chapters = await getCollection("ui-ux");
@@ -23,7 +24,7 @@ export async function getStaticPaths() {
 
 const { chapter } = Astro.props;
 const { Content } = await chapter.render();
-const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, HicksLawGame, ContrastTool, CLSDemo, AccessibilityLab, SkeletonStudio };
+const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, HicksLawGame, ContrastTool, CLSDemo, AccessibilityLab, SkeletonStudio, ChapterQuiz };
 ---
 
 <Layout title={chapter.data.title} description={chapter.data.description} entry={chapter}>
@@ -69,7 +70,7 @@ const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, H
       </a>
     </nav>
   </article>
-  <ProgressWrapper slug={chapter.slug} client:visible />
+  <ProgressWrapper slug={chapter.slug} title={chapter.data.title} section={chapter.data.section} client:visible />
 </Layout>
 
 <style is:global>

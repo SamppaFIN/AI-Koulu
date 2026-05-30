@@ -1,8 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import ContinueJourney from "../components/ui/ContinueJourney.tsx";
 ---
 
 <Layout title="AI-arkkitehtuurit & UI/UX-käytännöt" description="Interaktiivinen opetussivusto modernista AI-ohjelmistoarkkitehtuurista ja UI/UX-käytännöistä">
+  <!-- Jatka matkaa -blokki -->
+  <ContinueJourney client:visible />
+
   <!-- Hero -->
   <section class="container-content" style="
     text-align: center;

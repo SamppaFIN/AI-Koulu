@@ -10,6 +10,7 @@ import TokenizerDemo from "../../components/demo/TokenizerDemo.tsx";
 import RAGPlayground from "../../components/demo/RAGPlayground.tsx";
 import AgentSimulation from "../../components/demo/AgentSimulation.tsx";
 import MultimodalComparison from "../../components/demo/MultimodalComparison.tsx";
+import ChapterQuiz from "../../components/demo/ChapterQuiz.tsx";
 import ProgressWrapper from "../../components/ProgressWrapper.tsx";
 
 export async function getStaticPaths() {
@@ -22,7 +23,7 @@ export async function getStaticPaths() {
 
 const { chapter } = Astro.props;
 const { Content } = await chapter.render();
-const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, TokenizerDemo, RAGPlayground, AgentSimulation, MultimodalComparison };
+const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, TokenizerDemo, RAGPlayground, AgentSimulation, MultimodalComparison, ChapterQuiz };  
 ---
 
 <Layout title={chapter.data.title} description={chapter.data.description} entry={chapter}>
@@ -68,7 +69,7 @@ const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, T
       </a>
     </nav>
   </article>
-  <ProgressWrapper slug={chapter.slug} client:visible />
+  <ProgressWrapper slug={chapter.slug} title={chapter.data.title} section={chapter.data.section} client:visible />
 </Layout>
 
 <style is:global>

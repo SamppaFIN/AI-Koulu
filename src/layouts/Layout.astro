@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import AuroraBackground from "../components/ui/AuroraBackground.tsx";
 
 export interface Props {
   title: string;
@@ -40,6 +41,8 @@ const { title, description } = Astro.props;
     </script>
   </head>
   <body>
+    <AuroraBackground client:visible />
+
     <!-- Yläpalkki -->
     <header class="container-wide" style="
       display: flex;

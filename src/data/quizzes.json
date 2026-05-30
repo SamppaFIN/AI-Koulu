@@ -1,0 +1,272 @@
+[
+  {
+    "id": "q-01-johdanto-1",
+    "chapterSlug": "01-johdanto",
+    "scenario": "Olet aloittamassa uutta projektia, jossa rakennetaan asiakaspalvelubottia. Projektipäällikkö sanoo: \"Käytetään vaan GPT-4o suoraan, eihän se ole vaikeaa.\"",
+    "question": "Mikä on suurin riski, jos rakennatte chatbotin suorilla API-kutsuilla ilman minkäänlaista arkkitehtuuria?",
+    "options": [
+      "Malli ei toimi koska se on liian hidas",
+      "Järjestelmä on epädeterministinen — et voi taata vastausten laatua etkä tietoturvaa",
+      "GPT-4o ei ymmärrä suomea tarpeeksi hyvin",
+      "Hinta on liian korkea alusta asti"
+    ],
+    "correctIndex": 1,
+    "explanation": "AI-järjestelmien suurin ero perinteiseen softaan on epädeterminismi. Sama syöte voi tuottaa eri tuloksen joka kerta. Ilman arkkitehtuuria (fallbackit, monitorointi, prompt-hallinta) menetät kontrollin. Muut vaihtoehdot ovat myös mahdollisia ongelmia, mutta ne voidaan ratkaista — epädeterminismi on fundamentaalinen ominaisuus.",
+    "adhdTip": "🧠 Ajattele: perinteinen softa on resepti, AI on kokki. Reseptiä seuraamalla saat aina saman lopputuloksen. Kokki voi onnistua tai epäonnistua — tarvitset keittiömestarin (arkkitehtuurin) varmistamaan laadun."
+  },
+  {
+    "id": "q-01-johdanto-2",
+    "chapterSlug": "01-johdanto",
+    "scenario": "Yrityksesi AI-järjestelmä antaa välillä loistavia vastauksia ja välillä täysin väärää tietoa. Käyttäjät valittavat epäjohdonmukaisuudesta.",
+    "question": "Miten arkkitehtuurilla voit vähentää tätä ongelmaa?",
+    "options": [
+      "Vaihda kalliimpaan malliin",
+      "Lisää eval-joukot, fallback-strategiat ja monitorointi — mittaa laatua, älä oleta sitä",
+      "Kouluta käyttäjät esittämään parempia kysymyksiä",
+      "Käytä aina samaa API-avainta"
+    ],
+    "correctIndex": 1,
+    "explanation": "AI-järjestelmässä et voi 'korjata' epädeterminismiä — voit vain hallita sitä. Eval-joukot mittaavat onko laatu riittävä, fallback-strategiat tarjoavat varasuunnitelman, ja monitorointi havaitsee kun laatu laskee.",
+    "adhdTip": "🎯 Eval-joukot = koetta vastaava koe. Fallback = varasuunnitelma jos koe menee pieleen. Monitorointi = opettaja joka huomaa jos kokeet menevät huonompaan suuntaan."
+  },
+  {
+    "id": "q-01-johdanto-3",
+    "chapterSlug": "01-johdanto",
+    "scenario": "Olet myymässä AI-ratkaisua asiakkaalle. Asiakas kysyy: \"Miten tämä eroaa tavallisesta ohjelmistosta? Minua huolettaa että se tekee virheitä.\"",
+    "question": "Miten selität eron perinteisen ja AI-sovelluksen välillä yksinkertaisesti?",
+    "options": [
+      "AI on älykkäämpi, joten se tekee vähemmän virheitä",
+      "Perinteinen ohjelmisto noudattaa tarkkoja sääntöjä, AI tekee todennäköisyyspäätelmiä — sen takia meillä on oltava ihmiskontrolli ja fallbackit",
+      "AI korjaa itse itsensä, joten virheet katoavat ajan myötä",
+      "AI on vain markkinointitermi — sama asia kuin ennenkin"
+    ],
+    "correctIndex": 1,
+    "explanation": "Perinteinen ohjelmisto on deterministinen: sama syöte = sama tulos. AI on probabilistinen: se arvaa parhaan mahdollisen vastauksen. Sen takia AI-järjestelmä tarvitsee erilaisen arkkitehtuurin — fallbackit, monitoroinnin ja ihmiskontrollin.",
+    "adhdTip": "🔄 Perinteinen softa = laskin (2+2=4 aina). AI = arvaaja (2+2=... todennäköisesti 4, mutta voi olla 3 tai 5). Kummallakin on paikkansa, mutta arvaaja tarvitsee valvojan."
+  },
+  {
+    "id": "q-02-1-api-wrappers-1",
+    "chapterSlug": "02-1-api-wrappers",
+    "scenario": "Startupisi tekee chatbot-prototypyppiä. Sinulla on deadline viikon päästä. Yksi perustajista haluaa rakentaa oman LLM-infrastruktuurin \"koska se on halvempaa pitkällä tähtäimellä\".",
+    "question": "Mitä teet?",
+    "options": [
+      "Rakenna oma infra — se on ainoa tapa saada laadukas tuote",
+      "Käytä API-käärettä nyt, mutta rakenna abstraktiokerros joka mahdollistaa vaihdon myöhemmin",
+      "Käytä pelkästään prompt engineeringiä, ei tarvita API-kutsuja",
+      "Osta valmis chatbot SaaS-palveluna"
+    ],
+    "correctIndex": 1,
+    "explanation": "API-kääre on oikea valinta MVP:hen. Abstraktiokerros (interface + eri providerit) estää vendor lock-inin. Omaa infraa voi harkita myöhemmin kun tuote on validoitu ja skaalautuvuus on todellinen ongelma.",
+    "adhdTip": "🏃 API-kääre = taksimatka. Oma infra = oman auton hankinta. Kun on kiire, ota taksi. Osta auto vasta kun tiedät minne ajat joka päivä."
+  },
+  {
+    "id": "q-02-1-api-wrappers-2",
+    "chapterSlug": "02-1-api-wrappers",
+    "scenario": "Asiakkaasi chatbot alkaa yhtäkkiä maksaa 10x enemmän kuin viime kuussa. Selvitys paljastaa, että joku lataa botilla koko Wikipediaa kysymys kerrallaan.",
+    "question": "Mikä arkkitehtuurimuutos estää tämän uusiutumisen?",
+    "options": [
+      "Vaihda halvempaan malliin",
+      "Lisää nopeusrajoitus (rate limiting), token-budjetointi ja kustannusperäinen monitorointi",
+      "Poista chatbot käytöstä",
+      "Lisää välimuisti joka tallentaa kaikki vastaukset"
+    ],
+    "correctIndex": 1,
+    "explanation": "API-kääreissä kustannukset voivat karata, koska jokainen kysely maksaa. Rate limiting estää väärinkäytön, token-budjetointi auttaa hallitsemaan kuluja, ja kustannusperäinen monitorointi havaitsee poikkeamat ajoissa.",
+    "adhdTip": "💰 Kuvittele että jokainen API-kutsu maksaa euron. Jos joku soittaa 10 000 kertaa, lasku on 10 000€. Haluat varmaan tietää kuka soittaa ja miksi — siihen tarvitset laskurin (monitoroinnin)."
+  },
+  {
+    "id": "q-02-2-rag-1",
+    "chapterSlug": "02-2-rag",
+    "scenario": "Yrityksesi dokumentit (PDF, Confluence, SharePoint) sisältävät kaiken tiedon, mutta LLM hallusinoi vastauksia. Asiakas uhkaa purkaa sopimuksen, jos \"AI ei osaa vastata edes omiin dokumentteihin perustuviin kysymyksiin\".",
+    "question": "Mikä arkkitehtuuri pelastaa tilanteen?",
+    "options": [
+      "Hienosäädä malli dokumenteilla",
+      "Rakenna RAG-järjestelmä: chunkkaa dokumentit → upota vektoritietokantaan → hae konteksti → generoi vastaus",
+      "Vaihda OpenAI:sta Anthropiciin",
+      "Palkkaa ihmisiä lukemaan dokumentit ja kirjoittamaan vastaukset valmiiksi"
+    ],
+    "correctIndex": 1,
+    "explanation": "RAG on suunniteltu juuri tähän: se hakee relevantit dokumentit ja antaa ne LLM:lle kontekstiksi. Hienosäätö opettaisi mallille faktoja, mutta RAG on halvempi, helpompi päivittää ja vähentää hallusinaatioita enemmän. Vaihtoehto C ei auta, koska ongelma on kontekstin puute, ei mallin laatu.",
+    "adhdTip": "📚 RAG = avoin kirja -koe. Hienosäätö = ulkoläksy. Kun data muuttuu, avoimen kirjan kokeessa päivität vain kirjat. Ulkoläksyssä joudut opettelemaan kaiken uusiksi."
+  },
+  {
+    "id": "q-02-2-rag-2",
+    "chapterSlug": "02-2-rag",
+    "scenario": "RAG-järjestelmäsi toimii hyvin, mutta on liian hidas. Jokainen kysely kestää 4-5 sekuntia, koska se hakee vektoritietokannasta, upottaa kyselyn ja generoi vastauksen peräkkäin.",
+    "question": "Miten nopeutat järjestelmää?",
+    "options": [
+      "Poista vektorihaku ja kysy suoraan LLM:ltä",
+      "Lisää semanttinen välimuisti, streaming ja prefetching — samankaltaiset kyselyt palautetaan välimuistista, streaming nopeuttaa koettua suorituskykyä",
+      "Osta nopeampi GPU",
+      "Pienennä dokumentteja"
+    ],
+    "correctIndex": 1,
+    "explanation": "Semanttinen cache (GPTCache) palauttaa samankaltaiset kyselyt suoraan välimuistista ilman uutta hakua. Streaming lähettää tokenit heti kun ne syntyvät, joten käyttäjä kokee nopeuden paremmaksi. Prefetching hakee seuraavan todennäköisimmän kontekstin etukäteen.",
+    "adhdTip": "⏩ Välimuisti on kuin herkkupala taskussa — kun nälkä tulee, se on heti valmiina. Streaming on kuin pitserian tiskiltä syöminen: saat palan heti, et odota koko pitsan valmistumista."
+  },
+  {
+    "id": "q-02-3-agents-1",
+    "chapterSlug": "02-3-agents",
+    "scenario": "Rakennat autonomista asiakaspalveluagenttia. Ensimmäisessä testissä agentti jää jumiin: se yrittää hakea asiakkaan tietoja, tulkitsee tuloksen väärin ja aloittaa haun alusta — 15 kertaa minuutissa, laskuttaen joka kerta.",
+    "question": "Mikä on kriittisin asia, jonka pitää olla agentin arkkitehtuurissa ennen tuotantoon laittoa?",
+    "options": [
+      "Nopeampi malli",
+      "Päättelysilmukan katkaisu: maksimi iteraatiot, timeout, ja havaintojen validointi ennen uutta toimintoa",
+      "Enemmän työkaluja",
+      "Parempi käyttöliittymä"
+    ],
+    "correctIndex": 1,
+    "explanation": "Agenttien suurin käytännön ongelma on päättelysilmukat (infinite loops). Ilman rajoituksia agentti voi jäädä ikuiseen silmukkaan ja tuottaa valtavia laskuja. Maksimi iteraatiot (esim. 10), timeout (esim. 30s) ja havaintojen validointi estävät tämän.",
+    "adhdTip": "🔄 Agentti ilman katkaisijaa on kuin robottipölynimuri ilman reunatunnistinta — se pyörii ja pyörii ja pyörii. Anna sille selvä \"seinä\" (timeout) ja \"ovi\" (lopetusehto)."
+  },
+  {
+    "id": "q-02-3-agents-2",
+    "chapterSlug": "02-3-agents",
+    "scenario": "Monen agentin järjestelmässä yksi agentti tuottaa json-dataa toiselle agentille. Data on välillä virheellistä, eikä vastaanottaja-agentti osaa käsitellä virhettä.",
+    "question": "Miten ratkaiset tämän arkkitehtuuritasolla?",
+    "options": [
+      "Kouluta molemmat agentit uudelleen",
+      "Lisää skeemavalidaatio agenttien väliseen kommunikaatioon ja virheenkäsittely (esim. Zod-skeema + uudelleenyrityslogiikka)",
+      "Käytä vain yhtä agenttia",
+      "Lisää lokitusta"
+    ],
+    "correctIndex": 1,
+    "explanation": "Agenttien välinen kommunikaatio tarvitsee samaa virheenkäsittelyä kuin mikä tahansa hajautettu järjestelmä. Skeemavalidaatio (Zod, TypeScript) tarkistaa datan oikeellisuuden, ja uudelleenyrityslogiikka antaa lähettäjä-agentille mahdollisuuden korjata virhe.",
+    "adhdTip": "📋 Agenttien välinen data on kuin viesti pullossa. Skeemavalidaatio on kuin tarkistaisit pullon korkin ja osoitteen ennen heittämistä. Ilman sitä viesti kelluu merellä kukaan ei tiedä minne."
+  },
+  {
+    "id": "q-02-4-finetuning-1",
+    "chapterSlug": "02-4-finetuning",
+    "scenario": "Asiakas haluaa AI:n joka vastaa aina tarkassa JSON-muodossa, tietyllä kenttärakenteella. Prompt engineering ei toimi tarpeeksi hyvin — malli unohtaa muodon ajoittain.",
+    "question": "Mikä on oikea ratkaisu? Hienosäätö, RAG vai jotain muuta?",
+    "options": [
+      "RAG — lisää JSON-esimerkkejä vektoritietokantaan",
+      "Hienosäätö — anna mallille 1000 esimerkkiä oikeasta JSON-muodosta, niin se oppii muodon pysyvästi",
+      "Käytä suurempaa mallia",
+      "Kirjoita säännöllinen lauseke joka parsii vastauksen"
+    ],
+    "correctIndex": 1,
+    "explanation": "Kun ongelma on ulosoton *muoto* (ei *faktat*), hienosäätö on oikea työkalu. RAG sopii faktojen hallintaan, hienosäätö muodon ja tyylin oppimiseen. 1000 esimerkkiä on riittävä määrä muodon oppimiseen.",
+    "adhdTip": "🎨 Hienosäätö = opettaa piirtämään tietyn tyylin. RAG = antaa esimerkkikuvia joita kopioida. Jos haluat aina saman tyylin, hienosäätö on oikea valinta."
+  },
+  {
+    "id": "q-02-5-multimodal-1",
+    "chapterSlug": "02-5-multimodal",
+    "scenario": "Rakennat järjestelmää, joka analysoi skannattuja laskuja (PDF). Järjestelmän pitää tunnistaa laskun numero, summa, päivämäärä ja toimittaja.",
+    "question": "Mikä arkkitehtuuri sopii tähän parhaiten?",
+    "options": [
+      "Pelkkä LLM — anna laskukuva mallille ja kysy numeroa",
+      "OCR (tekstintunnistus) + taulukon irrotus + multimodaalinen LLM analysoimaan kuvan ja tekstin yhdessä",
+      "Pelkkä säännöllinen lauseke",
+      "Kouluta uusi neuronaaliverkko alusta asti"
+    ],
+    "correctIndex": 1,
+    "explanation": "Skannatut laskut tarvitsevat OCR:ää tekstin irrottamiseen, taulukon irrotusta rakenteen tunnistamiseen, ja multimodaalisen LLM:n yhdistämään kuvan ja tekstin tiedot. Yksikään teknologia yksin ei riitä.",
+    "adhdTip": "🔍 Laskun analysointi = kolme silmäparia. OCR lukee tekstin, taulukon irrotus löytää rivit, LLM yhdistää. Yksi silmäpari ei riitä — tarvitset kaikki kolme."
+  },
+  {
+    "id": "q-02-6-hybrid-1",
+    "chapterSlug": "02-6-hybrid",
+    "scenario": "Asiakaspalvelujärjestelmässä on satoja säännöllisiä kysymyksiä (\"Mikä on saldoni?\") ja satunnaisia monimutkaisia kysymyksiä. LLM maksaa liikaa jokaiseen kysymykseen vastaamiseen.",
+    "question": "Mikä arkkitehtuuri on kustannustehokkain?",
+    "options": [
+      "Käytä LLM:ää kaikkeen — se on paras",
+      "Hybridi: sääntöpohjainen reititin ohjaa yksinkertaiset kyselyt kevyeen käsittelijään ja monimutkaiset LLM:lle",
+      "Käytä vain sääntöjä — ne ovat ilmaisia",
+      "Käytä vain pientä mallia kaikkeen"
+    ],
+    "correctIndex": 1,
+    "explanation": "Hybridiarkkitehtuuri on kustannustehokkain: säännöt hoitavat rutiinit (edullista, nopeaa), LLM hoitaa poikkeukset (kallista, joustavaa). Sääntöpohjainen reititin päättää kumpaa käyttää.",
+    "adhdTip": "⚡ Hybridi = puhelinvaihde. \"Saldokyselyt, paina 1\" (sääntö). \"Muu kysymys, paina 2\" (LLM). Kaikki eivät tarvitse asiantuntijaa — ja asiantuntija maksaa."
+  },
+  {
+    "id": "q-02-6-hybrid-2",
+    "chapterSlug": "02-6-hybrid",
+    "scenario": "Lääketieteellisessä AI-järjestelmässä jokainen diagnoosiehdotus pitää tarkistaa ennen potilaalle lähettämistä.",
+    "question": "Miten arkkitehtuurin pitäisi tukea tätä?",
+    "options": [
+      "Luota malliin — se on tarkempi kuin ihminen",
+      "Ihmiskontrolli silmukassa (HITL): AI ehdottaa, ihminen hyväksyy/hylkää/muokkaa, vasta sitten tulos menee potilaalle",
+      "Käytä vain ihmisiä",
+      "Lisää toinen AI tarkistamaan ensimmäisen AI:n vastaukset"
+    ],
+    "correctIndex": 1,
+    "explanation": "Korkean riskin sovelluksissa (terveydenhuolto, rahoitus) HITL on pakollinen. AI ehdottaa, ihminen varmistaa. Tämä on hybridiarkkitehtuurin tärkein muoto.",
+    "adhdTip": "🩺 HITL = lääkärin toinen mielipide. AI on kuin laboratoriotesti — antaa tuloksen, mutta lääkäri tulkitsee sen ennen hoitoa."
+  },
+  {
+    "id": "q-03-infrastructure-1",
+    "chapterSlug": "03-infrastructure",
+    "scenario": "Yrityksesi AI-mallin käyttö on kasvanut 10x kolmessa kuukaudessa. Palvelin vastaa hitaasti ja välillä kaatuu. Sinulla on yksi GPU-palvelin pystyssä.",
+    "question": "Mikä on nopein tapa skaalata tuotantoon?",
+    "options": [
+      "Osta isompi GPU",
+      "Lisää autoskaalaus (HPA), käytä vLLM:ää tehokkaampaan inferenssiin ja lisää keep-alive jotta kylmäkäynnistys ei hidasta",
+      "Siirry serverless-arkkitehtuuriin",
+      "Vähennä käyttäjien määrää"
+    ],
+    "correctIndex": 1,
+    "explanation": "Autoskaalaus varmistaa että käytössä on juuri oikea määrä resursseja. vLLM optimoi GPU-muistin käyttöä (PagedAttention). Keep-alive estää kylmäkäynnistyksen viiveet.",
+    "adhdTip": "📈 Autoskaalaus = bussiliikenne ruuhka-aikana. Ruuhka-aikaan lisää busseja, hiljaisena aikana vähemmän. vLLM on kuin bussin kaksikerroksinen malli — mahtuu enemmän matkustajia."
+  },
+  {
+    "id": "q-04-accessibility-1",
+    "chapterSlug": "04-accessibility",
+    "scenario": "Yrityksesi verkkosivusto saa EU:n saavutettavuusdirektiivin mukaisen huomautuksen. Sivuilla on lomake, jota ei voi käyttää ruudunlukijalla.",
+    "question": "Mikä on todennäköisin syy ja miten se korjataan?",
+    "options": [
+      "Sivusto on liian hidas, päivitä palvelinta",
+      "Lomakkeen kentillä ei ole label-elementtejä tai aria-labelia — ruudunlukija ei tiedä mitä kenttään pitää kirjoittaa",
+      "Fontti on liian pieni",
+      "Värit ovat väärät"
+    ],
+    "correctIndex": 1,
+    "explanation": "Yleisin saavutettavuusvirhe on puuttuva label. Ilman labelia ruudunlukija ei osaa kertoa käyttäjälle mitä kenttään pitää syöttää. Korjaus: lisää <label for=\"id\"> tai aria-label jokaiseen kenttään.",
+    "adhdTip": "🏷️ Label on kuin nimilappu. Ilman sitä ruudunlukija sanoo \"tyhjä kenttä\" — käyttäjä ei tiedä pitääkö sinne laittaa nimi, osoite vai salasana."
+  },
+  {
+    "id": "q-05-performance-1",
+    "chapterSlug": "05-performance",
+    "scenario": "Sivustosi LCP on 4.2 sekuntia. Google on laskenut hakusijoituksia. Sivun suurin elementti on hero-kuva.",
+    "question": "Mikä on nopein tapa parantaa LCP:tä?",
+    "options": [
+      "Poista kuva kokonaan",
+      "Lisää kuvan width+height attribuutit, käytä WebP/AVIF-formaattia, aseta fetchpriority=\"high\" ja loading=\"eager\"",
+      "Pienennä kuvaa visuaalisesti",
+      "Siirrä kuva CDN:ään"
+    ],
+    "correctIndex": 1,
+    "explanation": "LCP-kuvan optimointi: width+height estää layout-shiftin, WebP/AVIF pienentää kokoa, fetchpriority=\"high\" priorisoi latauksen ja loading=\"eager\" varmistaa ettei kuvaa lazy loadata.",
+    "adhdTip": "🖼️ LCP on kuin ensimmäinen vaikutelma treffeillä. Jos kuva (ensivaikutelma) kestää 4 sekuntia, toinen osapuoli on jo lähtenyt. Optimoi = pukeudu valmiiksi ennen treffejä."
+  },
+  {
+    "id": "q-04-a11y-contrast-1",
+    "chapterSlug": "04-accessibility",
+    "scenario": "Suunnittelija on valinnut vaaleanharmaan tekstin (#999999) valkoiselle taustalle. \"Se näyttää tyylikkäältä\", hän sanoo.",
+    "question": "Mitä vastaat?",
+    "options": [
+      "\"Olet oikeassa, se on tyylikäs\"",
+      "\"Kontrasti on liian alhainen (noin 2.5:1). Se ei läpäise WCAG AA -tasoa (4.5:1). Vaihdetaan #666666 tai tummempaan, jotta teksti on luettava myös auringonpaisteessa\"",
+      "\"Käytetään isompaa fonttia niin kontrasti ei ole ongelma\"",
+      "\"Lisätään varjo tekstin taakse\""
+    ],
+    "correctIndex": 1,
+    "explanation": "WCAG 2.2 AA vaatii vähintään 4.5:1 kontrastisuhteen normaalille tekstille (3:1 suurelle). #999999 valkoisella on noin 2.5:1 — liian matala. Tummempi teksti (#666666) antaa noin 5.5:1.",
+    "adhdTip": "👁️ Kontrasti = kahvin vahvuus. Mieto kahvi (vaalea teksti) häviää valkoiseen mukiin. Tumma kahvi (tumma teksti) erottuu. Älä tarjoile mietoa kahvia."
+  },
+  {
+    "id": "q-06-modern-ui-1",
+    "chapterSlug": "06-modern-ui",
+    "scenario": "Tiimisi on rakentamassa design systemiä. Yksi ehdotti \"tehdään omat komponentit alusta asti, jotta ne ovat täysin meidän hallinnassamme\". Toinen ehdottaa \"käytetään headless-komponenttikirjastoa kuten Radix UI\".",
+    "question": "Kumpi on parempi valinta ja miksi?",
+    "options": [
+      "Omat komponentit — saat täyden hallinnan",
+      "Headless-kirjasto (Radix UI, Headless UI) — saat valmiin saavutettavuuden, näppäimistönavigaation ja tilanhallinnan, mutta voit kustomoida ulkoasun itse",
+      "Molemmat — tee ensin headless, sitten korvaa omalla",
+      "Käytä valmista teemaa sellaisenaan"
+    ],
+    "correctIndex": 1,
+    "explanation": "Headless-komponenttikirjastot antavat parhaan molemmista maailmoista: saavutettavuus ja toiminnallisuus ovat valmiina (se on vaikein osa), mutta ulkoasu on täysin sinun hallinnassasi. Oman saavutettavuuden rakentaminen alusta on erittäin työlästä.",
+    "adhdTip": "🧩 Headless-komponentti on kuin auton runko ja moottori (toiminnallisuus+saavutettavuus) — maalaus ja penkit (ulkoasu) ovat sinun päätettävissäsi. Omien komponenttien teko on kuin rakentaisit auton renkaista asti itse."
+  }
+]
