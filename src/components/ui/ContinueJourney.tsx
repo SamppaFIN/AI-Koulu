@@ -57,7 +57,87 @@ export default function ContinueJourney() {
     };
   }
 
-  if (!lastRead) return null;
+  if (!lastRead) {
+    return (
+      <div
+        style={{
+          background: "var(--glass-bg)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          border: "1px solid var(--glass-border)",
+          borderRadius: "16px",
+          padding: "1.5rem 2rem",
+          marginBottom: "2rem",
+          boxShadow: "0 4px 20px oklch(0.55 0.24 280 / 0.15)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+        role="region"
+        aria-label="Aloita oppiminen"
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "3px",
+            background: "var(--aurora-gradient-full)",
+            animation: "cardGlow 3s linear infinite",
+          }}
+        />
+        <div style={{ display: "flex", alignItems: "center", gap: "1.25rem", flexWrap: "wrap" }}>
+          <span style={{ fontSize: "2rem" }}>🚀</span>
+          <div style={{ flex: 1 }}>
+            <p style={{ margin: "0 0 0.15rem 0", fontWeight: 600, fontSize: "0.95rem" }}>
+              Tervetuloa oppimaan!
+            </p>
+            <p style={{ margin: 0, color: "var(--color-text-secondary)", fontSize: "0.85rem" }}>
+              Aloita joko <strong>AI-arkkitehtuureista</strong> tai <strong>UI/UX-käytännöistä</strong>.
+              Edistymisesi tallentuu automaattisesti.
+            </p>
+          </div>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <a
+              href="/AI-Koulu/ai-architecture/01-johdanto/"
+              style={{
+                padding: "0.6rem 1.25rem",
+                border: "none",
+                borderRadius: "10px",
+                background: "var(--aurora-gradient-1)",
+                color: "white",
+                fontWeight: 700,
+                fontSize: "0.85rem",
+                cursor: "pointer",
+                textDecoration: "none",
+                fontFamily: "inherit",
+                boxShadow: "0 4px 15px oklch(0.55 0.24 280 / 0.3)",
+              }}
+            >
+              AI-arkkitehtuurit →
+            </a>
+            <a
+              href="/AI-Koulu/ui-ux/01-hcd/"
+              style={{
+                padding: "0.6rem 1.25rem",
+                border: "1px solid var(--glass-border)",
+                borderRadius: "10px",
+                background: "var(--glass-bg)",
+                color: "var(--color-text)",
+                fontWeight: 600,
+                fontSize: "0.85rem",
+                cursor: "pointer",
+                textDecoration: "none",
+                fontFamily: "inherit",
+              }}
+            >
+              UI/UX-käytännöt →
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const basePath = lastRead.slug.startsWith("0") || lastRead.slug.startsWith("02") || lastRead.slug.startsWith("03") || lastRead.slug.startsWith("04") || lastRead.slug.startsWith("05")
     ? "/AI-Koulu/ai-architecture"
