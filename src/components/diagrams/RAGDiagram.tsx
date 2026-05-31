@@ -1,12 +1,11 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useRef } from "react";
 import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
-  useReactFlow,
+  type ReactFlowInstance,
   type Node,
   type Edge,
   type NodeProps,
@@ -135,22 +134,19 @@ const defaultEdges: Edge[] = [
 ];
 
 /**
- * FitViewOnMount — kutsuu fitView kun React Flow on alustettu.
- * Korjaa visibility:hidden ongelman Astro-hydraatiossa.
- */
-function FitViewOnMount() {
-  const { fitView } = useReactFlow();
-  useEffect(() => {
-    const t = setTimeout(() => fitView({ padding: 0.15, duration: 300 }), 150);
-    return () => clearTimeout(t);
-  }, [fitView]);
-  return null;
-}
-
-/**
  * RAGDiagram — interaktiivinen React Flow -kaavio RAG-putkesta.
  */
 export default function RAGDiagram() {
+  const rfInstance = useRef<ReactFlowInstance | null>(null);
+
+  const onInit = useCallback((instance: ReactFlowInstance) => {
+    rfInstance.current = instance;
+    // Viiveellä fitView, jotta kontin dimensiot varmasti saatavilla
+    setTimeout(() => {
+      instance.fitView({ padding: 0.15, duration: 300 });
+    }, 200);
+  }, []);
+
   return (
     <div
       style={{
@@ -165,14 +161,12 @@ export default function RAGDiagram() {
         nodes={defaultNodes}
         edges={defaultEdges}
         nodeTypes={nodeTypes}
-        fitView
-        fitViewOptions={{ padding: 0.15 }}
+        onInit={onInit}
         proOptions={{ hideAttribution: true }}
         minZoom={0.5}
         maxZoom={2}
         defaultViewport={{ x: 0, y: 0, zoom: 1 }}
       >
-        <FitViewOnMount />
         <Background color="oklch(0.5 0.02 280 / 0.08)" gap={20} />
         <Controls showInteractive={false} />
       </ReactFlow>
