@@ -10,6 +10,31 @@ export interface Props {
 }
 
 const { title, description } = Astro.props;
+
+const aiChapters = [
+  { num: "1", title: "Johdanto", slug: "ai-architecture/01-johdanto", hasDemo: "tokenisointi" },
+  { num: "2.1", title: "API-kääremallit", slug: "ai-architecture/02-1-api-wrappers" },
+  { num: "2.2", title: "RAG", slug: "ai-architecture/02-2-rag", hasDemo: "📚 leikkikenttä", hasDiagram: "🔗 kaavio" },
+  { num: "2.3", title: "Agentit", slug: "ai-architecture/02-3-agents", hasDemo: "🤖 simulointi" },
+  { num: "2.4", title: "Hienosäätö", slug: "ai-architecture/02-4-finetuning" },
+  { num: "2.5", title: "Multimodaali", slug: "ai-architecture/02-5-multimodal", hasDemo: "🖼️ vertailu" },
+  { num: "2.6", title: "Hybridi", slug: "ai-architecture/02-6-hybrid" },
+  { num: "3", title: "Infrastruktuuri", slug: "ai-architecture/03-infrastructure" },
+  { num: "4", title: "Suunnitteluperiaatteet", slug: "ai-architecture/04-design-principles" },
+  { num: "5", title: "Viitearkkitehtuurit", slug: "ai-architecture/05-reference-architectures" },
+];
+
+const uxChapters = [
+  { num: "1", title: "HCD", slug: "ui-ux/01-hcd" },
+  { num: "2", title: "Visuaaliset trendit", slug: "ui-ux/02-visual-trends", hasDemo: "🎨 kontrasti" },
+  { num: "3", title: "IxD", slug: "ui-ux/03-interaction-design", hasDemo: "🎯 Hickin laki" },
+  { num: "4", title: "Saavutettavuus", slug: "ui-ux/04-accessibility", hasDemo: "♿ a11y-labra" },
+  { num: "5", title: "Suorituskyky", slug: "ui-ux/05-performance", hasDemo: "📐 CLS + 💀 skeleton" },
+  { num: "6", title: "Modernit UI", slug: "ui-ux/06-modern-ui" },
+  { num: "7", title: "AI & UI/UX", slug: "ui-ux/07-ai-ux" },
+  { num: "8", title: "UX-tutkimus", slug: "ui-ux/08-ux-research" },
+  { num: "9", title: "Työkalut", slug: "ui-ux/09-tools" },
+];
 ---
 
 <!doctype html>
@@ -113,12 +138,44 @@ const { title, description } = Astro.props;
         <span style="font-weight: 800; color: var(--color-brand);">⚡ AI & UI/UX</span>
         <button id="close-menu" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--color-text); padding: 0.5rem;">✕</button>
       </div>
-      <a href="/AI-Koulu/">🏠 Etusivu</a>
-      <a href="/AI-Koulu/ai-architecture/">🤖 AI-arkkitehtuurit</a>
-      <a href="/AI-Koulu/ui-ux/">🎨 UI/UX-käytännöt</a>
-      <a href="/AI-Koulu/haku/">🔍 Haku</a>
-      <div style="margin-top: 1rem;">
+
+      <!-- Pikalinkit -->
+      <a href="/AI-Koulu/" style="display: block; padding: 0.6rem 0.8rem; border-radius: 8px; font-weight: 700; font-size: 1rem; color: var(--color-brand); text-decoration: none;">🏠 Etusivu</a>
+
+      <!-- AI-arkkitehtuurit -->
+      <details style="margin-top: 0.25rem;">
+        <summary style="padding: 0.6rem 0.8rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; color: var(--color-text);">🤖 AI-arkkitehtuurit</summary>
+        <div style="margin-left: 0.5rem; border-left: 2px solid var(--color-border); padding-left: 0.5rem;">
+          {aiChapters.map(ch => (
+            <a href={`/AI-Koulu/${ch.slug}/`} style="display: flex; align-items: center; gap: 0.3rem; padding: 0.45rem 0.8rem; border-radius: 6px; color: var(--color-text-secondary); text-decoration: none; font-size: 0.85rem;">
+              <span style="font-size: 0.7rem; color: var(--color-brand); min-width: 1.8rem;">{ch.num}</span>
+              <span>{ch.title}</span>
+              {ch.hasDiagram && <span style="font-size: 0.7rem; margin-left: auto;" title="Kaavio">{ch.hasDiagram}</span>}
+              {ch.hasDemo && <span style="font-size: 0.7rem; margin-left: auto;" title="Interaktiivinen demo">{ch.hasDemo}</span>}
+            </a>
+          ))}
+        </div>
+      </details>
+
+      <!-- UI/UX-käytännöt -->
+      <details style="margin-top: 0.25rem;">
+        <summary style="padding: 0.6rem 0.8rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; color: var(--color-text);">🎨 UI/UX-käytännöt</summary>
+        <div style="margin-left: 0.5rem; border-left: 2px solid var(--color-border); padding-left: 0.5rem;">
+          {uxChapters.map(ch => (
+            <a href={`/AI-Koulu/${ch.slug}/`} style="display: flex; align-items: center; gap: 0.3rem; padding: 0.45rem 0.8rem; border-radius: 6px; color: var(--color-text-secondary); text-decoration: none; font-size: 0.85rem;">
+              <span style="font-size: 0.7rem; color: var(--color-brand); min-width: 1.8rem;">{ch.num}</span>
+              <span>{ch.title}</span>
+              {ch.hasDemo && <span style="font-size: 0.7rem; margin-left: auto;" title="Interaktiivinen demo">{ch.hasDemo}</span>}
+            </a>
+          ))}
+        </div>
+      </details>
+
+      <a href="/AI-Koulu/haku/" style="display: block; padding: 0.6rem 0.8rem; border-radius: 8px; font-weight: 500; font-size: 0.95rem; color: var(--color-text); text-decoration: none;">🔍 Haku</a>
+
+      <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--color-border);">
         <button data-theme-btn style="
+          width: 100%;
           background: var(--color-bg);
           border: 1px solid var(--color-border);
           border-radius: 8px;
@@ -126,6 +183,7 @@ const { title, description } = Astro.props;
           cursor: pointer;
           color: var(--color-text);
           font-family: inherit;
+          font-size: 0.9rem;
         ">🌓 Vaihda teemaa</button>
       </div>
     </nav>
