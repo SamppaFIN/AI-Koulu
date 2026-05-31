@@ -18,11 +18,23 @@ Vuessa, Angularissa ja vanilja-JS:ssä.
 
 Antavat toiminnallisuuden ja saavutettavuuden, mutta *sinä* päätät ulkoasun.
 
-| Kirjasto | Kehys | Vahvuus |
-|---|---|---|
-| **Radix UI** | React | Monipuolisin, hyvä a11y |
-| **Headless UI** | React, Vue | Yksinkertainen, Tailwind-ystävä |
-| **Ark UI** | Kehyksistä riippumaton | Web-komponentit, kustomoitava |
+| Kirjasto | Kehys | Vahvuus | Tila 2026 |
+|---|---|---|---|
+| **Radix UI** | React | Monipuolisin, paras a11y | Aktiivinen, de facto React-headless |
+| **Headless UI** | React, Vue | Yksinkertainen, Tailwind-ystävä | Tailwind Labs, vakaa |
+| **Ark UI** | Kehyksistä riippumaton | Web-komponentit, Zag.js-pohjainen | Nouseva, monikehystuki |
+| **Base UI** (MUI) | React | Material Design -headless | Uusi, 2025 |
+| **shadcn/ui** | React | Suosituin komponenttikirjasto 2025-2026 | Copy-paste, ei npm-paketti |
+
+### Tilanhallinta 2026
+
+| Ratkaisu | Tyyppi | Vahvuus | Milloin |
+|---|---|---|---|
+| **TanStack Query v5** | Server state | Automaattinen cache, retry, dedup | Aina API-datalle |
+| **Zustand v5** | Client state | Yksinkertaisin, pienin (~1KB) | UI-tila, globaali tila |
+| **Jotai v2** | Atominen | Tarkka, komponenttikohtainen | Kun tarvitset hienojakoista hallintaa |
+| **Signals (Preact/Solid)** | Reaktiivinen | Nopein, automaattinen päivitys | Suorituskykykriittiset |
+| **URL state (nuqs, TanStack Router)** | URL-tila | Jaettava, kirjanmerkkauskelpoinen | Suodattimet, haku, sivutus |
 
 ### Komponenttien koostaminen (Composition)
 

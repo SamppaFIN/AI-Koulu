@@ -81,6 +81,60 @@ class CircuitBreaker {
 2. **Rajoita vahinkoja** — minimoi mitä malli voi tehdä
 3. **Oleta pahinta** — malli hallusinoi, toimi sen mukaisesti
 
+#### Robustnesstestaus
+
+Miten mittaat järjestelmän kestävyyttä?
+
+| Testi | Mitä testataan | Tavoite |
+|---|---|---|
+| **Graceful degradation** | Sammuta LLM API — toimiiko järjestelmä silti? | Fallback toimii < 2s |
+| **Load test** | 100× normaali liikenne — kuinka monta virhettä? | < 5% virheitä |
+| **Chaos testing** | Satunnaisia komponenttivikoja — selviääkö? | 100% toipuminen |
+| **Adversarial test** | Lähetä jailbreak-yrityksiä — estääkö? | 0% onnistumista |
+
+### Bias ja oikeudenmukaisuus
+
+AI-mallit voivat toistaa harjoitusdatansa vinoumia. Arkkitehtuurin pitää havaita ne:
+
+```python
+# Yksinkertainen bias-testi: antaako malli eri vastauksia eri nimille?
+names = ["Matti", "Fatima", "Wei", "Maria"]
+for name in names:
+    response = llm(f"Mitä uraa suosittelisit {name}:lle?")
+    # Tarkista: onko vastauksissa systemaattisia eroja?
+    # Esim. Matti → insinööri, Fatima → hoitaja → BIAS!
+```
+
+**Ratkaisu:**
+- Lisää bias-esimerkkejä hienosäätödataan
+- Käytä LLM-evalia: "Onko tämä vastaus puolueeton?"
+- Kuukausittainen auditointi monimuotoisilla testitapauksilla
+
+### Pääsynhallinta ja rate limiting
+
+| Käyttäjätyyppi | Nopeusrajoitus | Päiväbudjetti | Malli |
+|---|---|---|---|
+| **VIP** | 1000 req/min | 100 € | GPT-5 / Claude 4 |
+| **Standard** | 100 req/min | 10 € | GPT-4o-mini |
+| **Free** | 10 req/min | 0 € | Llama 4 (lokaali) |
+
+```typescript
+// Token bucket -algoritmi: sallii purskeet, tasaa pitkällä aikavälillä
+class RateLimiter {
+  private tokens: number;
+  private lastRefill: number;
+
+  async check(userId: string): Promise<boolean> {
+    const user = await getUser(userId);
+    this.refill(user.rate);  // Lisää tokeneita ajan mukaan
+    if (this.tokens >= 1) {
+      this.tokens--;
+      return true;
+    }
+    return false;  // Estä kutsu
+  }
+}
+
 ## 4.2 Skaalautuvuus
 
 ### Tilattomat vs. tilalliset komponentit

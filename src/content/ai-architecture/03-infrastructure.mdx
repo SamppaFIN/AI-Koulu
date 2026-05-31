@@ -37,6 +37,53 @@ deepspeed_config = {
 - **Slurm** — perinteinen HPC-orkestraattori
 - **SkyPilot** — monipilviorkestraattori (AWS, GCP, Azure)
 
+#### GPU-kustannukset toukokuussa 2026
+
+| GPU | VRAM | Hinta (spot) | Mihin riittää |
+|---|---|---|---|
+| **H100** (80GB) | 80GB | ~2 €/h | Llama 70B (kvantisoitu), GPT-5 -kaltaiset |
+| **A100** (80GB) | 80GB | ~1 €/h | Sama kuin H100, hieman hitaampi |
+| **L40S** | 48GB | ~0.5 €/h | 13B mallit, embedding-palvelut |
+| **RTX 4090** | 24GB | ~0.3 €/h | 7B mallit, kehitys, testaus |
+
+<Callout type="tip">
+  **Säästövinkki:** Käytä spot-instansseja (60-90% halvempia) koulutukseen
+  ja batch-inferenssiin. Varaudu keskeytyksiin (checkpointing).
+  Reaaliaikaiseen inferenssiin: on-demand.
+</Callout>
+
+### Serverless AI — maksa vain mitä käytät
+
+Serverless-alustat sopivat erinomaisesti vaihtelevaan liikenteeseen:
+
+| Alusta | Mallit | Hinta | Milloin |
+|---|---|---|---|
+| **Modal** | Mikä tahansa | €/sekunti GPU:ta | Prototyypit, vaihteleva kuorma |
+| **Replicate** | 100+ valmista mallia | €/kysely | Nopea kokeilu, pienet volyymit |
+| **AWS Bedrock** | Claude, Llama, Titan | €/token | AWS-integraatio |
+| **Together AI** | 200+ avointa mallia | €/token | Halvin, nopein avoimille malleille |
+
+```python
+# Serverless: lähde liikkeelle nollasta sekunneissa
+import modal
+app = modal.App("my-ai-service")
+
+@app.function(gpu="A100")
+def generate(prompt: str):
+    from vllm import LLM
+    llm = LLM("meta-llama/Llama-4-70B")  # Ladataan kerran, pysyy lämpimänä
+    return llm.generate(prompt)
+```
+
+### Kustannusoptimointi skaalassa
+
+| Volyymi | Strategia | Kuukausikustannus |
+|---|---|---|
+| < 1K kyselyä/päivä | Serverless (Replicate, Together) | ~30 €/kk |
+| 1K–10K/päivä | Yksi A100 (on-demand) | ~700 €/kk |
+| 10K–1M/päivä | Kubernetes + spot + autoskalaus | ~2000 €/kk |
+| 1M+/päivä | Oma infra + neuvotteluhinnat | Räätälöity |
+
 ### Kokeilujen seuranta
 
 | Työkalu | Vahvuus |
