@@ -142,22 +142,29 @@ export default function RAGDiagram() {
 
   // Korjaa React Flow'n visibility:hidden Astro-hydraatiossa
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    // Käytä MutationObserveria — reagoi heti kun nodet ilmestyvät
+    const observer = new MutationObserver(() => {
+      const nodes = document.querySelectorAll<HTMLElement>('.react-flow__node');
+      nodes.forEach(n => { n.style.visibility = 'visible'; });
+    });
 
-    // Pakota kaikki nodet näkyviin (React Flow pitää ne hiddenissä hydraation jälkeen)
-    const fixVisibility = () => {
-      const nodes = container.querySelectorAll<HTMLElement>('.react-flow__node');
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+
+    // Myös heti alussa
+    const init = () => {
+      const nodes = document.querySelectorAll<HTMLElement>('.react-flow__node');
       nodes.forEach(n => { n.style.visibility = 'visible'; });
     };
+    init();
+    const t1 = setTimeout(init, 200);
+    const t2 = setTimeout(init, 600);
+    const t3 = setTimeout(init, 1200);
+    const t4 = setTimeout(init, 2500);
 
-    // Yritä useita kertoja (React Flow saattaa resetoida visibilityn)
-    fixVisibility();
-    const t1 = setTimeout(fixVisibility, 300);
-    const t2 = setTimeout(fixVisibility, 800);
-    const t3 = setTimeout(fixVisibility, 1500);
-
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    return () => {
+      observer.disconnect();
+      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4);
+    };
   }, []);
 
   const onInit = useCallback((instance: ReactFlowInstance) => {
