@@ -6,14 +6,14 @@ import AnalogyBox from "../../components/ui/AnalogyBox.tsx";
 import WhyItMatters from "../../components/ui/WhyItMatters.tsx";
 import Reference from "../../components/ui/Reference.tsx";
 import Diagram from "../../components/ui/Diagram.tsx";
-import HicksLawGame from "../../components/demo/HicksLawGame.tsx";
+import HicksLawGame from "../../components/wrappers/HicksLawGame.astro";
 import ProgressWrapper from "../../components/ProgressWrapper.tsx";
-import ContrastTool from "../../components/demo/ContrastTool.tsx";
-import CLSDemo from "../../components/demo/CLSDemo.tsx";
-import AccessibilityLab from "../../components/demo/AccessibilityLab.tsx";
-import SkeletonStudio from "../../components/demo/SkeletonStudio.tsx";
-import ChapterQuiz from "../../components/demo/ChapterQuiz.tsx";
-import RAGDiagram from "../../components/diagrams/RAGDiagram.tsx";
+import ContrastTool from "../../components/wrappers/ContrastTool.astro";
+import CLSDemo from "../../components/wrappers/CLSDemo.astro";
+import AccessibilityLab from "../../components/wrappers/AccessibilityLab.astro";
+import SkeletonStudio from "../../components/wrappers/SkeletonStudio.astro";
+import ChapterQuiz from "../../components/wrappers/ChapterQuiz.astro";
+import RAGDiagram from "../../components/wrappers/RAGDiagram.astro";
 
 export async function getStaticPaths() {
   const chapters = await getCollection("ui-ux");
