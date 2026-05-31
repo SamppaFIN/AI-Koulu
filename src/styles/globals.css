@@ -359,11 +359,45 @@ code, pre { font-family: var(--font-mono); font-size: 0.9em; }
   
   .table-glass {
     font-size: 0.8rem;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
   }
   
   .table-glass th,
   .table-glass td {
     padding: 0.5rem 0.6rem;
+  }
+
+  /* MDX-taulukot mobiilissa */
+  .mdx-content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  .mdx-content th,
+  .mdx-content td {
+    white-space: nowrap;
+    min-width: 80px;
+  }
+  
+  /* Kosketuskohteet */
+  .mobile-nav a {
+    min-height: 48px;
+    min-width: 48px;
+    justify-content: center;
+  }
+  
+  /* Isommat fontit mobiililla */
+  .mdx-content p {
+    font-size: clamp(1rem, 3vw, 1.1rem);
+  }
+
+  .container-content {
+    padding-inline: 1.25rem;
   }
 }
 
@@ -374,5 +408,137 @@ code, pre { font-family: var(--font-mono); font-size: 0.9em; }
   
   h1 { font-size: clamp(1.5rem, 6vw, 2rem); }
   h2 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
+}
+
+/* ─── Kosketuspalautteen erottelu ────────────────────────── */
+
+@media (hover: hover) {
+  .living-card:hover {
+    transform: translateY(-4px) scale(1.01);
+  }
+}
+
+@media (hover: none) {
+  /* Mobiililla hover ei toimi — käytä active-tilaa */
+  .living-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  .card-grid .card:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+  }
+}
+
+/* ─── Scroll-to-top -kelluke ────────────────────────────── */
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 5rem;
+  right: 1rem;
+  z-index: 999;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--aurora-gradient-1);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px oklch(0.55 0.24 280 / 0.3);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+
+.scroll-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ─── Hamburger-valikko mobiilissa ──────────────────────── */
+
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .hamburger-btn {
+    display: flex !important;
+  }
+  .mobile-menu {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .hamburger-btn {
+    display: none !important;
+  }
+  .mobile-menu {
+    display: none !important;
+  }
+}
+
+.hamburger-btn {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: var(--color-text);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  max-width: 80vw;
+  z-index: 1001;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid var(--glass-border);
+  padding: 2rem 1.5rem;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  display: none;
+}
+
+.mobile-menu.open {
+  transform: translateX(0);
+}
+
+.mobile-menu a {
+  display: block;
+  padding: 0.75rem 0;
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: oklch(0 0 0 / 0.4);
+  display: none;
+}
+
+.mobile-menu-overlay.open {
+  display: block;
 }
 }

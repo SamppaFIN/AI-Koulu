@@ -65,7 +65,7 @@ const { title, description } = Astro.props;
       </a>
 
       <!-- Navigaatio -->
-      <nav aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);">
+      <nav class="desktop-nav" aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);">
         <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
           AI-arkkitehtuurit
         </a>
@@ -94,7 +94,41 @@ const { title, description } = Astro.props;
           🌓
         </button>
       </nav>
+
+      <!-- Hampurilaisvalikko-painike (mobiili) -->
+      <button
+        id="hamburger-btn"
+        class="hamburger-btn"
+        aria-label="Avaa valikko"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
     </header>
+
+    <!-- Mobiilivalikko (hampurilainen) -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+    <nav id="mobile-menu" class="mobile-menu" aria-label="Mobiilivalikko">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <span style="font-weight: 800; color: var(--color-brand);">⚡ AI & UI/UX</span>
+        <button id="close-menu" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--color-text); padding: 0.5rem;">✕</button>
+      </div>
+      <a href="/AI-Koulu/">🏠 Etusivu</a>
+      <a href="/AI-Koulu/ai-architecture/">🤖 AI-arkkitehtuurit</a>
+      <a href="/AI-Koulu/ui-ux/">🎨 UI/UX-käytännöt</a>
+      <a href="/AI-Koulu/haku/">🔍 Haku</a>
+      <div style="margin-top: 1rem;">
+        <button id="mobile-theme-toggle" style="
+          background: var(--color-bg);
+          border: 1px solid var(--color-border);
+          border-radius: 8px;
+          padding: 0.5rem 1rem;
+          cursor: pointer;
+          color: var(--color-text);
+          font-family: inherit;
+        ">🌓 Vaihda teemaa</button>
+      </div>
+    </nav>
 
     <!-- Pääsisältö -->
     <main>
@@ -114,6 +148,7 @@ const { title, description } = Astro.props;
     <!-- Mobiili-pohjanavigaatio (näkyy vain mobiilissa) -->
     <nav
       aria-label="Mobiilinavigaatio"
+      class="mobile-nav"
       style="
         display: none;
         position: fixed;
@@ -125,26 +160,25 @@ const { title, description } = Astro.props;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border-top: 1px solid var(--glass-border);
-        padding: 0.5rem 0;
+        padding: 0.25rem 0;
         justify-content: space-around;
         align-items: center;
       "
-      class="mobile-nav"
     >
-      <a href="/AI-Koulu/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: 0.65rem; padding: 0.25rem 0.5rem;">
-        <span style="font-size: 1.2rem;">🏠</span>
+      <a href="/AI-Koulu/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: clamp(0.6rem, 1.5vw, 0.7rem); padding: 0.5rem; min-width: 48px; min-height: 48px; justify-content: center;">
+        <span style="font-size: clamp(1.2rem, 2.5vw, 1.4rem);">🏠</span>
         Etusivu
       </a>
-      <a href="/AI-Koulu/ai-architecture/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: 0.65rem; padding: 0.25rem 0.5rem;">
-        <span style="font-size: 1.2rem;">🤖</span>
+      <a href="/AI-Koulu/ai-architecture/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: clamp(0.6rem, 1.5vw, 0.7rem); padding: 0.5rem; min-width: 48px; min-height: 48px; justify-content: center;">
+        <span style="font-size: clamp(1.2rem, 2.5vw, 1.4rem);">🤖</span>
         AI
       </a>
-      <a href="/AI-Koulu/ui-ux/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: 0.65rem; padding: 0.25rem 0.5rem;">
-        <span style="font-size: 1.2rem;">🎨</span>
+      <a href="/AI-Koulu/ui-ux/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: clamp(0.6rem, 1.5vw, 0.7rem); padding: 0.5rem; min-width: 48px; min-height: 48px; justify-content: center;">
+        <span style="font-size: clamp(1.2rem, 2.5vw, 1.4rem);">🎨</span>
         UI/UX
       </a>
-      <a href="/AI-Koulu/haku/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: 0.65rem; padding: 0.25rem 0.5rem;">
-        <span style="font-size: 1.2rem;">🔍</span>
+      <a href="/AI-Koulu/haku/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: clamp(0.6rem, 1.5vw, 0.7rem); padding: 0.5rem; min-width: 48px; min-height: 48px; justify-content: center;">
+        <span style="font-size: clamp(1.2rem, 2.5vw, 1.4rem);">🔍</span>
         Haku
       </a>
     </nav>
@@ -165,21 +199,61 @@ const { title, description } = Astro.props;
     <script>
       import { getStoredTheme, setTheme, applyTheme, watchSystemTheme } from "../lib/theme.ts";
 
-      const toggle = document.getElementById("theme-toggle");
-      if (toggle) {
-        toggle.addEventListener("click", () => {
-          const current = getStoredTheme();
-          const cycles: Record<string, string> = { light: "dark", dark: "system", system: "light" };
-          const next = cycles[current] || "light";
-          setTheme(next as any);
-          toggle.setAttribute("aria-label", `Teema: ${next}`);
-        });
+      // Teemanvaihtaja
+      function setupThemeToggle(btnId: string) {
+        const toggle = document.getElementById(btnId);
+        if (toggle) {
+          toggle.addEventListener("click", () => {
+            const current = getStoredTheme();
+            const cycles = { light: "dark", dark: "system", system: "light" };
+            const next = cycles[current] || "light";
+            setTheme(next);
+            toggle.setAttribute("aria-label", `Teema: ${next}`);
+          });
+        }
       }
+      setupThemeToggle("theme-toggle");
+      setupThemeToggle("mobile-theme-toggle");
+
+      // Hampurilaisvalikko mobiilissa
+      const hamburgerBtn = document.getElementById("hamburger-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+      const mobileOverlay = document.getElementById("mobile-menu-overlay");
+      const closeMenu = document.getElementById("close-menu");
+
+      function openMobileMenu() {
+        mobileMenu?.classList.add("open");
+        mobileOverlay?.classList.add("open");
+        hamburgerBtn?.setAttribute("aria-expanded", "true");
+      }
+      function closeMobileMenu() {
+        mobileMenu?.classList.remove("open");
+        mobileOverlay?.classList.remove("open");
+        hamburgerBtn?.setAttribute("aria-expanded", "false");
+      }
+
+      hamburgerBtn?.addEventListener("click", openMobileMenu);
+      closeMenu?.addEventListener("click", closeMobileMenu);
+      mobileOverlay?.addEventListener("click", closeMobileMenu);
+
+      // Scroll-to-top -kelluke
+      const scrollBtn = document.getElementById("scroll-to-top");
+      let scrollTimeout: ReturnType<typeof setTimeout>;
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 500) {
+          scrollBtn?.classList.add("visible");
+        } else {
+          scrollBtn?.classList.remove("visible");
+        }
+      });
+      scrollBtn?.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
 
       // Reagoi järjestelmän teeman muutoksiin
       const cleanup = watchSystemTheme();
 
-      // Siivous (ei tarvetta, mutta pattern)
+      // Siivous
       document.addEventListener("astro:before-swap", cleanup);
     </script>
   </body>
