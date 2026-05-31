@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import {
   ReactFlow,
   Background,
@@ -134,9 +134,16 @@ const defaultEdges: Edge[] = [
 
 /**
  * RAGDiagram — interaktiivinen React Flow -kaavio RAG-putkesta.
- * CSS-korjaus visibility:hiddeniin on public/styles/site.css:ssä.
  */
 export default function RAGDiagram() {
+  // Pakota React Flow -nodet näkyviin (kiertää Astro-hydraation visibility:hidden)
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = ".react-flow__node{visibility:visible!important}";
+    document.head.appendChild(style);
+    return () => style.remove();
+  }, []);
+
   return (
     <div
       style={{
