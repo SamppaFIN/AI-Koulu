@@ -28,7 +28,7 @@ export default function AuroraBackground() {
         pointerEvents: "none",
       }}
     >
-      {/* Kerros 1: pinkki */}
+      {/* Kerros 1: pinkki — himmeä taustakoriste */}
       <div
         style={{
           position: "absolute",
@@ -36,14 +36,14 @@ export default function AuroraBackground() {
           height: "60vw",
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, oklch(0.65 0.28 350 / 0.12), transparent 70%)",
+            "radial-gradient(circle, oklch(0.65 0.28 350 / 0.06), transparent 70%)",
           top: "-20%",
           left: "-10%",
           animation: "auroraFlow 20s ease-in-out infinite",
           animationDelay: "0s",
         }}
       />
-      {/* Kerros 2: violetti */}
+      {/* Kerros 2: violetti — himmeä taustakoriste */}
       <div
         style={{
           position: "absolute",
@@ -51,14 +51,14 @@ export default function AuroraBackground() {
           height: "50vw",
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, oklch(0.55 0.24 280 / 0.1), transparent 70%)",
+            "radial-gradient(circle, oklch(0.55 0.24 280 / 0.05), transparent 70%)",
           bottom: "-10%",
           right: "-10%",
           animation: "auroraFlow 25s ease-in-out infinite",
           animationDelay: "5s",
         }}
       />
-      {/* Kerros 3: syaani */}
+      {/* Kerros 3: syaani — himmeä taustakoriste */}
       <div
         style={{
           position: "absolute",
@@ -66,7 +66,7 @@ export default function AuroraBackground() {
           height: "40vw",
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, oklch(0.7 0.2 190 / 0.08), transparent 70%)",
+            "radial-gradient(circle, oklch(0.7 0.2 190 / 0.04), transparent 70%)",
           top: "40%",
           left: "50%",
           animation: "auroraFlow 30s ease-in-out infinite",
