@@ -283,14 +283,19 @@ import ContinueJourney from "../components/ui/ContinueJourney.tsx";
     border-color: var(--color-brand-light);
   }
   .card-number {
-    display: inline-block;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--color-brand);
-    background: color-mix(in oklab, var(--color-brand) 15%, transparent);
-    padding: 0.15rem 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 1.8rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: white;
+    background: var(--aurora-gradient-1);
+    padding: 0 0.5rem;
     border-radius: 999px;
     margin-bottom: var(--space-sm);
+    box-shadow: 0 2px 8px oklch(0.55 0.24 280 / 0.25);
   }
   .card-title {
     margin: 0 0 var(--space-xs) 0;

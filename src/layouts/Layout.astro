@@ -118,7 +118,7 @@ const { title, description } = Astro.props;
       <a href="/AI-Koulu/ui-ux/">🎨 UI/UX-käytännöt</a>
       <a href="/AI-Koulu/haku/">🔍 Haku</a>
       <div style="margin-top: 1rem;">
-        <button id="mobile-theme-toggle" style="
+        <button data-theme-btn style="
           background: var(--color-bg);
           border: 1px solid var(--color-border);
           border-radius: 8px;
@@ -184,77 +184,52 @@ const { title, description } = Astro.props;
     </nav>
 
     <style>
-      /* Näytä mobiilinavigaatio vain mobiilissa */
       @media (max-width: 768px) {
-        .mobile-nav {
-          display: flex !important;
-        }
-        body {
-          padding-bottom: 3.5rem;
-        }
+        .mobile-nav { display: flex !important; }
+        body { padding-bottom: 4rem; }
       }
     </style>
 
-    <!-- Teemanvaihtaja-skripti -->
     <script>
-      import { getStoredTheme, setTheme, applyTheme, watchSystemTheme } from "../lib/theme.ts";
+      // ---- Teema (toimii aina, ei importteja) ----
+      (function() {
+        try {
+          var stored = localStorage.getItem("ai-edu-theme") || "system";
+          var root = document.documentElement;
+          if (stored === "system") stored = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          root.setAttribute("data-theme", stored);
+        } catch(e) {}
+      })();
 
-      // Teemanvaihtaja
-      function setupThemeToggle(btnId: string) {
-        const toggle = document.getElementById(btnId);
-        if (toggle) {
-          toggle.addEventListener("click", () => {
-            const current = getStoredTheme();
-            const cycles = { light: "dark", dark: "system", system: "light" };
-            const next = cycles[current] || "light";
-            setTheme(next);
-            toggle.setAttribute("aria-label", `Teema: ${next}`);
-          });
-        }
-      }
-      setupThemeToggle("theme-toggle");
-      setupThemeToggle("mobile-theme-toggle");
-
-      // Hampurilaisvalikko mobiilissa
-      const hamburgerBtn = document.getElementById("hamburger-btn");
-      const mobileMenu = document.getElementById("mobile-menu");
-      const mobileOverlay = document.getElementById("mobile-menu-overlay");
-      const closeMenu = document.getElementById("close-menu");
-
-      function openMobileMenu() {
-        mobileMenu?.classList.add("open");
-        mobileOverlay?.classList.add("open");
-        hamburgerBtn?.setAttribute("aria-expanded", "true");
-      }
-      function closeMobileMenu() {
-        mobileMenu?.classList.remove("open");
-        mobileOverlay?.classList.remove("open");
-        hamburgerBtn?.setAttribute("aria-expanded", "false");
-      }
-
-      hamburgerBtn?.addEventListener("click", openMobileMenu);
-      closeMenu?.addEventListener("click", closeMobileMenu);
-      mobileOverlay?.addEventListener("click", closeMobileMenu);
-
-      // Scroll-to-top -kelluke
-      const scrollBtn = document.getElementById("scroll-to-top");
-      let scrollTimeout: ReturnType<typeof setTimeout>;
-      window.addEventListener("scroll", () => {
-        if (window.scrollY > 500) {
-          scrollBtn?.classList.add("visible");
-        } else {
-          scrollBtn?.classList.remove("visible");
-        }
-      });
-      scrollBtn?.addEventListener("click", () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+      // ---- Teemanvaihtaja (data-theme-btn) ----
+      document.addEventListener("click", function(e) {
+        var btn = e.target.closest("[data-theme-btn]");
+        if (!btn) return;
+        try {
+          var current = localStorage.getItem("ai-edu-theme") || "system";
+          var next = { light: "dark", dark: "system", system: "light" }[current] || "light";
+          localStorage.setItem("ai-edu-theme", next);
+          var root = document.documentElement;
+          if (next === "system") next = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          root.setAttribute("data-theme", next);
+        } catch(e) {}
       });
 
-      // Reagoi järjestelmän teeman muutoksiin
-      const cleanup = watchSystemTheme();
+      // ---- Hampurilaisvalikko ----
+      var hb = document.getElementById("hamburger-btn");
+      var mm = document.getElementById("mobile-menu");
+      var mo = document.getElementById("mobile-menu-overlay");
+      var cm = document.getElementById("close-menu");
+      if (hb && mm && mo) {
+        hb.addEventListener("click", function() { mm.classList.add("open"); mo.classList.add("open"); hb.setAttribute("aria-expanded", "true"); });
+        if (cm) cm.addEventListener("click", function() { mm.classList.remove("open"); mo.classList.remove("open"); hb.setAttribute("aria-expanded", "false"); });
+        mo.addEventListener("click", function() { mm.classList.remove("open"); mo.classList.remove("open"); hb.setAttribute("aria-expanded", "false"); });
+      }
 
-      // Siivous
-      document.addEventListener("astro:before-swap", cleanup);
+      // ---- Scroll-to-top ----
+      var stt = document.getElementById("scroll-to-top");
+      window.addEventListener("scroll", function() { if (stt) stt.classList.toggle("visible", window.scrollY > 500); });
+      if (stt) stt.addEventListener("click", function() { window.scrollTo({ top: 0, behavior: "smooth" }); });
     </script>
   </body>
 </html>
