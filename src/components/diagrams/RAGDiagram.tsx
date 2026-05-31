@@ -173,16 +173,18 @@ export default function RAGDiagram() {
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        height: "620px",
-        borderRadius: "12px",
-        overflow: "hidden",
-        border: "1px solid var(--glass-border)",
-        background: "var(--glass-bg)",
-      }}
-    >
+    <>
+      <style>{`.react-flow__node{visibility:visible!important}`}</style>
+      <div
+        ref={containerRef}
+        style={{
+          height: "620px",
+          borderRadius: "12px",
+          overflow: "hidden",
+          border: "1px solid var(--glass-border)",
+          background: "var(--glass-bg)",
+        }}
+      >
       <ReactFlow
         nodes={defaultNodes}
         edges={defaultEdges}
@@ -197,5 +199,6 @@ export default function RAGDiagram() {
         <Controls showInteractive={false} />
       </ReactFlow>
     </div>
+    </>
   );
 }
