@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import {
   ReactFlow,
   Background,
@@ -137,18 +137,37 @@ const defaultEdges: Edge[] = [
  * RAGDiagram — interaktiivinen React Flow -kaavio RAG-putkesta.
  */
 export default function RAGDiagram() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const rfInstance = useRef<ReactFlowInstance | null>(null);
+
+  // Korjaa React Flow'n visibility:hidden Astro-hydraatiossa
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    // Pakota kaikki nodet näkyviin (React Flow pitää ne hiddenissä hydraation jälkeen)
+    const fixVisibility = () => {
+      const nodes = container.querySelectorAll<HTMLElement>('.react-flow__node');
+      nodes.forEach(n => { n.style.visibility = 'visible'; });
+    };
+
+    // Yritä useita kertoja (React Flow saattaa resetoida visibilityn)
+    fixVisibility();
+    const t1 = setTimeout(fixVisibility, 300);
+    const t2 = setTimeout(fixVisibility, 800);
+    const t3 = setTimeout(fixVisibility, 1500);
+
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, []);
 
   const onInit = useCallback((instance: ReactFlowInstance) => {
     rfInstance.current = instance;
-    // Viiveellä fitView, jotta kontin dimensiot varmasti saatavilla
-    setTimeout(() => {
-      instance.fitView({ padding: 0.15, duration: 300 });
-    }, 200);
+    setTimeout(() => instance.fitView({ padding: 0.15, duration: 300 }), 200);
   }, []);
 
   return (
     <div
+      ref={containerRef}
       style={{
         height: "620px",
         borderRadius: "12px",
