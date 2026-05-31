@@ -17,6 +17,58 @@ ensimmäinen.
   {/* Kysymys → Onko dataa? → Onko prompt engineering riittävä? → Onko RAG riittävä? → Hienosäätö */}
 </Diagram>
 
+### Modernit hienosäätömenetelmät (2024–2026)
+
+Perinteinen täyshienosäätö (full fine-tuning) on kallista ja hidasta.
+Nykyään käytetään kevyempiä menetelmiä:
+
+| Menetelmä | Tarvittava data | Kustannus | Laatu vs täysi hienosäätö | Milloin |
+|---|---|---|---|---|
+| **LoRA** (Low-Rank Adaptation) | 100–300 esimerkkiä | ~1 € | 90% | Pienet parannukset, muutaman tunnin koulutus |
+| **QLoRA** | 100–300 esimerkkiä | ~0.5 € | 85% | Sama kuin LoRA, vielä halvempi (4-bit) |
+| **DPO** (Direct Preference Optimization) | 50–200 vertailuparia | ~2 € | 95% | Kun haluat mallin valitsevan "paremman" vastauksen |
+| **Täysi hienosäätö** | 1000+ esimerkkiä | 50–500 € | 100% | Isot kustomoinnit, useita päiviä |
+
+```python
+# LoRA-esimerkki: hienosäädä 100 esimerkillä
+from peft import LoraConfig, get_peft_model
+
+lora_config = LoraConfig(
+    r=8,  # LoRA rank (1-64, isompi = enemmän kapasiteettia)
+    lora_alpha=32,
+    target_modules=["q_proj", "v_proj"],  # Mitkä kerrokset säädetään
+    lora_dropout=0.1,
+)
+
+model = get_peft_model(base_model, lora_config)
+model.train()  # Vain 1% parametreista päivittyy
+```
+
+#### Synteettinen data: Tee esimerkkejä AI:lla
+
+Useimmissa hienosäätöprojekteissa dataa ei ole valmiina — se tuotetaan:
+
+```python
+# Generoi 200 esimerkkiä hienosäätöä varten
+prompts = ["Asiakas: {kysymys}\nVastaus:"]
+
+for prompt in prompts:
+    # GPT-4o generoi esimerkin
+    training_example = await gpt4o.generate(prompt)
+    dataset.append(training_example)
+
+# Hienosäädä Llama 4 LoRA:lla näillä 200 esimerkillä
+# Kustannus: ~2 € datan generointi + ~1 € LoRA-koulutus
+# = 3 € per mallin iteraatio
+```
+
+<Callout type="tip">
+  **DPO käytännössä:** DPO on erityisen hyödyllinen kun haluat mallin
+  vastaavan "enemmän kuin X, vähemmän kuin Y". Esim: "Vastaa aina
+  kohteliaasti, älä koskaan sarkastisesti, älä koskaan paljasta hintoja."
+  50 esimerkkiparia riittää usein.
+</Callout>
+
 ### Päätöspuu: Hienosäätö vs. RAG vs. Prompt engineering
 
 | Kriteeri | Prompt engineering | RAG | Hienosäätö |

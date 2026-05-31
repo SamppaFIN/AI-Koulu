@@ -91,14 +91,48 @@ async function agenticRAG(query: string) {
     return searchVectorDB(query);
   } else if (type === "tabular") {
     return searchTabularDB(query);
-  } else {
-    return searchHybrid(query);
+  } else if (type === "comparison") {
+    // Pilko vertailu osiin
+    const parts = await decomposeQuery(query);
+    const results = await Promise.all(parts.map(p => searchVectorDB(p)));
+    return synthesizeResults(results);
   }
 
   // 3. Tarkenna tarvittaessa
   // 4. Generoi vastaus
 }
 ```
+
+#### Re-ranking: Paranna haun tarkkuutta
+
+Haku palauttaa usein 50–100 dokumenttia, mutta tarvitset vain 3–5 parasta.
+Re-ranking-malli järjestää tulokset semanttisen relevanssin mukaan:
+
+| Ilman re-rankingia | Re-rankingin kanssa |
+|---|---|
+| Tarkkuus: ~60% (dokumentteja sekaisin) | Tarkkuus: 85–95% |
+| Ylimääräistä melua vastauksissa | Parhaat dokumentit kärjessä |
+| Ei lisäkustannuksia | +1% kokonaiskustannuksesta |
+
+```python
+# Re-ranking BGE-mallilla
+from FlagEmbedding import FlagReranker
+reranker = FlagReranker('BAAI/bge-reranker-v2-m3')
+
+# Hae 50 dokumenttia → re-rankkaa → ota 5 parasta
+results = vector_db.search(query, top_k=50)
+scores = reranker.compute_score([[query, doc.text] for doc in results])
+top5 = sorted(zip(results, scores), key=lambda x: x[1], reverse=True)[:5]
+```
+
+#### Hybridihaku: Vektoreita + avainsanoja
+
+Pelkkä vektorihaku ei aina löydä tarkkoja osumia (esim. tuotekoodit, nimet).
+Hybridihaku yhdistää:
+
+- **BM25** (avainsanahaku) — nopea, tarkka eksakteille osumille
+- **Vektorihaku** (semanttinen) — löytää synonyymit ja samankaltaisuudet
+- **Painotus:** 60% BM25 + 40% vektori → paras tarkkuus useimmissa tapauksissa
 
 #### Multimodaalinen RAG
 

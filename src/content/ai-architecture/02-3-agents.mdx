@@ -124,9 +124,33 @@ Agentti C: "Minä visualisoin datan, kun saat sen"
 | Ongelma | Oire | Ratkaisu |
 |---|---|---|
 | **Päättelysilmukka** | Agentti jumittuu samaan toimintoon | Maksimi iteraatio, timeout |
-| **Hallusinaatio** | Agentti keksii työkalun tuloksen | Pakota työkalun tulos, älä luota agenttiin |
+| **Hallusinaatio työkalun tuloksessa** | Agentti keksii API-vastauksen | Pakota validointi: jos API palautti 500, älä generoi "Onnistui!" |
 | **Token-kustannukset** | Agentti tekee 20 turhaa API-kutsua | Rajaa päättelyä, käytä pieniä malleja osatehtäviin |
 | **Kontekstin ylivuoto** | Keskusteluhistoria vie liikaa tilaa | Muistin yhteenveto, unohda vanha |
+| **Työkalujen standardointi** | Jokainen agenttikehys toimii eri tavalla | Käytä OpenAI function calling -formaattia (de facto standardi 2026) |
+
+<Callout type="warning">
+  **⚠️ Kustannusansa:** Yksi 3-iteraation agenttisilmukka GPT-5:lla maksaa ~0.15-0.30 €.
+  Tuhat kyselyä päivässä = 150–300 € / päivä. **Ratkaisu:**
+  1. Käytä halvempaa mallia (GPT-4o-mini, Llama 4 8B) kaikkiin iteraatioihin
+  2. Isompaa mallia vain viimeiseen generointivaiheeseen
+  3. Harkitse: riittäisikö pelkkä huolellinen prompt engineering?
+</Callout>
+
+```typescript
+// Päättelysilmukan esto + kustannusseuranta
+const MAX_ITERATIONS = 10;
+const MAX_COST_EUROS = 0.50;  // Maksimi per keskustelu
+let totalCost = 0;
+
+for (let i = 0; i < MAX_ITERATIONS; i++) {
+  if (totalCost > MAX_COST_EUROS) {
+    return fallbackResponse("Kustannusraja saavutettu");
+  }
+  const response = await agent.step();
+  totalCost += response.cost;
+  if (response.isFinal) break;
+}
 
 ```typescript
 // Päättelysilmukan esto

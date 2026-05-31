@@ -214,6 +214,84 @@ async function askDocument(question: string, documentId: string) {
   tarpeisiisi.
 </WhyItMatters>
 
+## 5.5 Tapahtumapohjainen AI-järjestelmä
+
+Kun AI-järjestelmä altistuu suurelle määrälle asynkronisia tapahtumia,
+tarvitaan tapahtumapohjainen arkkitehtuuri.
+
+<Diagram type="event-driven-ai">
+  {/* Events → Queue → Processor → AI → Storage → Notification → Client */}
+</Diagram>
+
+| Vaihe | Teknologia | Vaihtoehtoja |
+|---|---|---|
+| **Tapahtumien tuottaminen** | Webhook, API, IoT | Kafka Producer |
+| **Viestijono** | Kafka, RabbitMQ | AWS SQS, Redis Streams |
+| **Prosessointi** | Worker-pool (Python, Node.js) | Serverless (Lambda) |
+| **AI-käsittely** | LLM API / lokaali malli | GPT-5, Llama 4 |
+| **Tulosten tallennus** | PostgreSQL, S3 | Time-series DB |
+| **Käyttäjänotifikaatio** | WebSocket, SSE, sähköposti | Push-notifikaatio |
+
+```typescript
+// Tapahtumapohjainen AI-putki
+interface AIEvent {
+  id: string;
+  type: "document_uploaded" | "analysis_requested" | "alert_generated";
+  payload: unknown;
+  timestamp: Date;
+}
+
+// 1. Vastaanota tapahtuma
+kafka.on('document_uploaded', async (event: AIEvent) => {
+  // 2. Laita jonoon (hajautettu käsittely)
+  await queue.enqueue(event);
+
+  // 3. Worker käsittelee
+  const result = await ai.process(event.payload);
+
+  // 4. Tallenna tulos
+  await db.save(result);
+
+  // 5. Notifioi käyttäjä
+  ws.send({ userId: event.userId, result });
+});
+```
+
+<Callout type="tip">
+  **Milloin valita tämä:** Kun käyttäjät odottavat vastauksia taustalla
+  (ei reaaliajassa), tapahtumia tulee paljon ja ne vaihtelevat kooltaan.
+  Esimerkki: 10 000 dokumentin analysointi yön aikana.
+</Callout>
+
+## 5.6 AI-pohjainen suosittelujärjestelmä
+
+Yhdistä klassinen suosittelualgoritmi ja LLM-pohjainen personalisointi.
+
+<Diagram type="recommendation-system">
+  {/* Käyttäjädatan analysointi → CF-malli → LLM personalisointi → Suositukset → UI */}
+</Diagram>
+
+| Komponentti | Tarkoitus | Esimerkkiteknologia |
+|---|---|---|
+| **Collaborative filtering** | Löydä samankaltaisia käyttäjiä/tuotteita | Surprise, implicit, LightFM |
+| **Sisällön ymmärtäminen** | Analysoi tuotekuvaukset, kuvat | CLIP, text-embedding |
+| **LLM-pohjainen rankkaus** | Järjestä suositukset personoidusti | GPT-5, Claude 4 |
+| **Selitykset** | Generoi "Miksi suosittelemme tätä?" | LLM |
+
+```python
+def recommend(user_id):
+    # 1. Hae kandidatit CF-mallilla (nopea, ei AI:ta)
+    candidates = cf_model.get_candidates(user_id, n=100)
+
+    # 2. LLM arvioi personoidusti 100 → 10
+    prompt = f"User preferences: {user_profile}\nCandidates: {candidates}"
+    ranked = llm.rank(prompt, candidates, top_k=10)
+
+    # 3. Generoi selitykset
+    explanations = llm.explain(f"Why {ranked[0]} for user {user_id}?")
+
+    return {"recommendations": ranked, "explanations": explanations}
+
 <Reference id="chen2021" />
 <Reference id="lewis2020" />
 <Reference id="yao2022" />

@@ -79,6 +79,56 @@ app.post("/chat", async (req, res) => {
 | **Ei dataputkia** | Kaikki tieto tulee LLM:n harjoitusdatasta |
 | **Skaalautuu heti** | Palveluntarjoaja hoitaa infra-asiat |
 
+### Batch-API:t: Puolet hinnasta
+
+Jos käyttötapauksesi ei vaadi reaaliaikaisuutta (raportointi, analyysit, 
+massakäsittely), batch-API:t tarjoavat jopa 50% hinnanalennuksen:
+
+```typescript
+// Normaali synkroninen kutsu — maksaa täyden hinnan
+const result = await openai.chat.completions.create({ model: "gpt-5", messages });
+
+// Batch: lähetä eränä, tulokset 24h sisällä — 50% halvempi
+const batch = await openai.batches.create({
+  input_file_id: file.id,
+  endpoint: "/v1/chat/completions",
+  completion_window: "24h",
+});
+```
+
+| Tila | Latenssi | Hinta (%) | Milloin |
+|---|---|---|---|
+| **Reaaliaikainen** | &lt;2s | 100% | Chat, interaktiivinen |
+| **Streaming** | 0.1s/eka token | 100% | Keskustelu, kirjoitusapu |
+| **Batch** | 1-24h | 50% | Analyysi, raportit, suuret datamassat |
+
+### Streaming-putki (Server-Sent Events)
+
+```typescript
+app.post("/chat/stream", async (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+
+  const stream = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: req.body.message }],
+    stream: true,
+  });
+
+  // Lähetä tokenit reaaliajassa käyttäjälle
+  for await (const chunk of stream) {
+    const token = chunk.choices[0]?.delta?.content;
+    if (token) res.write(`data: ${JSON.stringify({ token })}\n\n`);
+  }
+  res.write("data: [DONE]\n\n");
+});
+```
+
+<Callout type="tip">
+  **Käyttäjäkokemus:** Streaming parantaa koetun nopeuden dramaattisesti.
+  Ensimmäinen token 100ms vs. koko vastaus 3s — käyttäjä kokee sovelluksen 
+  "heti reagoivaksi".
+</Callout>
+
 ### Riskit
 
 | Riski | Kuvaus | Miten lieventää |

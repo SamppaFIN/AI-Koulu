@@ -111,6 +111,45 @@ Tämä muuttaa kaiken:
 3. **Monitorointi:** Sen sijaan, että tarkkailet "onko palvelin pystyssä",
    tarkkailet "onko vastausten laatu laskenut" (ajautuminen)
 
+#### Konteksti-ikkunan mullistus (2024–2026)
+
+Yksi suurimmista muutoksista AI-arkkitehtuurissa viimeisen 2 vuoden aikana
+on ollut konteksti-ikkunoiden räjähdysmäinen kasvu:
+
+| Vuosi | Malli | Konteksti |
+|---|---|---|
+| 2022 | GPT-3.5 | 4K tokenia (~3 sivua) |
+| 2023 | GPT-4 | 32K (~20 sivua) |
+| 2024 | Gemini 1.5 Pro / Claude 3 | 1M–2M (~750–1500 sivua) |
+| 2025–2026 | GPT-5, Gemini 3, Claude 4 | 1M+ — koko kirjastoja mahtuu |
+
+**Mitä tämä tarkoittaa arkkitehtuurille:**
+- RAG vs hienosäätö -päätös muuttuu: jos koko dokumentaation voi ladata
+  kontekstiin, RAG:n merkitys vähenee (mutta kustannus nousee)
+- Kontekstin hallinnasta tulee uusi suunnitteluongelma: miten täyttää
+  konteksti järkevästi ilman että tieto hukkuu (lost-in-the-middle -ilmiö)
+- Ikkunoiden kasvu ei ole ilmaista: hinta per 1M tokenia on laskenut
+  dramaattisesti — toukokuussa 2026 kilpailu on painanut hintoja alas
+
+#### Mallimaisema toukokuussa 2026
+
+AI-mallien kehitystahti on kiivas. Tässä vaihtoehdot arkkitehtuuripäätöksiin:
+
+| Kategoria | Suljettu (API) | Avoin (itse isännöity) | Huomio |
+|---|---|---|---|
+| **Yleiskäyttö** | GPT-5, Claude 4, Gemini 3 | Llama 4 (Meta), Mistral Large | Avoimet ovat saavuttaneet suljetut monissa tehtävissä |
+| **Päättely** | Claude 4 (paras), o3-mini | DeepSeek-R1 | Chain-of-thought -mallit erikoistuneet matemaattiseen päättelyyn |
+| **Koodaus** | Claude 4 + GitHub Copilot X | DeepSeek-Coder-V3 | Avoimet koodausmallit kilpailevat laadussa |
+| **Multimodaali** | GPT-5 (paras), Gemini 3 | Llama 4 Vision, Pixtral | Kuvan+tekstin ymmärrys standardi kaikissa |
+| **Hintaoptimoitu** | GPT-4o-mini, Claude Haiku | Llama 4 8B, Mistral 7B | ~100x halvempi kuin isot mallit, riittävät rutiineihin |
+
+<Callout type="tip">
+  **Säästövinkki:** 80% kyselyistä voi hoitaa halvemmalla mallilla tai säännöillä.
+  Käytä isoa mallia vain 20%:iin — säästät 60% kustannuksista. Toukokuussa 2026
+  avoimet mallit (Llama 4, Mistral) tarjoavat lähes samaa laatua nollakustannuksella
+  itse isännöitynä.
+</Callout>
+
 ### Kokeile itse: Tokenisaattori
 
 <TokenizerDemo />
