@@ -1,0 +1,533 @@
+/* ─── Design Tokenit ────────────────────────────────────── */
+
+/* Teema: Valkoinen/vaalea tila */
+:root {
+  /* OkLCH-väripaletti */
+  --color-brand: oklch(0.55 0.24 280);        /* syvä violetti */
+  --color-brand-light: oklch(0.7 0.2 280);     /* vaalea violetti */
+  --color-brand-dark: oklch(0.4 0.22 280);      /* tumma violetti */
+  --color-accent: oklch(0.65 0.25 30);          /* oranssi aksentti */
+  --color-accent-light: oklch(0.78 0.18 30);    /* vaalea oranssi */
+
+  --color-bg: oklch(0.98 0.005 280);            /* lähes valkoinen */
+  --color-bg-card: oklch(0.96 0.008 280);       /* kortin tausta */
+  --color-bg-code: oklch(0.92 0.01 280);        /* koodilohkon tausta */
+  --color-surface: oklch(0.95 0.01 280);        /* pinnat */
+
+  --color-text: oklch(0.15 0.02 280);           /* pääteteksti */
+  --color-text-secondary: oklch(0.4 0.02 280);  /* toissijainen teksti */
+  --color-text-muted: oklch(0.55 0.015 280);    /* himmeä teksti */
+
+  --color-border: oklch(0.88 0.01 280);         /* reunukset */
+  --color-border-light: oklch(0.93 0.008 280);  /* kevyet reunukset */
+
+  --color-success: oklch(0.6 0.2 150);          /* vihreä */
+  --color-warning: oklch(0.7 0.2 85);           /* keltainen */
+  --color-error: oklch(0.6 0.22 25);            /* punainen */
+  --color-info: oklch(0.6 0.18 240);            /* sininen */
+
+  /* Typografia */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Välit */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Varjot */
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.06);
+  --shadow-md: 0 4px 6px oklch(0 0 0 / 0.08);
+  --shadow-lg: 0 10px 25px oklch(0 0 0 / 0.1);
+}
+
+/* Teema: Tumma tila */
+[data-theme="dark"] {
+  --color-brand: oklch(0.7 0.22 280);          /* kirkkaampi violetti tummalla */
+  --color-brand-light: oklch(0.8 0.18 280);
+  --color-brand-dark: oklch(0.5 0.2 280);
+  --color-accent: oklch(0.75 0.22 30);
+  --color-accent-light: oklch(0.85 0.16 30);
+
+  --color-bg: oklch(0.12 0.02 280);            /* lähes musta */
+  --color-bg-card: oklch(0.16 0.025 280);
+  --color-bg-code: oklch(0.2 0.03 280);
+  --color-surface: oklch(0.18 0.025 280);
+
+  --color-text: oklch(0.92 0.01 280);
+  --color-text-secondary: oklch(0.7 0.015 280);
+  --color-text-muted: oklch(0.55 0.015 280);
+
+  --color-border: oklch(0.25 0.02 280);
+  --color-border-light: oklch(0.2 0.015 280);
+
+  --color-success: oklch(0.7 0.2 150);
+  --color-warning: oklch(0.8 0.2 85);
+  --color-error: oklch(0.7 0.2 25);
+  --color-info: oklch(0.7 0.18 240);
+}
+
+/* ─── Perustyylit ─────────────────────────────────────────── */
+
+html {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Responsiivinen typografia ──────────────────────────── */
+
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; font-weight: 800; }
+h2 { font-size: clamp(1.5rem, 3.5vw, 2.5rem); line-height: 1.2; font-weight: 700; }
+h3 { font-size: clamp(1.2rem, 2.5vw, 1.75rem); line-height: 1.3; font-weight: 600; }
+h4 { font-size: clamp(1rem, 2vw, 1.25rem); line-height: 1.4; font-weight: 600; }
+
+p, li { font-size: clamp(1rem, 1.5vw, 1.125rem); line-height: 1.7; }
+code, pre { font-family: var(--font-mono); font-size: 0.9em; }
+
+/* ─── Utility-luokat ─────────────────────────────────────── */
+
+.container-content {
+  max-width: 80ch;
+  margin-inline: auto;
+  padding-inline: var(--space-md);
+}
+
+.container-wide {
+  max-width: 120ch;
+  margin-inline: auto;
+  padding-inline: var(--space-md);
+}
+
+/* ─── Saavutettavuus ─────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* focus-visible: käytä sinistä kehystä */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ─── Aurora/Cosmic-lisäykset ────────────────────────────── */
+
+/* Aurora-gradient-muuttujat */
+:root {
+  --aurora-pink: oklch(0.65 0.28 350);
+  --aurora-purple: oklch(0.55 0.24 280);
+  --aurora-blue: oklch(0.6 0.22 240);
+  --aurora-cyan: oklch(0.7 0.2 190);
+  --aurora-gradient-1: linear-gradient(135deg, var(--aurora-pink), var(--aurora-purple));
+  --aurora-gradient-2: linear-gradient(135deg, var(--aurora-purple), var(--aurora-blue));
+  --aurora-gradient-3: linear-gradient(135deg, var(--aurora-blue), var(--aurora-cyan));
+  --aurora-gradient-full: linear-gradient(135deg, var(--aurora-pink), var(--aurora-purple), var(--aurora-blue), var(--aurora-cyan));
+  --glass-bg: oklch(1 0 0 / 0.05);
+  --glass-border: oklch(1 0 0 / 0.1);
+  --glass-shadow: 0 8px 32px oklch(0 0 0 / 0.1);
+}
+
+[data-theme="dark"] {
+  --glass-bg: oklch(0 0 0 / 0.2);
+  --glass-border: oklch(1 1 0 / 0.08);
+  --glass-shadow: 0 8px 32px oklch(0 0 0 / 0.3);
+}
+
+/* Aurora-animaatiot */
+@keyframes auroraFlow {
+  0%, 100% { transform: translate(-50%, -50%) rotate(0deg); opacity: 0.3; }
+  33% { transform: translate(-45%, -55%) rotate(120deg); opacity: 0.5; }
+  66% { transform: translate(-55%, -45%) rotate(240deg); opacity: 0.4; }
+  100% { transform: translate(-50%, -50%) rotate(360deg); opacity: 0.3; }
+}
+
+@keyframes auroraFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes auroraPulse {
+  0%, 100% { box-shadow: 0 0 12px var(--aurora-purple); }
+  50% { box-shadow: 0 0 24px var(--aurora-pink); }
+}
+
+@keyframes cardGlow {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes shimmer {
+  0% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.4; }
+}
+
+@keyframes progressOrbGlow {
+  0%, 100% { box-shadow: 0 0 10px var(--color-brand); }
+  50% { box-shadow: 0 0 25px var(--color-brand-light); }
+}
+
+/* Utility-luokat */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: var(--glass-shadow);
+}
+
+.gradient-text {
+  background: var(--aurora-gradient-full);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glow-border {
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.15), transparent);
+  animation: cardGlow 3s linear infinite;
+  pointer-events: none;
+}
+
+.living-card {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease;
+}
+
+.living-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 40px oklch(0 0 0 / 0.15);
+}
+
+.living-card:hover::after {
+  opacity: 1;
+}
+
+/* ─── Taulukot ──────────────────────────────────────────── */
+
+.table-glass {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+}
+
+.table-glass thead {
+  background: linear-gradient(135deg, oklch(0.55 0.24 280 / 0.15), oklch(0.65 0.28 350 / 0.1));
+}
+
+.table-glass th {
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-brand);
+  text-align: left;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.table-glass td {
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--color-border-light);
+  color: var(--color-text);
+}
+
+.table-glass tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table-glass tbody tr:hover {
+  background: oklch(0.55 0.24 280 / 0.04);
+}
+
+/* ─── Korttigridi etusivulle ────────────────────────────── */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-md);
+}
+
+.card-grid .card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: var(--space-xl);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-grid .card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 40px oklch(0 0 0 / 0.15);
+  border-color: var(--color-brand-light);
+}
+
+.card-grid .card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.06), transparent);
+  animation: cardGlow 4s linear infinite;
+  pointer-events: none;
+}
+
+/* ─── Footer ────────────────────────────────────────────── */
+
+.footer-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--glass-border);
+  padding-block: var(--space-xl);
+  margin-top: var(--space-3xl);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+/* ─── Header ────────────────────────────────────────────── */
+
+.header-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  animation: auroraFloat 5s ease-in-out infinite;
+}
+
+/* ─── Mobiiliresponsiivisuus ────────────────────────────── */
+
+@media (max-width: 768px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .header-glass nav a {
+    font-size: 0.85rem;
+  }
+  
+  .table-glass {
+    font-size: 0.8rem;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+  
+  .table-glass th,
+  .table-glass td {
+    padding: 0.5rem 0.6rem;
+  }
+
+  /* MDX-taulukot mobiilissa */
+  .mdx-content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  .mdx-content th,
+  .mdx-content td {
+    white-space: nowrap;
+    min-width: 80px;
+  }
+  
+  /* Kosketuskohteet */
+  .mobile-nav a {
+    min-height: 48px;
+    min-width: 48px;
+    justify-content: center;
+  }
+  
+  /* Isommat fontit mobiililla */
+  .mdx-content p {
+    font-size: clamp(1rem, 3vw, 1.1rem);
+  }
+
+  .container-content {
+    padding-inline: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-glass {
+    padding-inline: var(--space-sm);
+  }
+  
+  h1 { font-size: clamp(1.5rem, 6vw, 2rem); }
+  h2 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
+}
+
+/* ─── Kosketuspalautteen erottelu ────────────────────────── */
+
+@media (hover: hover) {
+  .living-card:hover {
+    transform: translateY(-4px) scale(1.01);
+  }
+}
+
+@media (hover: none) {
+  .living-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  .card-grid .card:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+  }
+}
+
+/* ─── Scroll-to-top -kelluke ────────────────────────────── */
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 5rem;
+  right: 1rem;
+  z-index: 999;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--aurora-gradient-1);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+
+.scroll-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.scroll-to-top:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px oklch(0.55 0.24 280 / 0.3);
+}
+
+/* ─── Hampparivalikko ────────────────────────────────────── */
+
+.hamburger-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: var(--color-text);
+  line-height: 1;
+  min-width: 48px;
+  min-height: 48px;
+}
+
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: oklch(0 0 0 / 0.5);
+  z-index: 200;
+}
+
+.mobile-menu-overlay.open {
+  display: block;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  max-width: 85vw;
+  z-index: 300;
+  background: var(--color-bg);
+  border-left: 1px solid var(--color-border);
+  padding: 1.5rem;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobile-menu.open {
+  transform: translateX(0);
+}
+
+.mobile-menu a {
+  display: block;
+  padding: 0.6rem 0.8rem;
+  color: var(--color-text);
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.mobile-menu a:hover {
+  background: var(--color-bg-card);
+}
+
+@media (max-width: 768px) {
+  .desktop-nav { display: none !important; }
+  .hamburger-btn { display: flex; align-items: center; justify-content: center; }
+}
