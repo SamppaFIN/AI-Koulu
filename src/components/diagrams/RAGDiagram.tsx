@@ -1,11 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback } from "react";
 import {
   ReactFlow,
   Background,
   Controls,
-  type ReactFlowInstance,
   type Node,
   type Edge,
   type NodeProps,
@@ -135,70 +134,32 @@ const defaultEdges: Edge[] = [
 
 /**
  * RAGDiagram — interaktiivinen React Flow -kaavio RAG-putkesta.
+ * CSS-korjaus visibility:hiddeniin on public/styles/site.css:ssä.
  */
 export default function RAGDiagram() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const rfInstance = useRef<ReactFlowInstance | null>(null);
-
-  // Korjaa React Flow'n visibility:hidden Astro-hydraatiossa
-  useEffect(() => {
-    // Käytä MutationObserveria — reagoi heti kun nodet ilmestyvät
-    const observer = new MutationObserver(() => {
-      const nodes = document.querySelectorAll<HTMLElement>('.react-flow__node');
-      nodes.forEach(n => { n.style.visibility = 'visible'; });
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
-
-    // Myös heti alussa
-    const init = () => {
-      const nodes = document.querySelectorAll<HTMLElement>('.react-flow__node');
-      nodes.forEach(n => { n.style.visibility = 'visible'; });
-    };
-    init();
-    const t1 = setTimeout(init, 200);
-    const t2 = setTimeout(init, 600);
-    const t3 = setTimeout(init, 1200);
-    const t4 = setTimeout(init, 2500);
-
-    return () => {
-      observer.disconnect();
-      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4);
-    };
-  }, []);
-
-  const onInit = useCallback((instance: ReactFlowInstance) => {
-    rfInstance.current = instance;
-    setTimeout(() => instance.fitView({ padding: 0.15, duration: 300 }), 200);
-  }, []);
-
   return (
-    <>
-      <style>{`.react-flow__node{visibility:visible!important}`}</style>
-      <div
-        ref={containerRef}
-        style={{
-          height: "620px",
-          borderRadius: "12px",
-          overflow: "hidden",
-          border: "1px solid var(--glass-border)",
-          background: "var(--glass-bg)",
-        }}
-      >
+    <div
+      style={{
+        height: "620px",
+        borderRadius: "12px",
+        overflow: "hidden",
+        border: "1px solid var(--glass-border)",
+        background: "var(--glass-bg)",
+      }}
+    >
       <ReactFlow
         nodes={defaultNodes}
         edges={defaultEdges}
         nodeTypes={nodeTypes}
-        onInit={onInit}
+        fitView
+        fitViewOptions={{ padding: 0.15 }}
         proOptions={{ hideAttribution: true }}
         minZoom={0.5}
         maxZoom={2}
-        defaultViewport={{ x: 0, y: 0, zoom: 1 }}
       >
         <Background color="oklch(0.5 0.02 280 / 0.08)" gap={20} />
         <Controls showInteractive={false} />
       </ReactFlow>
     </div>
-    </>
   );
 }

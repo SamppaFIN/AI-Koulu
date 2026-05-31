@@ -1,3 +1,6 @@
+/* ─── React Flow -korjaus (Astro-hydraation visibility:hidden) ─── */
+.react-flow__node { visibility: visible !important; }
+
 /* ─── Design Tokenit ────────────────────────────────────── */
 
 /* Teema: Valkoinen/vaalea tila */
