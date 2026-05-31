@@ -103,6 +103,50 @@ natiivi elementti ei riitä.
 - Lisää aina teksti, ikoni tai kuvio värin rinnalle
 - Esim: virheilmoitus = punainen reunus + "Virhe" teksti + ⚠️ ikoni
 
+### ARIA-anti-patternit — älä tee näin
+
+❌ **Div-painike ilman roolia**
+```html
+<!-- ÄLÄ: ruudunlukija ei tunnista tätä painikkeeksi -->
+<div onclick="submit()">Lähetä</div>
+
+<!-- TEE: natiivi painike -->
+<button type="submit">Lähetä</button>
+```
+
+❌ **Näkymätön fokus**
+```css
+/* ÄLÄ: fokus katoaa, näppäimistökäyttäjä eksyy */
+*:focus { outline: none; }
+
+/* TEE: selkeä fokusindikaattori */
+*:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+```
+
+❌ **Ikoni ilman tekstivastinetta**
+```html
+<!-- ÄLÄ: ruudunlukija sanoo "some image" -->
+<img src="check.svg" />
+
+<!-- TEE: alt-teksti kertoo merkityksen -->
+<img src="check.svg" alt="Vahvistettu" />
+<!-- TAI: jos ikoni on koristeellinen -->
+<img src="decoration.svg" alt="" role="presentation" />
+```
+
+### Näppäimistönavigaation kulku
+
+Tyypillinen näppäimistönavigaatio modaalissa:
+
+```
+1. TAB → Avaa modal (fokus menee modalille)
+2. TAB → Seuraava kenttä / painike
+3. SHIFT+TAB → Edellinen kenttä / painike
+4. ENTER → Valitse / lähetä
+5. ESC → Sulje modal (palaa edelliseen fokukseen)
+6. TAB → Kun modal on auki, fokus pysyy modalin sisällä (focus trap)
+```
+
 ### Tekstin skaalautuvuus
 
 Sivun pitää toimia 200% zoomilla — ilman vaakasuoraa skrollausta.
@@ -149,6 +193,33 @@ Automaattityökalut löytävät ~30% ongelmista. Loput vaativat ihmistä:
 - Lue ruudunlukijalla (NVDA, VoiceOver)
 - Testaa zoomaamalla 200%
 - Testaa kontrastit fyysisellä etäisyydellä
+
+#### Ruudunlukijatestaus NVDA:lla (Windows)
+
+1. **Lataa NVDA:** https://www.nvaccess.org/ — ilmainen, avoin lähdekoodi
+2. **Käynnistä:** Asenna ja käynnistä NVDA (oletuspikanäppäin: CTRL+ALT+N)
+3. **Testaa:** Sulje silmäsi ja navigoi sivua TAB-näppäimellä
+   - Kuuletko kaikki elementit? Tiedätkö missä olet?
+   - Ymmärrätkö mitä kenttään pitää kirjoittaa?
+   - Toimiiko kaikki näppäimistöllä?
+4. **Lopeta:** NVDA + Q lopettaa
+
+> **Tavoiteltu lopputulos:** Sivun pitäisi olla käytettävissä täysin ilman hiirtä
+> ja ilman ruutua — pelkällä näppäimistöllä ja kuulokkeilla.
+
+### Saavutettavuuden tarkistuslista
+
+Ennen julkaisua, käy tämä läpi:
+
+- [ ] **Näppäimistö:** TAB kiertää koko sivun loogisessa järjestyksessä
+- [ ] **Fokus:** Jokaisella elementillä on näkyvä fokus-indikaattori
+- [ ] **Ruudunlukija:** NVDA/VoiceOver lukee kaikki elementit oikein
+- [ ] **Kontrasti:** WCAG AA 4.5:1 normaalille tekstille, 3:1 suurelle
+- [ ] **Zoomaa 200%:** Sivu toimii ilman vaakasuoraa skrollausta
+- [ ] **Väri:** Väriä ei käytetä ainoana informaation lähteenä
+- [ ] **Alt-tekstit:** Kaikilla kuvilla on alt-teksti (tai role="presentation")
+- [ ] **Otsikot:** Otsikkohierarkia on looginen (h1 → h2 → h3, ei hypyillä)
+- [ ] **Lomakkeet:** Kaikilla kentillä on label
 
 ### CI-putki
 

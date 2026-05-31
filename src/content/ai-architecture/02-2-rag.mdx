@@ -119,6 +119,46 @@ Tietograafit + vektorihaku:
 - Graafihaku löytää niiden väliset yhteydet
 - Lopputulos: konteksti, joka ymmärtää *suhteet* eikä vain *samankaltaisuutta*
 
+### RAG:n vikatilat — ja miten ne korjataan
+
+| Vikatila | Oire | Syy | Ratkaisu |
+|---|---|---|---|
+| **Chunk liian pieni** | Konteksti puuttuu, vastaus on pinnallinen | Liian aggressiivinen chunkkaus | Kasvata chunk-kokoa, lisää kontekstin limitystä |
+| **Chunk liian suuri** | Relevantti tieto hukkuu turhaan tekstiin | Liian isot palat | Pienennä chunkkeja, käytä semanttista chunkkausta |
+| **Haku epäonnistuu** | Väärät dokumentit haetaan | Upotusmalli ei ymmärrä domainia | Vaihda upotusmalli (esim. domain-spesifi), lisää hakuun avainsanoja |
+| **Malli ei seuraa kontekstia** | LLM vastaa omasta päästään, ei dokumenttien perusteella | Heikko prompt tai liian vähäinen konteksti | Tarkenna promptia: "Vastaa VAIN annetun kontekstin perusteella" |
+| **Liian monta dokumenttia** | Token-budjetti ylittyy, vastaus sekava | Kontekstiin mahtuu rajoitettu määrä | Paranna haun tarkkuutta, käytä rankkausta (reranking) |
+
+### Milloin EI käyttää RAG:ia
+
+RAG on mahtava työkalu, mutta ei aina oikea valinta:
+
+| Käytä RAG:ia... | Käytä hienosäätöä... | Käytä API-käärettä... |
+|---|---|---|
+| Data muuttuu usein (päivittäin/viikoittain) | Data on vakaa (kuukausia sama) | Et tarvitse omaa dataa ollenkaan |
+| Tarvitset tarkkoja viittauksia lähteisiin | Tarvitset tietyn ulosoton muodon | Teet nopeaa prototyyppiä |
+| Domain on erikoistunut (laki, lääketiede) | Haluat mallin oppivan tyylin | Kustannukset eivät ole kriittisiä |
+| Hallusinaatioiden hinta on korkea | Haluat nopeamman latenssin | Et halua ylläpitää vektoritietokantaa |
+
+### RAG:n evaluointi: miten mittaat laatua?
+
+| Metriikka | Kuvaus | Tavoite |
+|---|---|---|
+| **precision@k** | Kuinka moni haetuista dokumenteista on relevantteja? | > 0.8 |
+| **recall@k** | Kuinka suuri osa relevanteista dokumenteista löytyi? | > 0.7 |
+| **NDCG** | Ovatko tärkeimmät dokumentit kärjessä? | > 0.85 |
+| **Answer relevanssi** | Vastaako generoitu vastaus kysymykseen? | Manuaalinen / LLM-eval |
+| **Faithfulness** | Onko vastaus uskollinen kontekstille (ei hallusinoi)? | LLM-eval |
+
+### Suorituskykyvertailu
+
+| Hakustrategia | Latenssi | Kustannus | Milloin käyttää |
+|---|---|---|---|
+| **Täysi RAG-haku** | 2-4s | Korkea | Ensimmäinen kysely, uniikki hakusana |
+| **Semanttinen välimuisti** | 0.1-0.3s | Matala | Samankaltainen kysely toistuu (30-50% osuma) |
+| **Tarkka välimuisti** | 0.05s | Minimissa | Täsmälleen sama kysely |
+| **Streaming** | 0.1s eka token | Sama | Koettu nopeus, käyttäjä näkee vastauksen heti |
+
 <WhyItMatters>
   **Miksi tällä on väliä?** RAG on yleisin tapa tuoda oma data osaksi
   AI-sovellusta. Se on halvempi kuin hienosäätö, helpompi päivittää kuin

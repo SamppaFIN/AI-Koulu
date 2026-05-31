@@ -39,6 +39,21 @@ Väärä arkkitehtuurivalinta voi tarkoittaa:
   vaihto toiseen toimittajaan on massiivinen projekti
 - **Käyttäjäkokemus kärsii** — 3 sekunnin latenssi keskustelussa tappaa käyttäjäkokemuksen
 
+#### Kustannusvertailu: eri arkkitehtuurit
+
+| Arkkitehtuuri | Hinta / 1000 kyselyä | Latenssi | Milloin valita |
+|---|---|---|---|
+| **API-kääre** | ~30 € (GPT-4o, 500 tokenia) | 1–3s | Nopea prototyyppi, yksinkertainen teksti |
+| **RAG** | ~35 € (haku + GPT-4o) | 2–5s | Oma data, usein muuttuva tieto |
+| **Agentti** | ~50–150 € (useita kutsuja) | 5–15s | Monivaiheinen päättely, työkalujen käyttö |
+| **Hienosäätö** | ~5 € (pienempi malli) | 0.5–2s | Vakaa data, tarkka muoto |
+| **Hybridi** | ~10–30 € (säännöt + LLM) | 0.2–3s | Kustannusoptimointi, rutiinit + poikkeukset |
+
+<Callout type="tip">
+  **Säästövinkki:** 80% kyselyistä voi hoitaa halvemmalla mallilla tai säännöillä.
+  Käytä isoa mallia vain 20%:iin — säästät 60% kustannuksista.
+</Callout>
+
 <AnalogyBox>
   **Analogia:** Hyvä AI-arkkitehtuuri on kuin ravintolan keittiö. Perinteinen
   ohjelmisto on pikaruokala — sama annos joka kerta, tarkat reseptit.
@@ -55,6 +70,26 @@ Väärä arkkitehtuurivalinta voi tarkoittaa:
   Sijoita arkkitehtuurisuunnitteluun aikaa ennen kuin kirjoitat ensimmäistäkään
   riviä koodia.
 </WhyItMatters>
+
+#### Mistä aloittaa? — Pikapäätöspuu
+
+| Jos tilanteesi on... | Aloita luvusta... |
+|---|---|
+| 🆕 "Teen prototyyppiä, pitää saada nopeasti valmista" | [API-kääre (luku 2.1)](/AI-Koulu/ai-architecture/02-1-api-wrappers/) |
+| 📚 "Minulla on omaa dataa, jonka pitää olla vastausten pohjana" | [RAG (luku 2.2)](/AI-Koulu/ai-architecture/02-2-rag/) |
+| 🤖 "Tarvitsen tekoälyn joka tekee asioita, ei vain vastaa" | [Agentit (luku 2.3)](/AI-Koulu/ai-architecture/02-3-agents/) |
+| 🎯 "Haluan tietyn muodon tai tyylin vastauksiin" | [Hienosäätö (luku 2.4)](/AI-Koulu/ai-architecture/02-4-finetuning/) |
+| 🖼️ "Käsittelen kuvia, ääntä tai videota" | [Multimodaali (luku 2.5)](/AI-Koulu/ai-architecture/02-5-multimodal/) |
+| ⚡ "Haluan optimoida kustannuksia ja suorituskykyä" | [Hybridi (luku 2.6)](/AI-Koulu/ai-architecture/02-6-hybrid/) |
+
+#### Tarkistuslista ennen arkkitehtuuripäätöstä
+
+- [ ] **Kustannusbudjetti:** Paljonko yksi kysely saa maksaa? Entä 1000?
+- [ ] **Latenssivaatimus:** Saako vastaus kestää 0.5s, 2s vai 10s?
+- [ ] **Tietoturva:** Voiko data lähettää kolmannelle osapuolelle (OpenAI, Anthropic)?
+- [ ] **Data:** Muuttuuko tieto usein (RAG) vai onko se vakio (hienosäätö)?
+- [ ] **Vendor lock-in:** Haluatko pystyä vaihtamaan toimittajaa?
+- [ ] **Virheensieto:** Mitä tapahtuu jos malli hallusinoi? Tarvitaanko ihmiskontrolli?
 
 ### Paradigman muutos: deterministisestä probabilistiseen
 
