@@ -1,0 +1,114 @@
+---
+import Layout from "../layouts/Layout.astro";
+import glossaryData from "../data/glossary.json";
+
+interface GlossaryEntry {
+  id: string;
+  term: string;
+  shortDef: string;
+  fullDef: string;
+  examples: string[];
+  relatedTerms: string[];
+  chapter: string;
+  difficulty: "beginner" | "intermediate";
+}
+
+const terms = glossaryData as GlossaryEntry[];
+
+const beginnerTerms = terms.filter((t) => t.difficulty === "beginner");
+const intermediateTerms = terms.filter((t) => t.difficulty === "intermediate");
+---
+
+<Layout title="Sanasto" description="AI-arkkitehtuurin ja UI/UX-suunnittelun keskeiset termit selitettynä suomeksi">
+  <main class="container-content" style="padding-block: var(--space-2xl);">
+    <header style="margin-bottom: var(--space-2xl);">
+      <h1 style="font-size: var(--text-3xl); margin: 0;">📖 Sanasto</h1>
+      <p style="opacity: 0.7; margin-top: var(--space-sm);">
+        Keskeiset AI-arkkitehtuurin ja UI/UX-suunnittelun termit selitettynä suomeksi.
+        {terms.length} termiä — <a href="#aloittelija" style="color: var(--color-brand);">aloittelija</a> · <a href="#keskitaso" style="color: var(--color-brand);">keskitaso</a>
+      </p>
+    </header>
+
+    <section id="aloittelija" style="margin-bottom: var(--space-2xl);">
+      <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-lg);">🟢 Aloittelijan termit</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-md);">
+        {beginnerTerms.map((entry) => (
+          <article id={entry.id} style={{
+            padding: "var(--space-md) var(--space-lg)",
+            borderRadius: "12px",
+            border: "1px solid var(--glass-border, oklch(0.5 0.02 280 / 0.15))",
+            background: "var(--glass-bg, oklch(0.3 0.02 280 / 0.3))",
+          }}>
+            <h3 style={{ margin: "0 0 var(--space-xs)", fontSize: "var(--text-lg)" }}>{entry.term}</h3>
+            <p style={{ margin: 0, opacity: 0.85, fontSize: "0.9rem" }}>{entry.shortDef}</p>
+            <details style={{ marginTop: "var(--space-sm)", fontSize: "0.85rem" }}>
+              <summary style={{ cursor: "pointer", opacity: 0.6, fontWeight: 600 }}>Näytä lisää</summary>
+              <p style={{ marginTop: "var(--space-sm)", lineHeight: 1.6 }}>{entry.fullDef}</p>
+              {entry.examples.length > 0 && (
+                <>
+                  <strong style={{ fontSize: "0.8rem", opacity: 0.6 }}>Esimerkit:</strong>
+                  <ul style={{ margin: "var(--space-xs) 0 0", paddingLeft: "var(--space-lg)" }}>
+                    {entry.examples.map((ex, i) => (
+                      <li key={i} style={{ fontSize: "0.85rem", marginBottom: "2px" }}>{ex}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {entry.relatedTerms.length > 0 && (
+                <p style={{ marginTop: "var(--space-sm)", fontSize: "0.8rem", opacity: 0.6 }}>
+                  Liittyvät termit: {entry.relatedTerms.map((id) => {
+                    const related = terms.find((t) => t.id === id);
+                    return related ? (
+                      <a key={id} href={`#${id}`} style={{ color: "var(--color-brand)", marginRight: "4px" }}>{related.term}</a>
+                    ) : null;
+                  })}
+                </p>
+              )}
+            </details>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section id="keskitaso">
+      <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-lg);">🔵 Keskitaso</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-md);">
+        {intermediateTerms.map((entry) => (
+          <article id={entry.id} style={{
+            padding: "var(--space-md) var(--space-lg)",
+            borderRadius: "12px",
+            border: "1px solid var(--glass-border, oklch(0.5 0.02 280 / 0.15))",
+            background: "var(--glass-bg, oklch(0.3 0.02 280 / 0.3))",
+          }}>
+            <h3 style={{ margin: "0 0 var(--space-xs)", fontSize: "var(--text-lg)" }}>{entry.term}</h3>
+            <p style={{ margin: 0, opacity: 0.85, fontSize: "0.9rem" }}>{entry.shortDef}</p>
+            <details style={{ marginTop: "var(--space-sm)", fontSize: "0.85rem" }}>
+              <summary style={{ cursor: "pointer", opacity: 0.6, fontWeight: 600 }}>Näytä lisää</summary>
+              <p style={{ marginTop: "var(--space-sm)", lineHeight: 1.6 }}>{entry.fullDef}</p>
+              {entry.examples.length > 0 && (
+                <>
+                  <strong style={{ fontSize: "0.8rem", opacity: 0.6 }}>Esimerkit:</strong>
+                  <ul style={{ margin: "var(--space-xs) 0 0", paddingLeft: "var(--space-lg)" }}>
+                    {entry.examples.map((ex, i) => (
+                      <li key={i} style={{ fontSize: "0.85rem", marginBottom: "2px" }}>{ex}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {entry.relatedTerms.length > 0 && (
+                <p style={{ marginTop: "var(--space-sm)", fontSize: "0.8rem", opacity: 0.6 }}>
+                  Liittyvät termit: {entry.relatedTerms.map((id) => {
+                    const related = terms.find((t) => t.id === id);
+                    return related ? (
+                      <a key={id} href={`#${id}`} style={{ color: "var(--color-brand)", marginRight: "4px" }}>{related.term}</a>
+                    ) : null;
+                  })}
+                </p>
+              )}
+            </details>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+</Layout>

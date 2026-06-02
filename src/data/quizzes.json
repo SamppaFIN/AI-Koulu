@@ -150,6 +150,21 @@
     "adhdTip": "🎨 Hienosäätö = opettaa piirtämään tietyn tyylin. RAG = antaa esimerkkikuvia joita kopioida. Jos haluat aina saman tyylin, hienosäätö on oikea valinta."
   },
   {
+    "id": "q-02-4-finetuning-2",
+    "chapterSlug": "02-4-finetuning",
+    "scenario": "Startupilla on vain 100 esimerkkiä dataa ja yksi RTX 4090 -näytönohjain. He haluavat räätälöidä Llama-3-70B-mallin omalle toimialalleen. Full fine-tuning (kaikkien painojen päivitys) vaatisi 8x A100-klusterin.",
+    "question": "Mikä tekniikka mahdollistaa hienosäädön yhdellä kuluttajatason näytönohjaimella?",
+    "options": [
+      "Osta lisää näytönohjaimia — ilman niitä ei voi hienosäätää",
+      "QLoRA: 4-bittinen kvantisointi + matalan rankin adapterit — päivitetään vain ~0.1% parametreista, koko malli mahtuu 24GB VRAM:iin",
+      "Käytä pienempää mallia kuten Llama-3-8B",
+      "Kouluta malli pilvessä ja lataa valmis"
+    ],
+    "correctIndex": 1,
+    "explanation": "QLoRA (Quantized Low-Rank Adaptation) on läpimurto hienosäädön demokratisoinnissa. Se kvantisoi perusmallin 4-bittiseksi ja lisää pieniä adapterikerroksia — vain adapterit päivitetään. Tämä mahdollistaa 70B-mallin hienosäädön yhdellä 24GB GPU:lla.",
+    "adhdTip": "🔧 QLoRA = talon maalaus vs. uudelleenrakennus. Et pura seiniä (full fine-tuning) — maalaat vain pinnan (adapterit). Talo on sama, väri on uusi."
+  },
+  {
     "id": "q-02-5-multimodal-1",
     "chapterSlug": "02-5-multimodal",
     "scenario": "Rakennat järjestelmää, joka analysoi skannattuja laskuja (PDF). Järjestelmän pitää tunnistaa laskun numero, summa, päivämäärä ja toimittaja.",
@@ -163,6 +178,21 @@
     "correctIndex": 1,
     "explanation": "Skannatut laskut tarvitsevat OCR:ää tekstin irrottamiseen, taulukon irrotusta rakenteen tunnistamiseen, ja multimodaalisen LLM:n yhdistämään kuvan ja tekstin tiedot. Yksikään teknologia yksin ei riitä.",
     "adhdTip": "🔍 Laskun analysointi = kolme silmäparia. OCR lukee tekstin, taulukon irrotus löytää rivit, LLM yhdistää. Yksi silmäpari ei riitä — tarvitset kaikki kolme."
+  },
+  {
+    "id": "q-02-5-multimodal-2",
+    "chapterSlug": "02-5-multimodal",
+    "scenario": "Tehdas haluaa AI-järjestelmän, joka havaitsee mikrosäröjä metalliosien röntgenkuvista. Kuvia on 50 000, ja jokaisessa virheen koko on alle 1% kuvan pinta-alasta. Projektipäällikkö ehdottaa GPT-4V:tä 'koska se ymmärtää kuvia'.",
+    "question": "Miksi GPT-4V ei ole oikea valinta tähän tehtävään?",
+    "options": [
+      "GPT-4V on liian kallis — siinä kaikki",
+      "Yleismallit eivät ole optimoituja pienten, toistuvien yksityiskohtien havaitsemiseen. Erikoistunut konenäkömalli (ResNet/ViT) + annotoitu datasetti antaa >99% tarkkuuden murto-osalla kustannuksista",
+      "GPT-4V ei tue röntgenkuvia",
+      "50 000 kuvaa on liian vähän AI:lle"
+    ],
+    "correctIndex": 1,
+    "explanation": "Multimodaaliset yleismallit (GPT-4V, Gemini) ovat hyviä yleisessä kuvanymmärryksessä, mutta erikoistuneet tehtävät kuten teollisuuslaadunvalvonta vaativat dedikoituja konenäkömalleja. Näillä on korkeampi tarkkuus, pienempi latenssi ja murto-osa kustannuksista.",
+    "adhdTip": "🔬 GPT-4V = yleislääkäri. Konenäkömalli = erikoislääkäri. Mikrosärön löytämiseen tarvitset erikoislääkärin, et yleislääkäriä."
   },
   {
     "id": "q-02-6-hybrid-1",
@@ -208,6 +238,21 @@
     "correctIndex": 1,
     "explanation": "Autoskaalaus varmistaa että käytössä on juuri oikea määrä resursseja. vLLM optimoi GPU-muistin käyttöä (PagedAttention). Keep-alive estää kylmäkäynnistyksen viiveet.",
     "adhdTip": "📈 Autoskaalaus = bussiliikenne ruuhka-aikana. Ruuhka-aikaan lisää busseja, hiljaisena aikana vähemmän. vLLM on kuin bussin kaksikerroksinen malli — mahtuu enemmän matkustajia."
+  },
+  {
+    "id": "q-03-infrastructure-2",
+    "chapterSlug": "03-infrastructure",
+    "scenario": "Julkaisit AI-chatbotin. Ensimmäinen käyttäjä aamulla odottaa 12 sekuntia vastausta — seuraavat saavat vastauksen 200ms:ssa. Asiakas valittaa: 'Palvelu on liian hidas aamuisin.'",
+    "question": "Mikä ilmiö on kyseessä ja miten se ratkaistaan?",
+    "options": [
+      "Verkko on hidas aamuisin — vaihda nopeampi ISP",
+      "Kylmäkäynnistys (cold start): malli ladataan GPU-muistiin vasta ensimmäisellä pyynnöllä. Ratkaisu: keep-alive / aina päällä -konfiguraatio tai lämmitelykutsu (warm-up) ennen liikenteen ohjaamista",
+      "Malli on viallinen — vaihda uudempaan",
+      "Käyttäjä tarvitsee nopeamman nettiyhteyden"
+    ],
+    "correctIndex": 1,
+    "explanation": "Kylmäkäynnistys on yleisin ongelma GPU-pohjaisissa AI-järjestelmissä: malli pitää ladata VRAM:iin ennen käyttöä. Keep-alive pitää mallin muistissa, ja warm-up-kutsu lataa mallin ennen kuin oikea liikenne alkaa.",
+    "adhdTip": "❄️ Kylmäkäynnistys = auton moottorin lämmitys pakkasaamuna. Et lähde ajamaan heti — annat moottorin lämmetä. Sama malli: lämmitä ensin, aja sitten."
   },
   {
     "id": "q-04-accessibility-1",
@@ -314,6 +359,21 @@
     "adhdTip": "🏗️ Yritys-RAG on kuin kirjaston automaattivarasto. Et mene itse hakemaan kirjoja — robotti (ETL) hakee, varastoi (vektoritietokanta) ja toimittaa ne pyynnöstä (API) tiskille (UI)."
   },
   {
+    "id": "q-05-reference-architectures-2",
+    "chapterSlug": "05-reference-architectures",
+    "scenario": "Matkatoimisto haluaa AI-agentin, joka varaa lennot, hotellin ja vuokra-auton yhdellä pyynnöllä. Jos lento peruuntuu, hotellin ja auton pitää peruuntua automaattisesti. Transaktioiden pitää olla atomisia.",
+    "question": "Mikä arkkitehtuuri takaa atomisuuden monen agentin välillä?",
+    "options": [
+      "Yksi iso agentti hoitaa kaiken — ei tarvita koordinointia",
+      "Orkestroija-agentti + Saga-kuvio: jokainen varaus on oma transaktionsa, ja peruutukselle on kompensoiva transaktio. Jos lento epäonnistuu, Saga ajaa peruutukset hotellille ja autolle",
+      "Käytä perinteistä REST API:a ilman agentteja",
+      "Anna käyttäjän varata jokainen erikseen"
+    ],
+    "correctIndex": 1,
+    "explanation": "Saga-kuvio on suunniteltu hajautettuihin transaktioihin: jokaisella askeleella on kompensoiva toiminto (peruutus). Orkestroija-agentti koordinoi kaikki agentit ja varmistaa, että joko kaikki onnistuu tai kaikki peruuntuu.",
+    "adhdTip": "🎻 Saga = sinfoniaorkesteri. Kapellimestari (orkestroija) johtaa, ja jos yksi soittaja epäonnistuu, koko orkesteri lopettaa siististi — ei jätetä puolikkaita ääniä roikkumaan."
+  },
+  {
     "id": "q-01-hcd-1",
     "chapterSlug": "01-hcd",
     "scenario": "Suunnittelutiimi on rakentanut uuden ominaisuuden 3 kuukauden ajan. Kun se julkaistaan, käyttäjät eivät ymmärrä sitä. Yksi tiimin jäsen sanoo: \"Meidän pitäisi kouluttaa käyttäjiä paremmin.\"",
@@ -359,6 +419,21 @@
     "adhdTip": "🪟 Lasipinta on kuin sumea ikkuna — mitä sumeampi lasi, sitä vaikeampi on lukea siihen kirjoitettua tekstiä. Testaa aina eri taustoilla."
   },
   {
+    "id": "q-02-visual-trends-2",
+    "chapterSlug": "02-visual-trends",
+    "scenario": "Suunnittelija esittelee tumman teeman: musta tausta (#000000), valkoinen teksti (#FFFFFF). 'Se on tyylikäs ja säästää akkua OLED-näytöillä', hän perustelee. Käyttäjät valittavat silmien väsymisestä illalla.",
+    "question": "Mikä on suunnitteluvirhe ja miten se korjataan?",
+    "options": [
+      "Tumma teema on aina huono — palaa vaaleaan",
+      "Maksimikontrasti (musta+valkoinen) aiheuttaa silmien rasitusta hämärässä. Tumman teeman taustan pitää olla tummanharmaa (#121212), tekstin ei-puhdas-valkoinen (#E0E0E0), ja kontrastisuhde 7:1 riittää",
+      "OLED-näytöt eivät tue tummaa teemaa",
+      "Vähennä näytön kirkkautta"
+    ],
+    "correctIndex": 1,
+    "explanation": "Puhdas musta + puhdas valkoinen on liian suuri kontrasti hämärässä ympäristössä. Material Design Dark Theme suosittelee tummanharmaata taustaa (#121212) ja hieman himmennettyä tekstiä. Tämä vähentää silmien rasitusta ja säästää silti akkua.",
+    "adhdTip": "🌙 Tumma teema = yötaivas. Musta aukko + supernova = liian kirkas. Tummanharmaa taivas + kuunvalo = juuri sopiva."
+  },
+  {
     "id": "q-03-interaction-design-1",
     "chapterSlug": "03-interaction-design",
     "scenario": "Käyttäjä täyttää pitkää lomaketta (10 kenttää). Hän painaa 'Lähetä' ja saa virheilmoituksen, mutta kenttää, jossa on virhe, ei ole merkitty. Käyttäjä täyttää koko lomakkeen uudelleen.",
@@ -372,6 +447,21 @@
     "correctIndex": 1,
     "explanation": "Hyvä IxD: virhe näytetään välittömästi kentän vieressä (inline), kentät säilyttävät arvonsa, ja virheviesti kertoo tarkalleen mikä on pielessä ja miten se korjataan.",
     "adhdTip": "❌ Hyvä virheviesti = 'Sähköposti on virheellinen, tarkista @-merkki'. Huono = 'Virhe lomakkeessa'. Kerro mitä korjata, älä että jokin on rikki."
+  },
+  {
+    "id": "q-03-interaction-design-2",
+    "chapterSlug": "03-interaction-design",
+    "scenario": "Mobiilisovelluksessa on kaksi nappia vierekkäin: 'Tallenna' ja 'Peruuta'. Ne ovat 6mm leveitä ja 2mm etäisyydellä toisistaan. Käyttäjät painavat jatkuvasti väärää nappia.",
+    "question": "Mikä IxD-periaate selittää ongelman ja miten se korjataan?",
+    "options": [
+      "Käyttäjillä on liian isot sormet",
+      "Fittsin laki: mitä pienempi ja kauempana kohde on, sitä vaikeampi siihen on osua. WCAG 2.5.5 vaatii vähintään 44x44px (n. 11mm) kosketuskohteen. Korjaus: suuremmat napit + riittävä väli",
+      "Napit ovat väärän väriset — vaihda väriä",
+      "Poista 'Peruuta'-nappi kokonaan"
+    ],
+    "correctIndex": 1,
+    "explanation": "Fittsin laki kuvaa aikaa, joka kuluu kohteen saavuttamiseen: T = a + b × log₂(D/W + 1), missä D on etäisyys ja W on kohteen leveys. Mitä pienempi kohde, sitä hitaampi ja virhealttiimpi osuma. WCAG 2.5.5 määrittää minimikooksi 44×44 CSS-pikseliä.",
+    "adhdTip": "🎯 Fittsin laki = tikanheitto. Mitä pienempi taulu (nappi) ja mitä kauempana se on, sitä useammin heität ohi. Tee taulusta isompi ja siirrä lähemmäs."
   },
   {
     "id": "q-04-accessibility-2",

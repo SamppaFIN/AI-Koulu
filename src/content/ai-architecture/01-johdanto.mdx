@@ -14,7 +14,7 @@ tieteenalansa, jossa yhdistyvät perinteinen ohjelmistosuunnittelu, koneoppimise
 tuotantoonvienti (MLOps) ja täysin uudet probabilististen järjestelmien haasteet.
 
 <Callout type="info">
-  **Avainajatus:** AI-järjestelmät ovat luonnostaan *epädeterministisiä* — sama syöte
+  **Avainajatus:** <TermTooltip term="llm">AI</TermTooltip>-järjestelmät ovat luonnostaan *<TermTooltip term="nondeterministic">epädeterministisiä</TermTooltip>* — sama syöte
   voi tuottaa eri tuloksen joka kerta. Tämä mullistaa kaiken, mitä tiedämme
   testaamisesta, virheidenkäsittelystä ja luotettavuudesta.
 </Callout>
@@ -35,7 +35,7 @@ Väärä arkkitehtuurivalinta voi tarkoittaa:
 
 - **Kustannukset 10–100x kalliimpia** — yksi turha LLM-kutsu voi maksaa enemmän
   kuin koko perinteisen backendin kuukausikulut
-- **Vendor lock-in** — jos koko systeemi on rakennettu yhden mallin ympärille,
+- **<TermTooltip term="vendor-lockin">Vendor lock-in</TermTooltip>** — jos koko systeemi on rakennettu yhden mallin ympärille,
   vaihto toiseen toimittajaan on massiivinen projekti
 - **Käyttäjäkokemus kärsii** — 3 sekunnin latenssi keskustelussa tappaa käyttäjäkokemuksen
 
@@ -43,11 +43,11 @@ Väärä arkkitehtuurivalinta voi tarkoittaa:
 
 | Arkkitehtuuri | Hinta / 1000 kyselyä | Latenssi | Milloin valita |
 |---|---|---|---|
-| **API-kääre** | ~30 € (GPT-4o, 500 tokenia) | 1–3s | Nopea prototyyppi, yksinkertainen teksti |
+| **<TermTooltip term="api-wrapper">API-kääre</TermTooltip>** | ~30 € (GPT-4o, 500 <TermTooltip term="token">tokenia</TermTooltip>) | 1–3s | Nopea prototyyppi, yksinkertainen teksti |
 | **RAG** | ~35 € (haku + GPT-4o) | 2–5s | Oma data, usein muuttuva tieto |
-| **Agentti** | ~50–150 € (useita kutsuja) | 5–15s | Monivaiheinen päättely, työkalujen käyttö |
-| **Hienosäätö** | ~5 € (pienempi malli) | 0.5–2s | Vakaa data, tarkka muoto |
-| **Hybridi** | ~10–30 € (säännöt + LLM) | 0.2–3s | Kustannusoptimointi, rutiinit + poikkeukset |
+| **<TermTooltip term="agent">Agentti</TermTooltip>** | ~50–150 € (useita kutsuja) | 5–15s | Monivaiheinen päättely, työkalujen käyttö |
+| **<TermTooltip term="finetuning">Hienosäätö</TermTooltip>** | ~5 € (pienempi malli) | 0.5–2s | Vakaa data, tarkka muoto |
+| **<TermTooltip term="hybrid-architecture">Hybridi</TermTooltip>** | ~10–30 € (säännöt + LLM) | 0.2–3s | Kustannusoptimointi, rutiinit + poikkeukset |
 
 <Callout type="tip">
   **Säästövinkki:** 80% kyselyistä voi hoitaa halvemmalla mallilla tai säännöillä.
@@ -110,6 +110,26 @@ Tämä muuttaa kaiken:
    mallin suorituskykyä tietyillä syötteillä
 3. **Monitorointi:** Sen sijaan, että tarkkailet "onko palvelin pystyssä",
    tarkkailet "onko vastausten laatu laskenut" (ajautuminen)
+
+### Transformer — kaiken takana oleva arkkitehtuuri
+
+Lähes kaikki nykyaikaiset LLM:t (GPT, Claude, Gemini, Llama) perustuvat
+**Transformer**-arkkitehtuuriin (Vaswani et al., 2017). Se koostuu kahdesta
+pääosasta:
+
+- **Enkooderi** — käsittelee syötteen ja rakentaa siitä kontekstuaalisen
+esityksen itsehuomion (self-attention) avulla
+- **Dekooderi** — generoi ulostulon token kerrallaan hyödyntäen enkooderin
+tuottamaa kontekstia ristihuomiolla (cross-attention)
+
+<TransformerDiagram />
+
+<Callout type="info">
+  **Itsehuomio (Self-Attention)** on Transformerin ydininnovaatio: jokainen
+  token "katsoo" jokaista muuta tokenia sekvenssissä ja laskee, kuinka
+  relevantti kukin on. Tämä mahdollistaa pitkien riippuvuuksien mallintamisen
+  — toisin kuin aiemmat RNN/LSTM-arkkitehtuurit.
+</Callout>
 
 #### Konteksti-ikkunan mullistus (2024–2026)
 

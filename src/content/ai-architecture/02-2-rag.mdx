@@ -9,9 +9,9 @@ published: true
 
 ## Perus-RAG
 
-Retrieval-Augmented Generation (RAG) on arkkitehtuuri, joka yhdistää
+<TermTooltip term="rag">Retrieval-Augmented Generation (RAG)</TermTooltip> on arkkitehtuuri, joka yhdistää
 **tiedonhaun** (retrieval) ja **tekstin generoinnin** (generation).
-Sen idea on yksinkertainen: sen sijaan, että kysytään LLM:ltä suoraan,
+Sen idea on yksinkertainen: sen sijaan, että kysytään <TermTooltip term="llm">LLM</TermTooltip>:ltä suoraan,
 haetaan ensin relevantti konteksti omasta tietokannasta ja annetaan se
 mallille mukaan.
 
@@ -19,13 +19,13 @@ mallille mukaan.
 
 RAG-putken vaiheet:
 
-1. **Datan valmistelu:** dokumentit pilkotaan paloiksi (chunks)
-2. **Upotukset (embeddings):** jokaisesta palasta luodaan vektoriesitys
-3. **Indeksointi:** vektorit tallennetaan vektoritietokantaan
+1. **Datan valmistelu:** dokumentit pilkotaan paloiksi (<TermTooltip term="chunking">chunks</TermTooltip>)
+2. **Upotukset (<TermTooltip term="embedding">embeddings</TermTooltip>):** jokaisesta palasta luodaan vektoriesitys
+3. **Indeksointi:** vektorit tallennetaan <TermTooltip term="vector-database">vektoritietokantaan</TermTooltip>
 4. **Kysely:** käyttäjän kysymys muutetaan vektoriksi
-5. **Haku:** lähimmät vektorit haetaan (kNN-haku)
+5. **Haku:** lähimmät vektorit haetaan (<TermTooltip term="knn">kNN-haku</TermTooltip>)
 6. **Kontekstin muodostus:** löydetyt palat lisätään promptiin
-7. **Generointi:** LLM tuottaa vastauksen kontekstin perusteella
+7. **Generointi:** <TermTooltip term="llm">LLM</TermTooltip> tuottaa vastauksen kontekstin perusteella
 
 <Callout type="tip">
   **Avainajatus:** RAG on tapa antaa LLM:lle *pääsy omaan tietoon* ilman

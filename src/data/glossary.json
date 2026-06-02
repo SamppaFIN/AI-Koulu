@@ -1,0 +1,482 @@
+[
+  {
+    "id": "nondeterministic",
+    "term": "Epädeterministinen",
+    "shortDef": "Järjestelmä, jossa sama syöte voi tuottaa eri tuloksen eri kerroilla.",
+    "fullDef": "AI-järjestelmät ovat epädeterministisiä: ne valitsevat vastauksia todennäköisyyksien perusteella, eivät tarkkojen sääntöjen. Perinteinen ohjelmisto on deterministinen — laskin antaa aina 2+2=4. AI saattaa vastata samaan kysymykseen eri tavalla joka kerta. Tämä on AI-arkkitehtuurin suurin suunnitteluväline: et voi testata 'toimiiko', voit vain mitata 'toimiiko tarpeeksi usein'.",
+    "examples": ["LLM vastaa 'Mikä on Suomen pääkaupunki?' 99% varmuudella 'Helsinki' — mutta 1% saattaa tulla 'Tukholma'", "Perinteinen laskin antaa aina saman tuloksen — AI-chatbot saattaa muotoilla vastauksen eri tavalla"],
+    "relatedTerms": ["llm", "hallucination"],
+    "chapter": "01-johdanto",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "hallucination",
+    "term": "Hallusinaatio",
+    "shortDef": "AI-mallin tuottama virheellinen tai keksitty tieto, joka esitetään faktana.",
+    "fullDef": "Hallusinaatio tarkoittaa tilannetta, jossa AI-malli tuottaa itsevarmasti väärää tietoa. Koska LLM:t eivät 'tiedä' asioita vaan ennustavat todennäköisimpiä sanoja, ne voivat keksiä faktoja, viitata olemattomiin lähteisiin tai yhdistellä asioita virheellisesti. Ilman arkkitehtuuria (RAG, HITL, eval-joukot) hallusinaatioita on vaikea havaita.",
+    "examples": ["AI väittää 'Suomen presidentti 2023 oli Pekka Toivonen' — henkilöä ei ole olemassa", "LLM keksii olemattoman tieteellisen artikkelin ja kirjoittaa sille 'tekijät ja vuoden'"],
+    "relatedTerms": ["nondeterministic", "rag"],
+    "chapter": "01-johdanto",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "token",
+    "term": "Token",
+    "shortDef": "Tekstin pienin yksikkö, jonka AI-malli käsittelee — yleensä osa sanaa tai merkki.",
+    "fullDef": "Token on LLM:n perusyksikkö. Mallit eivät lue kirjaimia vaan tokeneita: 'AI' on yksi token, 'epädeterministinen' saattaa olla 3-5 tokenia. 1000 tokenia vastaa noin 750 sanaa. Kaikki LLM-palvelut hinnoitellaan token-määrän mukaan — sekä syöte (input tokens) että vastaus (output tokens) maksavat. Konteksti-ikkuna kertoo, kuinka monta tokenia malli pystyy käsittelemään kerralla.",
+    "examples": ["Sana 'epädeterministinen' tokenoituu: ['epä', 'determin', 'istinen']", "GPT-4o maksaa ~2.50€/M input tokeneita ja ~10€/M output tokeneita"],
+    "relatedTerms": ["context-window", "llm"],
+    "chapter": "02-1-api-wrappers",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "embedding",
+    "term": "Embedding",
+    "shortDef": "Tekstin muuntaminen numerovektoriksi, joka kuvaa sen merkitystä.",
+    "fullDef": "Embedding on koneoppimismenetelmä, joka muuntaa tekstin (sanan, lauseen, dokumentin) numeeriseksi vektoriksi — pitkäksi listaksi lukuja. Semanttisesti samankaltaiset tekstit saavat samankaltaisia vektoreita (lähellä toisiaan vektoriavaruudessa). RAG-järjestelmässä jokainen dokumenttipala muutetaan embeddingiksi ja tallennetaan vektoritietokantaan hakua varten.",
+    "examples": ["'Koira' ja 'koiran' embeddingit ovat lähellä toisiaan, mutta kaukana 'avaruusraketin' embeddingistä", "RAG-järjestelmässä 10 000 dokumenttipalasta → 10 000 embeddingiä vektoritietokannassa"],
+    "relatedTerms": ["rag", "vector-database", "knn"],
+    "chapter": "02-2-rag",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "rag",
+    "term": "RAG",
+    "shortDef": "Retrieval-Augmented Generation — arkkitehtuuri, joka hakee relevantin tiedon tietokannasta ennen vastauksen generointia.",
+    "fullDef": "RAG on arkkitehtuurimalli, jossa LLM saa avukseen tiedonhaun: 1) dokumentit paloitellaan (chunkkaus), 2) jokaisesta palasta luodaan vektoriesitys (embedding), 3) vektorit tallennetaan vektoritietokantaan, 4) käyttäjän kysymys muutetaan vektoriksi, 5) lähimmät vektorit haetaan (kNN-haku), 6) löydetyt palat lisätään promptiin kontekstiksi, 7) LLM tuottaa vastauksen kontekstin perusteella.",
+    "examples": ["Yrityksen intranet-Q&A: dokumentit SharePointissa → RAG → tarkat vastaukset", "Asiakaspalvelu-chatbot hakee tuotetiedot tietokannasta ennen vastausta"],
+    "relatedTerms": ["embedding", "vector-database", "chunking", "knn", "hallucination"],
+    "chapter": "02-2-rag",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "vector-database",
+    "term": "Vektoritietokanta",
+    "shortDef": "Tietokanta, joka tallentaa ja hakee vektoreita semanttisen samankaltaisuuden perusteella.",
+    "fullDef": "Vektoritietokanta (kuten Pinecone, Weaviate, Qdrant) on erikoistunut tietokanta, johon tallennetaan embedding-vektoreita. Toisin kuin perinteinen tietokanta, joka hakee tarkkoja osumia (SQL), vektoritietokanta hakee 'lähimmät naapurit' — semanttisesti samankaltaisimmat dokumentit.",
+    "examples": ["Pinecone: pilvipohjainen vektoritietokanta", "Weaviate: avoimen lähdekoodin vektoritietokanta"],
+    "relatedTerms": ["rag", "embedding", "knn"],
+    "chapter": "02-2-rag",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "chunking",
+    "term": "Chunkkaus",
+    "shortDef": "Dokumenttien pilkkominen pienempiin paloihin ennen indeksointia.",
+    "fullDef": "Chunkkaus on RAG-putken ensimmäinen vaihe: pitkät dokumentit pilkotaan pienempiin, hallittaviin paloihin (chunks). Liian isot chunkit hukuttavat relevantin tiedon, liian pienet menettävät kontekstin. Strategioita: kiinteä pituus, lauseraja, kappaleraja, semanttinen raja.",
+    "examples": ["100-sivuinen PDF pilkotaan 500 tokenin paloihin → 120 chunkkia", "Chunkkaus ilman limitystä: konteksti katkeaa keskeltä lausetta"],
+    "relatedTerms": ["rag", "embedding"],
+    "chapter": "02-2-rag",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "knn",
+    "term": "kNN-haku",
+    "shortDef": "k Nearest Neighbors — algoritmi, joka löytää annettua vektoria lähimmät vektorit.",
+    "fullDef": "kNN (k Nearest Neighbors) on hakualgoritmi, joka etsii vektoritietokannasta ne k vektoria, jotka ovat lähinnä kyselyvektoria. 'k' tarkoittaa palautettavien tulosten määrää (esim. k=5 palauttaa 5 lähintä). Mittana käytetään usein kosinietäisyyttä.",
+    "examples": ["Kysely: 'Mikä on RAG?' → embedding → kNN-haku → 5 lähintä dokumenttia", "k=3: palauttaa 3 semanttisesti samankaltaisinta tulosta"],
+    "relatedTerms": ["rag", "vector-database", "embedding"],
+    "chapter": "02-2-rag",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "api-wrapper",
+    "term": "API-kääre",
+    "shortDef": "Yksinkertaisin AI-arkkitehtuuri: käyttöliittymä + prompt-logiikka + LLM-API-kutsu.",
+    "fullDef": "API-kääre (thin wrapper) on AI-arkkitehtuurien yksinkertaisin muoto. Sovellus koostuu kolmesta kerroksesta: käyttöliittymä (UI), prompt-logiikka (viestien muotoilu, kontekstin hallinta) ja API-kutsu LLM-palveluun (OpenAI, Anthropic, Google). Sopii prototyyppeihin ja yksinkertaisiin tekstinkäsittelytehtäviin, mutta harvoin tuotantoon ilman lisäarkkitehtuuria.",
+    "examples": ["Chat-sovellus, joka lähettää viestit suoraan GPT-4o:lle ilman välimuistia", "Yksinkertainen kääntäjä: teksti → GPT-4o → käännös"],
+    "relatedTerms": ["prompt", "system-prompt", "llm"],
+    "chapter": "02-1-api-wrappers",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "prompt",
+    "term": "Prompt",
+    "shortDef": "Käyttäjän antama syöte tai ohje, joka ohjaa LLM:n vastausta.",
+    "fullDef": "Prompt on teksti, jonka käyttäjä tai järjestelmä antaa LLM:lle ohjeeksi. Hyvä prompti on selkeä, yksiselitteinen ja sisältää tarvittavan kontekstin. Prompt engineering on taito muotoilla prompteja, jotka tuottavat halutunlaisia vastauksia. System-prompt on erityinen prompti, joka määrittelee mallin roolin koko keskustelun ajaksi.",
+    "examples": ["\"Käännä seuraava teksti suomeksi: Hello world\"", "System prompt: 'Olet avulias asiakaspalvelija, joka vastaa ystävällisesti'"],
+    "relatedTerms": ["system-prompt", "api-wrapper", "llm"],
+    "chapter": "02-1-api-wrappers",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "system-prompt",
+    "term": "System prompt",
+    "shortDef": "Pysyvä ohje, joka määrittelee LLM:n roolin ja käyttäytymisen koko keskustelun ajaksi.",
+    "fullDef": "System prompt on erityinen viesti keskustelun alussa, joka asettaa LLM:n käyttäytymisohjeet. Se on kuin 'työnkuvaus' mallille. Toisin kuin käyttäjän viestit, system prompt on pysyvä — se vaikuttaa jokaiseen vastaukseen. Hyvä system prompt vähentää prompt injection -hyökkäyksiä ja parantaa vastausten laatua.",
+    "examples": ["\"Olet asiantunteva suomalainen pankkivirkailija.\"", "\"Käytä aina JSON-muotoa: {'vastaus': 'teksti'}\""],
+    "relatedTerms": ["prompt", "api-wrapper", "llm"],
+    "chapter": "02-1-api-wrappers",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "agent",
+    "term": "Agentti",
+    "shortDef": "AI-järjestelmä, joka voi tehdä päätöksiä ja suorittaa toimintoja itsenäisesti.",
+    "fullDef": "Agentti on LLM-pohjainen järjestelmä, joka ei vain vastaa kysymyksiin vaan toimii: se päättää mitä tehdä (Thought), kutsuu työkaluja (Action), tulkitsee tuloksia (Observation) ja toistaa silmukkaa kunnes tavoite on saavutettu. ReAct on yleisin agenttiarkkitehtuuri. Agentit tarvitsevat aina rajoituksia (maksimi iteraatiot, timeout), jotta ne eivät jää ikuiseen silmukkaan.",
+    "examples": ["Sää-agentti: 'Mikä on sää Berliinissä?' → hakee sää-API:a → tulkitsee → kertoo", "Asiakaspalveluagentti: hakee tilauksen tiedot, tarkistaa toimituksen tilan"],
+    "relatedTerms": ["react", "function-calling", "agent-loop"],
+    "chapter": "02-3-agents",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "react",
+    "term": "ReAct",
+    "shortDef": "Reasoning + Acting — agentin arkkitehtuuri, jossa päättely ja toiminta vuorottelevat.",
+    "fullDef": "ReAct (Yao et al., 2022) on agenttiarkkitehtuuri, jossa LLM vuorottelee päättelyn (Reasoning) ja toiminnan (Acting) välillä. Silmukka: 1) Thought — 'mitä minun pitää tehdä?' 2) Action — kutsu työkalua 3) Observation — tulkitse tulos 4) → takaisin Thoughtiin. Silmukka toistuu kunnes vastaus on valmis.",
+    "examples": ["Kysymys: 'Löydä halvin lento Berliiniin 15.6.' → haku API → tulos → harkitse → vastaus", "ReAct-silmukka 5 iteraatiota ennen lopullista vastausta"],
+    "relatedTerms": ["agent", "function-calling", "agent-loop"],
+    "chapter": "02-3-agents",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "function-calling",
+    "term": "Function calling",
+    "shortDef": "LLM:n kyky valita ja kutsua ennalta määriteltyjä funktioita/työkaluja.",
+    "fullDef": "Function calling (työkalujen käyttö) on LLM:n ominaisuus, jossa se voi päättää kutsua ennalta määriteltyjä funktioita. Kehittäjä määrittelee funktiot (nimi, kuvaus, parametrit) ja malli valitsee, mitä funktiota kutsua ja millä parametreilla. Tämä on agenttien perusta.",
+    "examples": ["getWeather(city: string, date: string) → LLM kutsuu: getWeather('Berlin', '2026-06-15')", "Useita työkaluja: haeSää, haeLento, haeHotelli — LLM valitsee oikean"],
+    "relatedTerms": ["agent", "react"],
+    "chapter": "02-3-agents",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "agent-loop",
+    "term": "Päättelysilmukka",
+    "shortDef": "Agentin toistuva prosessi: päätä → toimi → havaitse → toista.",
+    "fullDef": "Päättelysilmukka (agent loop) on agentin ydin: se toistaa Thought → Action → Observation -sykliä kunnes tavoite on saavutettu. Suurin riski on ikuinen silmukka: agentti ei saa työtä valmiiksi ja tuottaa loputtomasti API-kutsuja. Arkkitehtuurissa PITÄÄ aina olla katkaisija: maksimi iteraatiot (esim. 10), timeout (esim. 30s) ja havaintojen validointi.",
+    "examples": ["Agentti jää jumiin: hakee → tulkitsee väärin → aloittaa alusta → 15 kertaa minuutissa", "Turvallinen agentti: maksimi 5 iteraatiota, jonka jälkeen fallback-vastaus"],
+    "relatedTerms": ["agent", "react", "fallback"],
+    "chapter": "02-3-agents",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "finetuning",
+    "term": "Hienosäätö",
+    "shortDef": "Olemassaolevan LLM:n lisäkoulutus omalla datalla tiettyyn tehtävään.",
+    "fullDef": "Hienosäätö (fine-tuning) tarkoittaa valmiin kielimallin jatkokoulutusta omalla datalla. Toisin kuin RAG, joka hakee tietoa ulkoisesta tietokannasta, hienosäätö 'opettaa' mallille asioita pysyvästi. Sopii muodon ja tyylin oppimiseen (esim. JSON-muoto), mutta on kalliimpaa ja hitaampaa päivittää kuin RAG. LoRA ja QLoRA päivittävät vain ~0.1% parametreista.",
+    "examples": ["Opetetaan malli vastaamaan aina JSON-muodossa tietyllä kenttärakenteella", "QLoRA: 70B-mallin hienosäätö yhdellä 24GB GPU:lla"],
+    "relatedTerms": ["lora", "rag", "llm"],
+    "chapter": "02-4-finetuning",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "lora",
+    "term": "LoRA / QLoRA",
+    "shortDef": "Tehokas hienosäätötekniikka, joka päivittää vain pienen osan mallin parametreista.",
+    "fullDef": "LoRA (Low-Rank Adaptation) on tekniikka, jossa perusmalli pysyy jäädytettynä ja siihen lisätään pieniä 'adapteri'-kerroksia — vain nämä adapterit päivitetään. QLoRA on LoRA:n kvantisoitu versio: perusmalli pakataan 4-bittiseksi, mikä mahdollistaa suurtenkin mallien (70B) hienosäädön yhdellä kuluttajatason näytönohjaimella.",
+    "examples": ["Full fine-tuning: 70B-malli vaatii 8× A100 GPU:ta (~280GB VRAM)", "QLoRA: sama 70B-malli mahtuu yhdelle RTX 4090:lle (24GB VRAM)"],
+    "relatedTerms": ["finetuning", "llm"],
+    "chapter": "02-4-finetuning",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "multimodal",
+    "term": "Multimodaali",
+    "shortDef": "AI-järjestelmä, joka käsittelee useita datatyyppejä: tekstiä, kuvia, ääntä, videota.",
+    "fullDef": "Multimodaalinen AI pystyy käsittelemään ja yhdistämään eri datatyyppejä samassa mallissa. GPT-4V, Gemini ja Claude 3+ ovat multimodaalisia — ne voivat 'nähdä' kuvia ja 'lukea' tekstiä samanaikaisesti. Käyttötapauksia: laskujen analysointi, teollisuuslaadunvalvonta, videon analysointi.",
+    "examples": ["GPT-4V analysoi laskukuvan ja poimii laskun numeron, summan ja päivämäärän", "Röntgenkuvan + potilastiedon yhdistävä diagnoosijärjestelmä"],
+    "relatedTerms": ["llm"],
+    "chapter": "02-5-multimodal",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "hybrid-architecture",
+    "term": "Hybridiarkkitehtuuri",
+    "shortDef": "Useiden tekniikoiden yhdistelmä: säännöt + AI + ihmiskontrolli.",
+    "fullDef": "Hybridiarkkitehtuuri yhdistää sääntöpohjaisen käsittelyn, AI-mallit ja tarvittaessa ihmiskontrollin. Yksinkertaiset rutiinit hoidetaan edullisilla säännöillä, monimutkaiset tapaukset ohjataan LLM:lle, ja kriittiset päätökset varmistetaan ihmisellä (HITL). Tämä on kustannustehokkain tapa rakentaa AI-järjestelmiä tuotantoon.",
+    "examples": ["Asiakaspalvelu: 'Mikä on saldoni?' → sääntö. 'En ymmärrä laskuani' → LLM", "Lääketieteellinen AI: AI ehdottaa → lääkäri tarkistaa → vasta sitten potilaalle"],
+    "relatedTerms": ["fallback", "hitl"],
+    "chapter": "02-6-hybrid",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "fallback",
+    "term": "Fallback",
+    "shortDef": "Varasuunnitelma: mitä tehdään, kun AI epäonnistuu tai ei pysty vastaamaan.",
+    "fullDef": "Fallback-strategia määrittelee, mitä tapahtuu kun ensisijainen AI-järjestelmä epäonnistuu. Tyypillinen fallback-porras: 1) yritä uudelleen (retry), 2) käytä pienempää mallia, 3) hae välimuistista, 4) käytä sääntöpohjaista templaattia, 5) ohjaa ihmiselle. Fallbackit ovat kriittisiä tuotantojärjestelmille.",
+    "examples": ["GPT-4o ei vastaa → yritä uudelleen → GPT-4o-mini → välimuisti → 'Yritä myöhemmin'", "Jos LLM tuottaa virheellisen JSON:n → yritä uudelleen max 3 → oletusarvo"],
+    "relatedTerms": ["hybrid-architecture", "hitl"],
+    "chapter": "01-johdanto",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "vendor-lockin",
+    "term": "Vendor lock-in",
+    "shortDef": "Tilanne, jossa järjestelmän vaihto toiseen toimittajaan on erittäin vaikeaa ja kallista.",
+    "fullDef": "Vendor lock-in tarkoittaa riippuvuutta yhdestä toimittajasta (OpenAI, Anthropic, Google). Jos koko järjestelmä on rakennettu yhden LLM:n ympärille ilman abstraktiokerrosta, vaihto toiseen malliin vaatii massiivisen uudelleenkirjoituksen. Ratkaisu: käytä interface-abstraktiota, jolloin toimittajaa voi vaihtaa yhdellä konfiguraatiomuutoksella.",
+    "examples": ["Koko sovellus käyttää OpenAI:n SDK:ta suoraan → vaihto Anthropiciin vaatii koko koodipohjan muutoksen", "Abstraktiokerros: callLLM()-funktio ohjaa konfiguraation mukaan oikealle toimittajalle"],
+    "relatedTerms": ["api-wrapper"],
+    "chapter": "02-1-api-wrappers",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "latency",
+    "term": "Latenssi",
+    "shortDef": "Viive — aika, joka kuluu pyynnön tekemisestä vastauksen saamiseen.",
+    "fullDef": "Latenssi on AI-järjestelmän tärkeimpiä suorituskykymittareita. LLM-kutsussa latenssiin vaikuttavat: mallin koko (GPT-4o hitaampi kuin GPT-4o-mini), kontekstin koko (enemmän tokeneita = hitaampi), verkkoviive ja palvelimen kuormitus. Streaming (tokenien lähetys heti kun ne syntyvät) parantaa koettua latenssia.",
+    "examples": ["GPT-4o: tyypillinen latenssi 1-3s 500 tokenin vastaukselle", "GPT-4o-mini: 0.5-1s samalle vastaukselle"],
+    "relatedTerms": ["token", "llm", "cold-start"],
+    "chapter": "03-infrastructure",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "cold-start",
+    "term": "Kylmäkäynnistys (Cold start)",
+    "shortDef": "Ensimmäisen pyynnön hidas vasteaika, koska malli pitää ladata GPU-muistiin.",
+    "fullDef": "Kylmäkäynnistys on GPU-pohjaisten AI-järjestelmien yleinen ongelma: kun ensimmäinen pyyntö tulee, malli pitää ladata VRAM:iin (GPU-muistiin). Tämä voi kestää 5-15 sekuntia. Seuraavat pyynnöt saavat vastauksen 200ms:ssa, koska malli on jo muistissa. Ratkaisuja: keep-alive, lämmittelykutsut (warm-up) ennen liikenteen ohjaamista.",
+    "examples": ["Aamun ensimmäinen käyttäjä odottaa 12 sekuntia → seuraava 200ms", "Serverless AI-palvelussa jokainen kylmäkäynnistys maksaa 5-15s latenssia"],
+    "relatedTerms": ["latency", "llm", "gpu"],
+    "chapter": "03-infrastructure",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "hitl",
+    "term": "HITL (Human-in-the-loop)",
+    "shortDef": "Ihmiskontrolli silmukassa — ihminen varmistaa AI:n päätökset ennen niiden toteutusta.",
+    "fullDef": "Human-in-the-loop (HITL) on arkkitehtuurimalli, jossa AI ehdottaa ja ihminen päättää. Tämä on pakollinen korkean riskin sovelluksissa (terveydenhuolto, rahoitus, oikeus). AI tuottaa ehdotuksen, ihminen tarkistaa, hyväksyy, hylkää tai muokkaa sitä — vasta sitten tulos menee eteenpäin.",
+    "examples": ["Lääketieteellinen diagnoosi: AI ehdottaa → lääkäri varmistaa → diagnoosi potilaalle", "Luottopäätös: AI analysoi → pankkivirkailija hyväksyy → lainapäätös"],
+    "relatedTerms": ["hybrid-architecture", "fallback"],
+    "chapter": "02-6-hybrid",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "llm",
+    "term": "LLM",
+    "shortDef": "Large Language Model — suuri kielimalli, joka on koulutettu valtavalla tekstimäärällä.",
+    "fullDef": "LLM (Large Language Model) on syvä neuroverkko, joka on koulutettu ennustamaan seuraavaa sanaa valtavasta tekstimäärästä (teratavuja). Esimerkkejä: GPT-4o, Claude, Llama, Gemini. LLM:t eivät 'ajattele' tai 'ymmärrä' — ne laskevat todennäköisyyksiä seuraavalle tokenille. Niiden 'tieto' on koulutusdatan tilastollisia rakenteita.",
+    "examples": ["GPT-4o: OpenAI:n malli, koulutettu ~13 biljoonalla tokenilla", "Llama 3: avoimen lähdekoodin malli Meta:lta"],
+    "relatedTerms": ["token", "context-window", "hallucination"],
+    "chapter": "01-johdanto",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "context-window",
+    "term": "Konteksti-ikkuna",
+    "shortDef": "Maksimimäärä tokeneita, jonka LLM pystyy käsittelemään kerralla.",
+    "fullDef": "Konteksti-ikkuna (context window) määrittää, kuinka paljon tekstiä malli voi 'nähdä' kerralla — sekä syöte että vastaus yhteensä. 4K tokenia ~ 3 sivua, 32K ~ 20 sivua, 1M ~ 750 sivua. Kontekstin koko kasvaa räjähdysmäisesti. Suuri konteksti vähentää RAG:n tarvetta mutta lisää kustannuksia ja latenssia.",
+    "examples": ["GPT-4: 32K konteksti → mahtuu yksi kirja", "Gemini 1.5 Pro: 1M konteksti → mahtuu 'The Lord of the Rings' -trilogia"],
+    "relatedTerms": ["token", "llm"],
+    "chapter": "01-johdanto",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "gpu",
+    "term": "GPU / VRAM",
+    "shortDef": "Näytönohjain — AI-laskennan sydän. VRAM on GPU:n muisti, johon malli ladataan.",
+    "fullDef": "GPU (Graphics Processing Unit) on rinnakkaislaskentaan erikoistunut prosessori, joka on välttämätön AI-mallien koulutukseen ja päättelyyn. VRAM (Video RAM) on GPU:n muisti — se määrittää, kuinka suuria malleja yksi GPU pystyy käsittelemään. 24GB VRAM riittää 8B-13B parametrin malliin, 70B+ vaativat 80GB+.",
+    "examples": ["RTX 4090: 24GB VRAM → GPT-4o-mini, Llama-3-8B", "A100: 80GB VRAM → Llama-3-70B, GPT-4"],
+    "relatedTerms": ["cold-start", "latency"],
+    "chapter": "03-infrastructure",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "autoscaling",
+    "term": "Autoskaalaus",
+    "shortDef": "Automaattinen resurssien lisäys/vähennys kuormituksen mukaan.",
+    "fullDef": "Autoskaalaus (autoscaling, HPA = Horizontal Pod Autoscaler) on tekniikka, jossa palvelinresursseja lisätään tai vähennetään automaattisesti kuormituksen perusteella. AI-järjestelmissä tämä on kriittistä: kyselyt voivat kasvaa 10x hetkessä. vLLM (PagedAttention) optimoi GPU-muistin käyttöä ja mahdollistaa tehokkaamman skaalauksen.",
+    "examples": ["Aamulla 10 kyselyä/s → 1 GPU. Iltapäivällä 100/s → 10 GPU:ta automaattisesti", "HPA Kubernetesissa: lisää kopioita kun CPU > 70%"],
+    "relatedTerms": ["cold-start", "latency", "gpu"],
+    "chapter": "03-infrastructure",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "drift",
+    "term": "Drift (ajautuminen)",
+    "shortDef": "AI-järjestelmän laadun heikkeneminen ajan myötä, kun data muuttuu mutta malli ei.",
+    "fullDef": "Drift on AI-järjestelmien yleinen ongelma: malli on koulutettu tietyllä datalla, mutta todellinen data muuttuu ajan myötä. Data drift: syöttödatan jakauma muuttuu. Concept drift: käsitteiden merkitys muuttuu. Ratkaisu: havainnoitavuus (observability) drift-monitoroinnilla, joka hälyttää kun laatu laskee.",
+    "examples": ["Asiakaspalveluchatbot toimii hyvin 6kk → uudet tuotteet → laatu laskee", "Sääennustemalli: ilmastonmuutos muuttaa säätiloja → vanha malli ei toimi"],
+    "relatedTerms": ["eval", "hitl"],
+    "chapter": "04-design-principles",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "eval",
+    "term": "Eval-joukot",
+    "shortDef": "Testiaineisto, jolla mitataan AI-järjestelmän vastausten laatua.",
+    "fullDef": "Eval-joukot (evaluation sets) ovat AI-testauksen perusta. Ne koostuvat syöte-vastaus-pareista, joilla mitataan mallin suorituskykyä. Toisin kuin perinteiset yksikkötestit (jotka menevät joko läpi tai eivät), eval-joukot mittaavat 'kuinka usein malli onnistuu'. Eval-tuloksia tarkkaillaan ajan mittaan — lasku on merkki driftistä.",
+    "examples": ["100 kysymystä + odotetut vastaukset → malli vastaa → 94/100 oikein = 94%", "Eval-joukko 'asiakaspalvelu': 50 yleistä kysymystä, arvostellaan 1-5"],
+    "relatedTerms": ["drift", "nondeterministic"],
+    "chapter": "04-design-principles",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "circuit-breaker",
+    "term": "Piirikatkaisija (Circuit Breaker)",
+    "shortDef": "Turvamekanismi, joka katkaisee AI-kutsut virheiden ylittäessä rajan.",
+    "fullDef": "Piirikatkaisija on hajautettujen järjestelmien tunnettu kuvio, joka on erityisen tärkeä AI-järjestelmissä. Se estää ketjureaktiot: kun LLM epäonnistuu N kertaa peräkkäin, piirikatkaisija 'avaa piirin' ja ohjaa kaikki kutsut fallback-strategiaan tietyn ajan (esim. 30s).",
+    "examples": ["3 peräkkäistä virhettä → piiri auki → seuraavat 30s käytetään GPT-4o-miniä", "Ilman piirikatkaisijaa: 1 virhe → 10 yritystä/s → 600 turhaa kutsua minuutissa"],
+    "relatedTerms": ["fallback", "hybrid-architecture"],
+    "chapter": "04-design-principles",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "persona",
+    "term": "Persona",
+    "shortDef": "Kuvitteellinen, mutta tutkimukseen perustuva käyttäjäprofiili, joka edustaa käyttäjäryhmää.",
+    "fullDef": "Persona on käyttäjäkeskeisen suunnittelun työkalu: kuvitteellinen henkilö, joka edustaa tiettyä käyttäjäryhmää. Personalla on nimi, ikä, tausta, tavoitteet, tarpeet ja kipupisteet. Personat perustuvat oikeaan tutkimukseen (haastattelut, havainnointi), eivät arvauksiin.",
+    "examples": ["Maija, 45, IT-päällikkö: 'Haluan chatbotin, joka ei tuhlaa aikaani'", "Yritys X: 3 persona: 'Tekninen ostaja', 'Budjettipäättäjä', 'Loppukäyttäjä'"],
+    "relatedTerms": ["user-journey", "pain-points"],
+    "chapter": "01-hcd",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "user-journey",
+    "term": "User Journey",
+    "shortDef": "Käyttäjän koko matka palvelussa — ensimmäisestä kontaktista tavoitteen saavuttamiseen.",
+    "fullDef": "User Journey (käyttäjämatka) on visuaalinen kuvaus käyttäjän askeleista palvelussa. Se sisältää jokaisen vaiheen: mitä käyttäjä tekee, mitä hän ajattelee, mitä hän tuntee, ja missä on kipupisteitä. Journey map auttaa löytämään kehityskohteita ja suunnittelemaan parempia käyttökokemuksia.",
+    "examples": ["Laskun maksaminen: 1) saa laskun 2) avaa verkkopankin 3) kirjautuu 4) maksaa 5) vahvistus", "Matkavaraus: unelmoi → tutki → vertaile → varaa → koe → jaa"],
+    "relatedTerms": ["persona", "pain-points"],
+    "chapter": "01-hcd",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "pain-points",
+    "term": "Kipupisteet (Pain Points)",
+    "shortDef": "Ongelmia, turhautumisia tai esteitä, joita käyttäjä kokee palvelussa.",
+    "fullDef": "Kipupisteet ovat käyttäjän kokemia ongelmia, jotka estävät tai vaikeuttavat tavoitteen saavuttamista. Esimerkkejä: hidas toiminto, epäselvä navigointi, virheilmoitus ilman ohjeita. Kipupisteiden tunnistaminen on käyttäjäkeskeisen suunnittelun ydin.",
+    "examples": ["Lomakkeen lähetys epäonnistuu → 'Virhe lomakkeessa' → käyttäjä ei tiedä mitä korjata", "Haku ei löydä tuotetta, vaikka se on olemassa → käyttäjä turhautuu"],
+    "relatedTerms": ["persona", "user-journey"],
+    "chapter": "01-hcd",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "wcag",
+    "term": "WCAG",
+    "shortDef": "Web Content Accessibility Guidelines — kansainvälinen saavutettavuusstandardi.",
+    "fullDef": "WCAG on W3C:n ylläpitämä standardi, joka määrittelee verkkosisällön saavutettavuusvaatimukset. WCAG 2.2 on nykyinen versio, jossa kolme tasoa: A (minimi), AA (suositeltu — usein lakisääteinen), AAA (korkein). Keskeiset periaatteet: havaittava, hallittava, ymmärrettävä, toimintavarma.",
+    "examples": ["WCAG AA: ALT-teksti, vähintään 4.5:1 kontrasti, näppäimistöllä navigoitava", "EU-direktiivi 2025: julkisten verkkosivujen oltava WCAG AA -tasoa"],
+    "relatedTerms": ["aria", "contrast", "screen-reader"],
+    "chapter": "04-accessibility",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "aria",
+    "term": "ARIA",
+    "shortDef": "Accessible Rich Internet Applications — HTML-attribuutit ruudunlukijoille.",
+    "fullDef": "ARIA on W3C:n standardi, joka määrittelee HTML-attribuutteja saavutettavuuden parantamiseksi. Kun natiivit HTML-elementit eivät riitä (esim. div-pohjaiset komponentit), ARIA kertoo ruudunlukijalle mikä elementti on kyseessä (role) ja mitä se tekee (aria-label, aria-expanded).",
+    "examples": ["<div role=\"button\" aria-label=\"Sulje\" tabindex=\"0\">X</div>", "<button aria-expanded=\"false\">Valikko</button>"],
+    "relatedTerms": ["wcag", "screen-reader"],
+    "chapter": "04-accessibility",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "screen-reader",
+    "term": "Ruudunlukija",
+    "shortDef": "Ohjelma, joka lukee näytön sisällön ääneen näkövammaisille käyttäjille.",
+    "fullDef": "Ruudunlukija (screen reader) on apuohjelma, joka muuntaa näytöllä olevan tekstin puheeksi tai pistekirjoitukseksi. Suosituimmat: JAWS (Windows), NVDA (Windows, ilmainen), VoiceOver (Mac/iOS), TalkBack (Android). Ruudunlukija ei lue kuvia — siksi ALT-tekstit ovat pakollisia.",
+    "examples": ["NVDA lukee tekstin ääneen, ohjaa näppäimistöllä (ei hiirtä)", "Ruudunlukija: 'Painike, Osta nyt' (vs. 'Sisältöalue, Osta nyt' jos div ilman rolea)"],
+    "relatedTerms": ["aria", "wcag"],
+    "chapter": "04-accessibility",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "contrast",
+    "term": "Kontrastisuhde",
+    "shortDef": "Tekstin ja taustan välinen kirkkausero — mittaa luettavuutta.",
+    "fullDef": "Kontrastisuhde on numeerinen arvo (esim. 4.5:1), joka kertoo tekstin ja taustan välisen kirkkauseron. WCAG AA vaatii vähintään 4.5:1 normaalille tekstille ja 3:1 suurelle tekstille. APCA on uudempi menetelmä, joka huomioi paremmin värien emotionaalisen vaikutuksen.",
+    "examples": ["#999999 valkoisella: kontrasti 2.5:1 → liian matala", "#666666 valkoisella: kontrasti 5.5:1 → läpäisee WCAG AA:n"],
+    "relatedTerms": ["wcag"],
+    "chapter": "04-accessibility",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "lcp",
+    "term": "LCP (Largest Contentful Paint)",
+    "shortDef": "Mittari, joka kertoo kuinka nopeasti sivun suurin elementti latautuu.",
+    "fullDef": "LCP on yksi Googlen Core Web Vitals -mittareista. Se mittaa aikaa, joka kuluu sivun suurimman näkyvän elementin (kuva, video, tekstiblokki) latautumiseen. Suositeltu raja: <2.5s. LCP-ongelmat johtuvat optimoimattomista kuvista, hitaasta palvelimesta tai renderöintiä estävästä CSS/JS:stä.",
+    "examples": ["Sivun LCP 4.2s → Google laskee hakusijoituksia", "Hyvä LCP 1.8s → nopea, käyttäjä ei joudu odottamaan"],
+    "relatedTerms": ["inp", "cls"],
+    "chapter": "05-performance",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "inp",
+    "term": "INP (Interaction to Next Frame)",
+    "shortDef": "Mittaa viivettä käyttäjän toiminnon ja selaimen vasteen välillä.",
+    "fullDef": "INP on Core Web Vitals -mittari, joka korvasi FID:n (First Input Delay) vuonna 2024. Se mittaa koko interaktion keston klikkauksesta seuraavaan ruudunpäivitykseen. Suositeltu raja: <200ms. Korkea INP johtuu raskaasta JavaScriptistä pääsäikeellä.",
+    "examples": ["Klikkaus 'Osta nyt' → 450ms viive → käyttäjä kokee hitaaksi", "INP <200ms → käyttäjä tuntee reagoinnin välittömäksi"],
+    "relatedTerms": ["lcp", "cls"],
+    "chapter": "05-performance",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "cls",
+    "term": "CLS (Cumulative Layout Shift)",
+    "shortDef": "Mittaa sivun visuaalista vakautta — kuinka paljon elementit liikkuvat latauksen aikana.",
+    "fullDef": "CLS on Core Web Vitals -mittari, joka mittaa odottamattomia sivun asettelun muutoksia. Kun mainos latautuu kuvan päälle tai fontti vaihtuu ja teksti hyppää, CLS kasvaa. Suositeltu raja: <0.1. Yleisiä syitä: kuvat ilman width+height-attribuutteja.",
+    "examples": ["Käyttäjä on klikkaamassa 'Osta' → mainos työntää painiketta → klikkaa 'Peruuta'", "Sivun CLS 0.3 → levotonta → paranna: width+height kuville"],
+    "relatedTerms": ["lcp", "inp"],
+    "chapter": "05-performance",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "fitts-law",
+    "term": "Fittsin laki",
+    "shortDef": "Ihmisen motorinen laki: aika kohteen saavuttamiseen riippuu sen koosta ja etäisyydestä.",
+    "fullDef": "Fittsin laki on interaktiosuunnittelun peruslaki: T = a + b × log₂(D/W + 1), missä D on etäisyys ja W kohteen leveys. Käytännössä: isot, lähellä olevat kohteet ovat nopeimpia klikata. WCAG 2.5.5 vaatii vähintään 44×44 CSS-pikselin kosketuskohteen.",
+    "examples": ["6mm nappi 2mm päässä toisesta = 30% virheklikkauksia", "44x44px minimi WCAG 2.5.5 mukaan — isompi on aina parempi"],
+    "relatedTerms": ["wcag"],
+    "chapter": "03-interaction-design",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "design-tokens",
+    "term": "Design tokenit",
+    "shortDef": "Yhteiset suunnitteluarvot (värit, välit, fontit) jotka yhdistävät Figman ja koodin.",
+    "fullDef": "Design tokenit ovat keskitettyjä arvoja, jotka määrittelevät ulkoasun kaikki muuttujat: värit (oklch, hex), välit (rem), typografia, varjot, animaatiot. Sekä suunnittelija (Figma) että kehittäjä (koodi) käyttävät samoja arvoja, mikä estää tulkintaerot.",
+    "examples": ["Figmassa: '--color-primary: oklch(...)' → Reactissa: 'var(--color-primary)'", "Tokeneita: värit, välit (xs-2xl), fonttikoot (xs-5xl), varjot"],
+    "relatedTerms": [],
+    "chapter": "09-tools",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "glassmorphism",
+    "term": "Glassmorphism",
+    "shortDef": "Lasimainen suunnittelutyyli, jossa käytetään läpinäkyvyyttä ja sumennusta.",
+    "fullDef": "Glassmorphism on visuaalinen trendi, jossa elementit näyttävät lasilta: läpinäkyvä tausta, backdrop-filter-sumennus, vaalea reunus ja kaksoisvarjo. Haaste: kontrasti — taustan läpi näkyvä sisältö voi tehdä tekstistä vaikealukuista. WCAG-kontrastit (4.5:1) on tarkistettava kaikilla taustaväreillä.",
+    "examples": ["Kortti: läpinäkyvä tausta + sumennettu taustakuva + valkoinen reunus", "Glassmorphism + vaalea teksti → kontrasti voi pudota 2.5:1 eri taustakuvilla"],
+    "relatedTerms": ["contrast", "wcag"],
+    "chapter": "02-visual-trends",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "heart-metrics",
+    "term": "HEART-mittarit",
+    "shortDef": "Viiden UX-mittarin viitekehys: Happiness, Engagement, Adoption, Retention, Task Success.",
+    "fullDef": "HEART on Googlen kehittämä UX-mittaristo. Happiness (tyytyväisyys), Engagement (sitoutuminen), Adoption (uudet käyttäjät), Retention (palaavat käyttäjät), Task Success (tehtävän onnistuminen). HEART auttaa valitsemaan oikeat mittarit: konversio nousee → hyvä. Jos Retention laskee → huono merkki.",
+    "examples": ["A/B-testi: konversio +15% → mutta Retention -20% → älä ota käyttöön", "HEART-dashboard: 5 mittaria trendeineen"],
+    "relatedTerms": ["eval"],
+    "chapter": "08-ux-research",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "progressive-disclosure",
+    "term": "Progressiivinen paljastus",
+    "shortDef": "Suunnitteluperiaate: näytä vain olennainen tieto kerrallaan, loput tarpeen mukaan.",
+    "fullDef": "Progressiivinen paljastus (progressive disclosure) on IxD-periaate, jossa tieto ja toiminnot paljastetaan vaiheittain. Aloittelija näkee vain perusasetukset, edistynyt voi avata lisäasetuksia. Tämä vähentää kognitiivista kuormaa ja parantaa käytettävyyttä.",
+    "examples": ["Google-haku: hakukenttä + 2 nappia → 'Tarkennettu haku' linkki", "Lomake: ensin nimi → sitten osoite → sitten maksutiedot"],
+    "relatedTerms": [],
+    "chapter": "03-interaction-design",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "service-design",
+    "term": "Palvelumuotoilu (Service Design)",
+    "shortDef": "Kokonaisvaltainen menetelmä, joka kattaa koko palvelukokemuksen kosketuspisteet.",
+    "fullDef": "Palvelumuotoilu on ihmiskeskeinen suunnittelumenetelmä, joka tarkastelee koko palvelua — ei vain käyttöliittymää vaan kaikkia kosketuspisteitä (verkkosivu, puhelin, sähköposti, fyysinen toimipiste) ja taustajärjestelmiä.",
+    "examples": ["Pankkipalvelu: verkkosivu + mobiilisovellus + puhelinpalvelu + konttori", "Service blueprint: asiakkaan vaiheet + työntekijän toiminnot + taustajärjestelmät"],
+    "relatedTerms": ["persona", "user-journey"],
+    "chapter": "01-hcd",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "code-splitting",
+    "term": "Code splitting",
+    "shortDef": "Tekniikka, jossa JavaScript jaetaan pieniin paloihin ja ladataan vain tarvittaessa.",
+    "fullDef": "Code splitting on suorituskykyoptimointi, jossa sovelluksen JavaScript jaetaan pienempiin 'chunkkeihin'. Vain nykyisen sivun tarvitsema koodi ladataan — muut ladataan vasta kun niitä tarvitaan (lazy loading). Astro tekee tämän automaattisesti.",
+    "examples": ["Sivulla on vain tekstiä → ladataan 0KB JS → nopea", "Sivulla on RAGDiagram → ~6KB JS → kohtuullinen"],
+    "relatedTerms": ["lcp", "inp"],
+    "chapter": "05-performance",
+    "difficulty": "intermediate"
+  }
+]

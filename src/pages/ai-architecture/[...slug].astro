@@ -12,6 +12,9 @@ import AgentSimulation from "../../components/wrappers/AgentSimulation.astro";
 import MultimodalComparison from "../../components/wrappers/MultimodalComparison.astro";
 import ChapterQuiz from "../../components/wrappers/ChapterQuiz.astro";
 import RAGDiagram from "../../components/wrappers/RAGDiagram.astro";
+import TransformerDiagram from "../../components/wrappers/TransformerDiagram.astro";
+import AgentWorkflowDiagram from "../../components/wrappers/AgentWorkflowDiagram.astro";
+import TermTooltip from "../../components/ui/TermTooltip.tsx";
 import ProgressWrapper from "../../components/ProgressWrapper.tsx";
 
 export async function getStaticPaths() {
@@ -24,7 +27,7 @@ export async function getStaticPaths() {
 
 const { chapter } = Astro.props;
 const { Content } = await chapter.render();
-const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, TokenizerDemo, RAGPlayground, AgentSimulation, MultimodalComparison, ChapterQuiz, RAGDiagram };  
+const mdxComponents = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, TokenizerDemo, RAGPlayground, AgentSimulation, MultimodalComparison, ChapterQuiz, RAGDiagram, TransformerDiagram, AgentWorkflowDiagram, TermTooltip };  
 ---
 
 <Layout title={chapter.data.title} description={chapter.data.description} entry={chapter}>

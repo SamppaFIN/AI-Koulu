@@ -7,18 +7,16 @@ tags: ["agentit", "ReAct", "function calling", "LangChain", "LangGraph"]
 published: true
 ---
 
-## ReAct-malli (Reasoning + Acting)
+## <TermTooltip term="react">ReAct</TermTooltip>-malli (Reasoning + Acting)
 
-ReAct on arkkitehtuuri, jossa LLM vuorottelee **päättelyn** (Reasoning) ja
+ReAct on arkkitehtuuri, jossa <TermTooltip term="llm">LLM</TermTooltip> vuorottelee **päättelyn** (Reasoning) ja
 **toiminnan** (Acting) välillä. Sen sijaan, että malli tuottaisi yhden
 vastauksen, se käy läpi silmukan:
 
-<Diagram type="react-loop">
-  {/* Päättely → Toiminta → Havainto → Päättely → ... → Lopullinen vastaus */}
-</Diagram>
+<AgentWorkflowDiagram />
 
 1. **Päättely (Thought):** "Mitä minun pitää tehdä seuraavaksi?"
-2. **Toiminta (Action):** "Kutsun sää-API:a saadakseni tämän päivän säätiedot"
+2. **<TermTooltip term="function-calling">Toiminta (Action)</TermTooltip>:** "Kutsun sää-API:a saadakseni tämän päivän säätiedot"
 3. **Havainto (Observation):** "Sää-API palautti: Aurinkoista, 22°C"
 4. → Takaisin vaiheeseen 1, kunnes vastaus on valmis
 
