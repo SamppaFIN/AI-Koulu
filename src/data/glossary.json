@@ -430,6 +430,86 @@
     "difficulty": "intermediate"
   },
   {
+    "id": "context-engineering",
+    "term": "Context Engineering",
+    "shortDef": "Systemaattinen tieteenala, jossa suunnitellaan ja rakennetaan täydellinen informaatioympäristö AI-mallille ennen tokenien generointia.",
+    "fullDef": "Context Engineering on Antonio Gullin määrittelemä konsepti. Se menee Prompt Engineeringiä pidemmälle: sen sijaan, että vain muotoillaan käyttäjän kysymystä, rakennetaan koko informaatioympäristö — system prompt, haetut dokumentit (RAG), työkalujen tulokset, käyttäjän identiteetti, interaktiohistoria ja ympäristön tila. Periaate: laadukas konteksti on tärkeämpää kuin itse malli.",
+    "examples": ["Pelkkä vastaus 'Mitä tänään?' → Agentti hakee kalenterin + sähköpostit + tunnistaa käyttäjän → 'Sinulla on budjettikokous klo 10.'", "Context Engineering -agentti kuratoi 3 olennaista faktaa 50 dokumentista ennen vastausta"],
+    "relatedTerms": ["rag", "function-calling", "prompt-chaining"],
+    "chapter": "agent-patterns",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "prompt-chaining",
+    "term": "Prompt Chaining",
+    "shortDef": "Suunnittelumalli, jossa monimutkainen tehtävä jaetaan peräkkäisiin alitehtäviin — edellisen output seuraavan inputiksi.",
+    "fullDef": "Prompt Chaining (toisinaan Pipeline-pattern) on perustava agenttisuunnittelumalli. Yhden massiivisen promptin sijaan tehtävä pilkotaan pieniin, keskittyneisiin alitehtäviin. Jokaisella vaiheella on oma rooli ja promptinsa. Kriittistä: strukturoitu output (JSON) vaiheiden välillä — ilman sitä ketju hajoaa. Vastaa ongelmiin: ohjeiden unohtaminen, kontekstin ajautuminen, virheiden kumuloituminen.",
+    "examples": ["Markkinaraportti: 1) Tiivistä → 2) Tunnista trendit tiivistelmästä → 3) Kirjoita sähköposti trendeistä", "OCR-lomake: 1) Poimi teksti kuvasta → 2) Normalisoi data → 3) Laske erillisellä laskimella"],
+    "relatedTerms": ["context-engineering", "routing-pattern", "parallelization"],
+    "chapter": "agent-patterns",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "routing-pattern",
+    "term": "Routing-pattern",
+    "shortDef": "Suunnittelumalli, jossa kysely luokitellaan ja ohjataan oikealle erikoistuneelle käsittelijälle.",
+    "fullDef": "Routing on suunnittelumalli, jossa agentti analysoi syötteen ja tekee dynaamisen päätöksen siitä, mikä työkalu, ala-agentti tai käsittelyputki valitaan. Toteutustavat: LLM-pohjainen (malli luokittelee), embedding-pohjainen (semanttinen samankaltaisuus) ja sääntöpohjainen (avainsanat, säännöt).",
+    "examples": ["Asiakaspalvelu: 'Mikä on tilaukseni tila?' → reititä tilausjärjestelmään", "Coding assistant: tunnista Python vs. JavaScript → reititöi oikeaan parseriin"],
+    "relatedTerms": ["prompt-chaining", "function-calling"],
+    "chapter": "agent-patterns",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "reflection-pattern",
+    "term": "Reflection-pattern (Generator-Critic)",
+    "shortDef": "Suunnittelumalli, jossa agentti arvioi oman tuotoksensa ja parantaa sitä iteratiivisesti.",
+    "fullDef": "Reflection on itsekorjausmalli, jossa on kaksi roolia: Tuottaja (Producer) kirjoittaa ensimmäisen version, Kriitikko (Critic) arvioi sen ja etsii virheitä. Tuottaja parantaa versiota kritiikin perusteella. Prosessi toistuu kunnes tulos on hyväksyttävä. Hinta: jokainen iteraatio = uusi LLM-kutsu. Laatu paranee, mutta latenssi ja kustannus kasvavat.",
+    "examples": ["Koodi: 1) Kirjoita funktio → 2) 'Code review: missing edge case n=0' → 3) Korjaa funktio → 4) 'CODE_IS_PERFECT'", "Blogipostaus: 1) Ensimmäinen luonnos → 2) 'Sävy liian tekninen, lisää esimerkkejä' → 3) Paranneltu versio"],
+    "relatedTerms": ["chain-of-thought", "prompt-chaining"],
+    "chapter": "agent-patterns",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "parallelization",
+    "term": "Parallelization-pattern",
+    "shortDef": "Suunnittelumalli, jossa riippumattomat alitehtävät suoritetaan samanaikaisesti latenssin minimoimiseksi.",
+    "fullDef": "Parallelization on optimointimalli agenttityönkuluille. Kun useita API-kutsuja, tietokantahakuja tai LLM-kyselyjä voidaan suorittaa toisistaan riippumatta, ne käynnistetään samanaikaisesti. Kokonaislatenssi = hitain rinnakkainen tehtävä. Haittapuoli: lisää merkittävästi kompleksisuutta suunnittelussa, debuggauksessa ja lokituksessa.",
+    "examples": ["Yritystutkimus: hae samanaikaisesti uutiset + osakekurssi + some-maininnat + tietokantatiedot", "Sisällöntuotanto: generoi samanaikaisesti otsikko + leipäteksti + kuva"],
+    "relatedTerms": ["prompt-chaining", "tool-use"],
+    "chapter": "agent-patterns",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "planning-pattern",
+    "term": "Planning-pattern",
+    "shortDef": "Suunnittelumalli, jossa agentti laatii toimintasuunnitelman ennen suoritusta ja mukautuu esteisiin.",
+    "fullDef": "Planning on suunnittelumalli, jossa agentti saa päämäärän (mitä), mutta ei reseptiä (miten). Agentti luo itse toimintasuunnitelman, pilkkoo tavoitteen alitehtäviin ja mukautuu dynaamisesti esteisiin. Ero Reflectioniin: Planning suunnittelee koko reitin etukäteen, Reflection korjaa yksittäistä tuotosta. Google DeepResearch on esimerkki planning-agentista.",
+    "examples": ["Offsiten suunnittelu: budjetti → lennot → hotellit → aktiviteetit → aikataulu. Jos hotelli täynnä → adaptoi päivämäärät", "DeepResearch: kysymys → tutkimussuunnitelma → iteratiivinen haku → syntetisoitu raportti viittauksineen"],
+    "relatedTerms": ["reflection-pattern", "prompt-chaining", "function-calling"],
+    "chapter": "agent-patterns",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "chain-of-thought",
+    "term": "Chain of Thought (CoT)",
+    "shortDef": "Promptaus-tekniikka, jossa malli selittää päättelyvaiheet ääneen ennen lopullista vastausta.",
+    "fullDef": "Chain of Thought (CoT) on tekniikka, jossa LLM:ää pyydetään 'ajattelemaan ääneen' — selittämään jokainen päättelyaskel ennen johtopäätöstä. Tämä pakottaa mallin strukturoituun päättelyyn, mikä vähentää virheitä erityisesti matematiikassa, logiikassa ja monivaiheisissa ongelmissa. Zero-shot CoT: 'Let's think step by step.'",
+    "examples": ["'Kun 5 omenaa maksaa 10€, paljonko 8 omenaa?' → CoT: '1 omena = 10/5 = 2€ → 8 × 2€ = 16€'", "Zero-shot CoT: pelkkä 'Let's think step by step' promptin lopussa parantaa tarkkuutta"],
+    "relatedTerms": ["react", "reflection-pattern"],
+    "chapter": "agent-patterns",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "few-shot-prompting",
+    "term": "Few-shot prompting",
+    "shortDef": "Promptaus-tekniikka, jossa mallille annetaan 1–3 malliesimerkkiä ennen varsinaista kysymystä.",
+    "fullDef": "Few-shot prompting on tekniikka, jossa mallille näytetään 1–3 esimerkkiä halutusta input-output-parista ennen varsinaista tehtävää. Esimerkit ohjaavat mallin vastaustyyliä, muotoa ja rakennetta ilman erillistä hienosäätöä. Zero-shot = 0 esimerkkiä, one-shot = 1 esimerkki, few-shot = 2–5 esimerkkiä.",
+    "examples": ["Luokittelu: 'Ihana päivä! → positiivinen' 'En jaksa. → negatiivinen' 'Oli ihan ok. →' (malli täydentää: neutraali)", "Zero-shot vs. few-shot: ilman esimerkkejä tarkkuus 72%, 3 esimerkillä 91%"],
+    "relatedTerms": ["chain-of-thought", "context-engineering"],
+    "chapter": "agent-patterns",
+    "difficulty": "beginner"
+  },
+  {
     "id": "glassmorphism",
     "term": "Glassmorphism",
     "shortDef": "Lasimainen suunnittelutyyli, jossa käytetään läpinäkyvyyttä ja sumennusta.",

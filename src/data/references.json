@@ -1,5 +1,13 @@
 [
   {
+    "id": "gulli2025",
+    "authors": "Gulli, A.",
+    "title": "Agentic Design Patterns: A Hands-On Guide to Building Intelligent Systems",
+    "year": 2025,
+    "venue": "Springer",
+    "url": "https://irp.cdn-website.com/ca79032a/files/uploaded/Agentic-Design-Patterns.pdf"
+  },
+  {
     "id": "vaswani2017",
     "authors": "Vaswani, A. et al.",
     "title": "Attention Is All You Need",

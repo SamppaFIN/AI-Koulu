@@ -1,0 +1,309 @@
+---
+title: "Agenttisuunnittelumallit — LLM:ien käyttö agenttijärjestelmissä"
+description: "Kuusi perustavanlaatuista suunnittelumallia LLM:ien tehokkaaseen käyttöön: Prompt Chaining, Routing, Parallelization, Reflection, Tool Use ja Planning — sekä Context Engineeringin periaate."
+order: 1
+section: "Agenttisuunnittelumallit"
+tags: ["agentit", "LLM", "suunnittelumallit", "Context Engineering", "function calling", "ReAct"]
+published: true
+createdAt: 2026-06-07
+---
+
+import Callout from "../../components/ui/Callout.tsx";
+import AnalogyBox from "../../components/ui/AnalogyBox.tsx";
+import WhyItMatters from "../../components/ui/WhyItMatters.tsx";
+import TermTooltip from "../../components/ui/TermTooltip.tsx";
+
+## LLM agentin kognitiivisena moottorina
+
+> *"The quality of a model's output is less dependent on the model's architecture itself and more on the richness of the context provided."* — Antonio Gulli
+
+LLM (Large Language Model) **ei ole itsessään agentti**, mutta se toimii agentin "aivoina" — kognitiivisena päättelymoottorina, joka suunnittelee, tekee päätöksiä ja ohjaa toimintaa. Tämän luvun ydinviesti: **Laadukas konteksti on tärkeämpää kuin itse malli.**
+
+<Callout type="info">
+  **Lähde:** Tämä luku perustuu Antonio Gullin kirjaan *"Agentic Design Patterns: A Hands-On Guide to Building Intelligent Systems"* (2025, Springer). Kirja määrittelee 21 suunnittelumallia agenttijärjestelmille — tässä käsittelemme kuusi tärkeintä ja Context Engineeringin periaatteen. [Lataa alkuperäinen PDF](https://irp.cdn-website.com/ca79032a/files/uploaded/Agentic-Design-Patterns.pdf)
+</Callout>
+
+### Viiden askeleen agenttisilmukka
+
+Agenttijärjestelmä noudattaa yksinkertaista toistuvaa kaavaa:
+
+1. **Vastaanota tehtävä (Mission):** Käyttäjä antaa tavoitteen, esim. "Järjestä aikatauluni"
+2. **Kartoita tilanne (Scan):** Agentti kerää tarvittavat tiedot — lukee sähköpostit, kalenterit, yhteystiedot
+3. **Päättely (Think):** Agentti suunnittelee optimaalisen toimintatavan tavoitteen saavuttamiseksi
+4. **Toimi (Act):** Agentti suorittaa suunnitelman — lähettää kutsuja, aikatauluttaa tapaamisia, päivittää kalenteria
+5. **Opit ja parannat (Learn):** Agentti havainnoi onnistumiset ja mukautuu. Esimerkiksi jos kokous siirtyy, agentti oppii tästä tapahtumasta.
+
+<AnalogyBox>
+  **Analogia:** Agentti on kuin keittiömestari ravintolassa. Hän:
+  1. **Vastaanottaa tilauksen** (Mission) — "Kahdeksan hengen menu, gluteeniton"
+  2. **Kartoittaa keittiön tilanteen** (Scan) — mitä raaka-aineita on, ketkä kokkaajat paikalla
+  3. **Suunnittelee** (Think) — "Alkupalaksi katkarapua, pääruoaksi kalaa, jälkiruoaksi jäätelöä"
+  4. **Delegoi ja toimii** (Act) — "Kokkaaja 1, alkupalat. Kokkaaja 2, pääruoat."
+  5. **Oppii palautteesta** (Learn) — "Asiakas piti enemmän kalasta kuin lihasta. Muistan ensi kerralla."
+</AnalogyBox>
+
+### Agenttien kypsyystasot (Level 0–3)
+
+LLM:stä täysiveriseksi agenttijärjestelmäksi — neljä kehitysaskelta:
+
+| Taso | Nimi | Kuvaus | Rajoitukset |
+|---|---|---|---|
+| **0** | Päättelymoottori | LLM ilman työkaluja, muistia tai ympäristökontaktia | Ei tiedä ajankohtaisista asioista, ei voi toimia |
+| **1** | Yhdistetty ratkaisija | LLM + työkalut (haku, RAG, API:t) | Osaa hakea reaaliaikaista tietoa, mutta toimii yksi askel kerrallaan |
+| **2** | Strateginen ratkaisija | Suunnittelukyky + Context Engineering | Osaa kuratoida kontekstia, parantaa itseään palautteesta, toimii proaktiivisesti |
+| **3** | Monen agentin yhteistyö | Tiimi erikoistuneita agentteja | Kommunikaatio agenttien välillä, työnjako, orkesterointi |
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Evoluutio LLM:stä Agentic AI:hin on nopea: 2024 — LLM + promptaus → RAG → Agentic RAG → Agentic AI (2025–2026). Markkinaennusteet: 5,2 miljardista dollarista (2024) lähes 200 miljardiin vuoteen 2034 mennessä. Kysymys ei ole *käytetäänkö* agentteja, vaan *miten hyvin* ne suunnitellaan.
+</WhyItMatters>
+
+---
+
+## Kuusi peruspatternia
+
+### 1. ⛓️ Prompt Chaining
+
+**Ongelma:** Yksi massiivinen prompti epäonnistuu monimutkaisissa tehtävissä viidellä tavalla:
+
+- **Ohjeiden unohtaminen** (instruction neglect) — osa promptin ohjeista ohitetaan
+- **Kontekstin ajautuminen** (contextual drift) — malli kadottaa alkuperäisen kontekstin
+- **Virheiden kumuloituminen** (error propagation) — aikaiset virheet moninkertaistuvat
+- **Kognitiivinen ylikuorma** — liian pitkä konteksti aiheuttaa hallusinaatioita
+- **Epätäydellinen suoritus** — esim. tiivistää hyvin, mutta jättää trendit poimimatta
+
+**Ratkaisu:** *Divide and conquer* — jaa tehtävä pieniin, keskittyneisiin osiin. Edellisen vaiheen output muuttuu seuraavan inputiksi.
+
+| Vaihe | Prompt | Rooli |
+|---|---|---|
+| 1 | "Tiivistä tämän markkinatutkimusraportin pääkohdat: [teksti]" | Market Analyst |
+| 2 | "Käytä tiivistelmää ja tunnista 3 tärkeintä nousevaa trendiä sekä niitä tukevat datapisteet: [output vaiheesta 1]" | Trade Analyst |
+| 3 | "Kirjoita markkinointitiimille ytimekäs sähköposti, jossa esittelet nämä trendit datoineen: [output vaiheesta 2]" | Documentation Writer |
+
+**Kriittistä:** Strukturoitu output (JSON/XML) vaiheiden välillä on **välttämätöntä**. Ilman sitä ketju hajoaa — epäselvä tai huonosti formatoitu output aiheuttaa seuraavan vaiheen epäonnistumisen.
+
+```typescript
+// Esimerkki vaiheen 2 strukturoidusta outputista
+{
+  "trends": [
+    {
+      "trend_name": "AI-Powered Personalization",
+      "supporting_data": "73% asiakkaista suosii brändejä, 
+        jotka käyttävät henkilökohtaista dataa ostokokemuksessa"
+    }
+  ]
+}
+```
+
+<Callout type="tip">
+  **Nyrkkisääntö:** Käytä Prompt Chainingia kun tehtävä on liian monimutkainen yhdelle promptille, sisältää useita erillisiä käsittelyvaiheita tai vaatii ulkoisten työkalujen käyttöä vaiheiden välissä.
+</Callout>
+
+### 2. 🚦 Routing — dynaaminen reititys
+
+**Ongelma:** Kaikki kyselyt eivät sovi samaan käsittelyputkeen. Yksi "yleisagentti" yrittää vastata kaikkeen — ja epäonnistuu spesifeissä tehtävissä.
+
+**Ratkaisu:** Analysoi kysely ensin → päätä reitti → ohjaa oikealle erikoistuneelle käsittelijälle.
+
+| Kyselyn tyyppi | Luokitus | Reitti | Käsittelijä |
+|---|---|---|---|
+| "Bookaa lento Pariisiin" | `booker` | → Booker-agentti | Varausjärjestelmä |
+| "Mikä on Italian pääkaupunki?" | `info` | → Info-agentti | Tietokanta/LLM |
+| "Tilaukseni on myöhässä" | `support` | → Support-agentti | Asiakaspalveluputki |
+
+**Toteutustavat:**
+- **LLM-pohjainen:** Prompti pyytää mallia luokittelemaan kyselyn kategoriaan → ohjaus sen perusteella
+- **Embedding-pohjainen:** Kysely muunnetaan vektoriksi → verrataan reittien vektoreihin → lähin osuma
+- **Sääntöpohjainen:** Avainsanat tai regex-kuviot (nopeampi, vähemmän joustava)
+
+<Callout type="tip">
+  **Nyrkkisääntö:** Käytä Routingia kun agentin pitää tehdä päätös useiden erilaisten reittien, työkalujen tai ala-agenttien välillä. Klassinen esimerkki: asiakaspalvelu-chatbot, joka ohjaa myynnin, teknisen tuen ja tiliasiat eri käsittelijöille.
+</Callout>
+
+### 3. ⚡ Parallelization — rinnakkaissuoritus
+
+**Ongelma:** Peräkkäinen suoritus on hidas — jokainen API-kutsu odottaa edellistä. Kun tieto pitää kerätä monesta lähteestä, kokonaislatenssi = summa kaikista.
+
+**Ratkaisu:** Tunnista riippumattomat alitehtävät ja suorita ne **samanaikaisesti**.
+
+**Esimerkki — yritystutkimus:**
+1. Hae uutiset (1.2s) + hae osakekurssi (0.8s) + hae some-maininnat (1.5s) + hae tietokantatiedot (0.5s) **— kaikki samaan aikaan**
+2. Kun kaikki tulokset saatu → syntetisoi vastaus (1.0s)
+3. Kokonaislatenssi: ~2.5s (vs. peräkkäisenä ~4.0s)
+
+<Callout type="warning">
+  **Huomio:** Rinnakkaisuus tuo merkittävää lisäkompleksisuutta suunnitteluun, debuggaukseen ja lokitukseen. Älä käytä ellei latenssi ole kriittinen ongelma.
+</Callout>
+
+### 4. 🪞 Reflection — itsekorjaus
+
+**Ongelma:** LLM:n ensimmäinen vastaus on harvoin optimaalinen. Ilman palautesilmukkaa huono output menee suoraan käyttäjälle.
+
+**Ratkaisu: Generator-Critic-malli** — kaksi erillistä roolia:
+
+- **Tuottaja (Producer):** Kirjoittaa ensimmäisen version. Keskittyy vain tuottamiseen, ei arviointiin.
+- **Kriitikko (Critic):** Arvioi tuottajan outputia ulkopuolisin silmin. Etsii virheitä, puutteita ja antaa jäsenneltyä palautetta.
+- **Iteraatio:** Tuota → Arvioi → Paranna → toista kunnes tulos on hyväksyttävä
+
+```typescript
+// Yksinkertaistettu reflection-silmukka
+let code = await producer.generate(taskPrompt);
+for (let i = 0; i < maxIterations; i++) {
+  const critique = await critic.evaluate(code, taskPrompt);
+  if (critique === "CODE_IS_PERFECT") break;
+  code = await producer.refine(code, critique);
+}
+```
+
+<Callout type="warning">
+  **Hinta-laatusuhde:** Jokainen iteraatiokierros vaatii uuden LLM-kutsun (usein 2 — tuottaja + kriitikko). Laatu paranee, mutta latenssi ja kustannus kasvavat. Käytä vain kun laatu &gt; nopeus.
+</Callout>
+
+### 5. 🔧 Tool Use / Function Calling
+
+**Ongelma:** LLM:n tieto on staattista — se ei näe reaaliaikaista dataa, ei osaa laskea tarkasti, ei voi suorittaa koodia.
+
+**Ratkaisu:** Anna LLM:lle työkalut. Malli itse päättää milloin työkalua tarvitaan — tuottaa JSON-kutsun, jonka kehys suorittaa.
+
+**Viisivaiheinen prosessi:**
+
+1. **Määrittely:** Työkalu kuvataan LLM:lle — nimi, parametrit, kuvaus siitä mitä työkalu tekee
+2. **Päätös:** LLM analysoi käyttäjän kyselyn ja päättää, tarvitaanko työkalua
+3. **Kutsu:** LLM tuottaa JSON-muotoisen kutsun: `{ "tool": "get_weather", "args": { "location": "Helsinki" } }`
+4. **Suoritus:** Kehys (LangChain, ADK, CrewAI) suorittaa työkalun — tekee API-kutsun, ajaa koodin, hakee tietokannasta
+5. **Observointi:** Työkalun tulos palautetaan LLM:lle → LLM muotoilee lopullisen vastauksen
+
+| Työkalu | Esimerkki | Käyttötapaus |
+|---|---|---|
+| Google Search | `search("sää Helsinki 2026")` | Reaaliaikainen tieto |
+| Code Interpreter | `run_python("sum([1,2,3])")` | Laskenta, data-analyysi |
+| API-kutsu | `get_stock_price("AAPL")` | Reaalidata ulkoisesta lähteestä |
+| Vektorihaku | `search_docs("verotus 2026")` | RAG — haku omasta tietokannasta |
+| Vertex AI Search | `search_datastore("Q2-strategia")` | Yrityksen sisäinen tietovarasto |
+
+<Callout type="info">
+  **"Tool calling" vs. "Function calling":** Function calling viittaa spesifien Python-funktioiden kutsumiseen. Tool calling on laajempi käsite — työkalu voi olla API, tietokanta, koodiajo tai jopa toinen agentti.
+</Callout>
+
+<WhyItMatters>
+  **Miksi tällä on väliä?** Tool Use muuttaa LLM:n passiivisesta tekstigeneraattorista aktiiviseksi toimijaksi, joka pystyy **näkemään, päättelemään ja toimimaan** digitaalisessa (ja jossain määrin fyysisessä) maailmassa. Ilman työkaluja agentti on vain chatbot.
+</WhyItMatters>
+
+### 6. 📋 Planning — suunnittelu
+
+**Ongelma:** Monimutkaista tavoitetta ei voi ratkaista yhdellä työkalukutsulla tai yhdellä promptilla. Tarvitaan etukäteissuunnitelma.
+
+**Ratkaisu:** Anna agentille **päämäärä** (mitä), älä **reseptiä** (miten). Agentti laatii itse toimintasuunnitelman ja mukautuu esteisiin.
+
+```typescript
+// Planning-agentin ajatusprosessi
+// Käyttäjä: "Järjestä tiimin offsite Lissaboniin"
+//
+// Agentin suunnitelma:
+// 1. Kartoita budjetti ja osallistujamäärä
+// 2. Vertaile lentoja → valitse paras
+// 3. Etsi hotellit → rajaus budjetin mukaan
+// 4. Tutki aktiviteetit → sovita aikatauluun
+// 5. Kokoa ehdotus → esitä käyttäjälle
+//
+// Jos hotellit ovat täynnä → adaptoidu: ehdota uusia päivämääriä
+```
+
+**Google DeepResearch** on esimerkki planning-agentista: saatuaan kysymyksen se tuottaa tutkimussuunnitelman → esittää sen käyttäjälle → iteratiivinen haku + synteesi → raportti viittauksineen.
+
+<Callout type="warning">
+  **Tärkeä ero:** Planning on dynaamista — suunnitelma elää ja mukautuu. Kun ongelman ratkaisu on jo tiedossa (deterministinen), käytä kiinteää työnkulkua, älä planning-agenttia. Planning on kallis — yksi suunnittelu + toteutus vaatii useita LLM-kutsuja.
+</Callout>
+
+---
+
+## ⭐ Context Engineering — kirjan tärkein konsepti
+
+**Määritelmä:** Context Engineering on systemaattinen tieteenala, jossa **suunnitellaan, rakennetaan ja toimitetaan täydellinen informaatioympäristö** AI-mallille ennen tokenien generointia.
+
+### Context Engineering vs. Prompt Engineering
+
+| | Prompt Engineering | Context Engineering |
+|---|---|---|
+| **Kohde** | Käyttäjän kysymyksen muotoilu | Koko informaatioympäristö |
+| **Laajuus** | Yksittäinen prompti | System prompt + data + työkalut + historia |
+| **Ajoitus** | Kirjoitushetkellä | Ajon aikana (runtime-pipeline) |
+| **Tavoite** | Selkeämpi kysymys | Rikas, täsmällinen toimintaympäristö |
+
+### Context Engineeringin kerrokset
+
+| Taso | Tyyppi | Sisältö | Esimerkki |
+|---|---|---|---|
+| **1. System prompt** | Eksplisiittinen | Perusohjeet mallin roolille ja tyylille | "Olet tekninen kirjoittaja, formaali ja täsmällinen." |
+| **2. Haetut dokumentit** | Eksplisiittinen (RAG) | Tietokannasta haetut relevantit tiedot | Tekniset spesifikaatiot projektille |
+| **3. Työkalujen tulokset** | Eksplisiittinen (Tools) | API- ja työkalukutsujen palauttama data | Kalenterikyselyn tulos: "Vapaa maanantaina 10–12" |
+| **4. Käyttäjäidentiteetti** | Implisiittinen | Kuka kysyy, missä roolissa | Tunnistettu käyttäjä, käyttöoikeustaso |
+| **5. Interaktiohistoria** | Implisiittinen | Aiemmat keskustelut ja päätökset | Edelliset 5 kysymystä ja niiden vastaukset |
+| **6. Ympäristön tila** | Implisiittinen | Kontekstuaalinen data ympäristöstä | Sijainti, kellonaika, käytetty laite |
+
+### Käytännön esimerkki
+
+**Huono lähestymistapa (vain promptaus):**
+> Käyttäjä: "Mitä tänään pitää tehdä?"
+> Agentti: "En tiedä, kertoisitko lisää?"
+
+**Hyvä lähestymistapa (Context Engineering):**
+> Agentti **ennen** vastausta:
+> 1. Hakee kalenterista tämän päivän tapahtumat (työkalu)
+> 2. Lukee sähköpostit, joissa mainitaan "tänään" (RAG)
+> 3. Tunnistaa käyttäjän ja hänen roolinsa (implisiittinen)
+> 4. Tarkistaa edellisen keskustelun kontekstin (historia)
+>
+> Agentti: "Tänään sinulla on klo 10 budjettipalaveri, klo 14 asiakastapaaminen ja muistutus lähettää Q2-raportti. Haluatko, että valmistelen budjettipalaverin agendan?"
+
+<AnalogyBox>
+  **Analogia:** Prompt Engineering on kuin ravintolassa tilaamisen opettelu — "Tilaa näin niin saat paremman annoksen." Context Engineering on koko ravintolakokemuksen suunnittelu: valaistus, musiikki, tuoksut, pöytäliinat, tarjoilijan asenne ja tietysti itse ruoka. Kun kaikki toimii yhdessä, kokemus on erinomainen — vaikka itse annos (malli) ei olisi täydellinen.
+</AnalogyBox>
+
+---
+
+## Advanced Prompting -tekniikat
+
+Seuraavat tekniikat muuttavat LLM:n probabilistisen tekstigeneraation **deterministiseksi ja luotettavaksi** kognitiiviseksi moottoriksi:
+
+| Tekniikka | Kuvaus | Milloin käytät |
+|---|---|---|
+| **Chain of Thought (CoT)** | "Ajattele ääneen" — malli selittää päättelyvaiheet ennen vastausta | Matematiikka, monivaiheinen logiikka |
+| **Tree of Thoughts (ToT)** | Useita rinnakkaisia päättelypolkuja — malli arvioi ja valitsee parhaan | Kompleksinen ongelmanratkaisu, shakki |
+| **ReAct** | Päättely (Reasoning) + Toiminta (Acting) vuorottelevat silmukassa | Agenttien perusmalli — työkalut, API:t |
+| **Strukturoitu output** | Pyydä JSON/XML, validoi ohjelmallisesti (Pydantic) | **Aina** kun data siirtyy komponenttien välillä |
+| **Roolipromptaus** | "Olet seniori-ohjelmoija" — rajaa tyyli, syvyys ja näkökulma | Sisällöntuotanto, koodaus, asiantuntijatehtävät |
+| **Few-shot** | Anna 1–3 malliesimerkkiä ennen varsinaista kysymystä | Muoto-ohjaus, luokittelu, tyylin ylläpito |
+| **Delimiterit** | Erottele promptin osiot selkeästi (XML-tagit, `"""`-merkinnät) | Moniosaiset promptit — estää injektiohyökkäykset |
+
+<Callout type="warning">
+  **Tärkeää:** Ilman näitä tekniikoita agentin sisäiset komponentit eivät kommunikoi luotettavasti. Strukturoitu output + validointi on **välttämätöntä** automaatiossa — ilman niitä agentti voi ajautua katastrofaalisiin virhetiloihin.
+</Callout>
+
+---
+
+## Yhteenveto — mikä patterni milloinkin?
+
+| Patterni | Ydinkäyttö | Valitse kun... | Hinta-arvio |
+|---|---|---|---|
+| **Prompt Chaining** | Pilko tehtävä peräkkäisiin osiin | Monimutkainen, monivaiheinen tehtävä | €€ N × LLM-kutsu |
+| **Routing** | Luokittele ja ohjaa eri käsittelijöille | Useita syötetyyppejä → eri käsittely | € 1–2 × LLM-kutsu |
+| **Parallelization** | Suorita riippumattomat tehtävät samanaikaisesti | Monta tietolähdettä, rinnakkaiset haut | €€ useita rinnakkaiskutsuja |
+| **Reflection** | Itsekorjaa ja paranna laatua iteratiivisesti | Laatu &gt; nopeus &amp; hinta | €€€ 2–4× LLM-kutsu per kierros |
+| **Tool Use** | Anna LLM:lle pääsy ulkoisiin työkaluihin | Reaalidata, laskenta, tietokantahaut | € 1+ LLM + API-kustannus |
+| **Planning** | Laadi ja mukauta toimintasuunnitelma | Monimutkainen tavoite, tuntematon reitti | €€ suunnittelu + toteutus |
+
+### Nyrkkisäännöt
+
+- **80% tapauksista** hoituu Tool Use + Prompt Chaining -yhdistelmällä
+- **Reflection ja Planning** ovat kalliita — käytä vain kun laatu on kriittinen
+- **Parallelization** tuo merkittävää lisäkompleksisuutta — käytä vain latenssin ollessa ongelma
+- **Context Engineering** on investointi: rakennat sen kerran, hyödynnät jokaisessa kutsussa
+- **Strukturoitu output** on välttämätön aina kun data liikkuu komponenttien välillä
+
+<WhyItMatters>
+  **Miksi suunnittelumalleilla on väliä?** Nämä kuusi patternia eivät ole akateemisia harjoituksia — ne ovat **tuotantokelpoisia ratkaisuja** oikeisiin ongelmiin. Ilman niitä agenttisi on hidas (ei parallelizationia), epäluotettava (ei reflectionia), kallis (ei chainingia) ja jäykkä (ei routingia). Hyvä agenttisuunnittelu säästää 60–80% kustannuksista ja parantaa käyttäjäkokemuksen moninkertaiseksi.
+</WhyItMatters>
+
+---
+
+**📖 Lähde:** Antonio Gulli — *Agentic Design Patterns: A Hands-On Guide to Building Intelligent Systems* (2025, Springer, 424 sivua). Kaikki kirjan rojaltit lahjoitetaan Save the Children -järjestölle. [Lataa PDF](https://irp.cdn-website.com/ca79032a/files/uploaded/Agentic-Design-Patterns.pdf)
