@@ -22,10 +22,7 @@ const aiChapters = [
   { num: "3", title: "Infrastruktuuri", slug: "ai-architecture/03-infrastructure" },
   { num: "4", title: "Suunnitteluperiaatteet", slug: "ai-architecture/04-design-principles" },
   { num: "5", title: "Viitearkkitehtuurit", slug: "ai-architecture/05-reference-architectures" },
-];
-
-const agentPatternChapters = [
-  { num: "1", title: "LLM-agenttisuunnittelumallit", slug: "agent-patterns/01-llm-agent-patterns" },
+  { num: "6", title: "Agenttisuunnittelumallit", slug: "ai-architecture/06-agent-patterns" },
 ];
 
 const uxChapters = [
@@ -98,9 +95,6 @@ const uxChapters = [
         <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
           AI-arkkitehtuurit
         </a>
-        <a href="/AI-Koulu/agent-patterns/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
-          Agenttisuunnittelumallit
-        </a>
         <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
           UI/UX-käytännöt
         </a>
@@ -159,19 +153,6 @@ const uxChapters = [
               <span>{ch.title}</span>
               {ch.hasDiagram && <span style="font-size: 0.7rem; margin-left: auto;" title="Kaavio">{ch.hasDiagram}</span>}
               {ch.hasDemo && <span style="font-size: 0.7rem; margin-left: auto;" title="Interaktiivinen demo">{ch.hasDemo}</span>}
-            </a>
-          ))}
-        </div>
-      </details>
-
-      <!-- Agenttisuunnittelumallit -->
-      <details style="margin-top: 0.25rem;">
-        <summary style="padding: 0.6rem 0.8rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; color: var(--color-text);">🧠 Agenttisuunnittelumallit</summary>
-        <div style="margin-left: 0.5rem; border-left: 2px solid var(--color-border); padding-left: 0.5rem;">
-          {agentPatternChapters.map(ch => (
-            <a href={`/AI-Koulu/${ch.slug}/`} style="display: flex; align-items: center; gap: 0.3rem; padding: 0.45rem 0.8rem; border-radius: 6px; color: var(--color-text-secondary); text-decoration: none; font-size: 0.85rem;">
-              <span style="font-size: 0.7rem; color: var(--color-brand); min-width: 1.8rem;">{ch.num}</span>
-              <span>{ch.title}</span>
             </a>
           ))}
         </div>
@@ -250,10 +231,6 @@ const uxChapters = [
       <a href="/AI-Koulu/ai-architecture/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: clamp(0.6rem, 1.5vw, 0.7rem); padding: 0.5rem; min-width: 48px; min-height: 48px; justify-content: center;">
         <span style="font-size: clamp(1.2rem, 2.5vw, 1.4rem);">🤖</span>
         AI
-      </a>
-      <a href="/AI-Koulu/agent-patterns/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: clamp(0.6rem, 1.5vw, 0.7rem); padding: 0.5rem; min-width: 48px; min-height: 48px; justify-content: center;">
-        <span style="font-size: clamp(1.2rem, 2.5vw, 1.4rem);">🧠</span>
-        Agentit
       </a>
       <a href="/AI-Koulu/ui-ux/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: clamp(0.6rem, 1.5vw, 0.7rem); padding: 0.5rem; min-width: 48px; min-height: 48px; justify-content: center;">
         <span style="font-size: clamp(1.2rem, 2.5vw, 1.4rem);">🎨</span>

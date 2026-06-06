@@ -1,7 +1,7 @@
 ---
 title: "Agenttisuunnittelumallit — LLM:ien käyttö agenttijärjestelmissä"
 description: "Kuusi perustavanlaatuista suunnittelumallia LLM:ien tehokkaaseen käyttöön: Prompt Chaining, Routing, Parallelization, Reflection, Tool Use ja Planning — sekä Context Engineeringin periaate."
-order: 1
+order: 11
 section: "Agenttisuunnittelumallit"
 tags: ["agentit", "LLM", "suunnittelumallit", "Context Engineering", "function calling", "ReAct"]
 published: true
@@ -87,7 +87,7 @@ LLM:stä täysiveriseksi agenttijärjestelmäksi — neljä kehitysaskelta:
   "trends": [
     {
       "trend_name": "AI-Powered Personalization",
-      "supporting_data": "73% asiakkaista suosii brändejä, 
+      "supporting_data": "73% asiakkaista suosii brändejä,
         jotka käyttävät henkilökohtaista dataa ostokokemuksessa"
     }
   ]
@@ -149,7 +149,7 @@ LLM:stä täysiveriseksi agenttijärjestelmäksi — neljä kehitysaskelta:
 let code = await producer.generate(taskPrompt);
 for (let i = 0; i < maxIterations; i++) {
   const critique = await critic.evaluate(code, taskPrompt);
-  if (critique === "CODE_IS_PERFECT") break;
+  if (critique === 'CODE_IS_PERFECT') break;
   code = await producer.refine(code, critique);
 }
 ```
@@ -285,12 +285,12 @@ Seuraavat tekniikat muuttavat LLM:n probabilistisen tekstigeneraation **determin
 
 | Patterni | Ydinkäyttö | Valitse kun... | Hinta-arvio |
 |---|---|---|---|
-| **Prompt Chaining** | Pilko tehtävä peräkkäisiin osiin | Monimutkainen, monivaiheinen tehtävä | €€ N × LLM-kutsu |
-| **Routing** | Luokittele ja ohjaa eri käsittelijöille | Useita syötetyyppejä → eri käsittely | € 1–2 × LLM-kutsu |
-| **Parallelization** | Suorita riippumattomat tehtävät samanaikaisesti | Monta tietolähdettä, rinnakkaiset haut | €€ useita rinnakkaiskutsuja |
-| **Reflection** | Itsekorjaa ja paranna laatua iteratiivisesti | Laatu &gt; nopeus &amp; hinta | €€€ 2–4× LLM-kutsu per kierros |
-| **Tool Use** | Anna LLM:lle pääsy ulkoisiin työkaluihin | Reaalidata, laskenta, tietokantahaut | € 1+ LLM + API-kustannus |
-| **Planning** | Laadi ja mukauta toimintasuunnitelma | Monimutkainen tavoite, tuntematon reitti | €€ suunnittelu + toteutus |
+| **Prompt Chaining** | Pilko tehtävä peräkkäisiin osiin | Monimutkainen, monivaiheinen tehtävä | $$ N × LLM-kutsu |
+| **Routing** | Luokittele ja ohjaa eri käsittelijöille | Useita syötetyyppejä → eri käsittely | $ 1–2 × LLM-kutsu |
+| **Parallelization** | Suorita riippumattomat tehtävät samanaikaisesti | Monta tietolähdettä, rinnakkaiset haut | $$ useita rinnakkaiskutsuja |
+| **Reflection** | Itsekorjaa ja paranna laatua iteratiivisesti | Laatu > nopeus & hinta | $$$ 2–4× LLM-kutsu per kierros |
+| **Tool Use** | Anna LLM:lle pääsy ulkoisiin työkaluihin | Reaalidata, laskenta, tietokantahaut | $ 1+ LLM + API-kustannus |
+| **Planning** | Laadi ja mukauta toimintasuunnitelma | Monimutkainen tavoite, tuntematon reitti | $$ suunnittelu + toteutus |
 
 ### Nyrkkisäännöt
 

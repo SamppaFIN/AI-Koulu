@@ -596,5 +596,65 @@
     ],
     "correctIndex": 1,
     "explanation": "Playwright E2E-testit ajavat oikeaa selainta ja testaavat oikeita klikkauksia. Ne havaitsevat ongelmat, joita yksikkötestit eivät näe (selainyhteensopivuus, JS-virheet, verkko-ongelmat). Kun testi on CI-putkessa, jokainen koodimuutos testataan automaattisesti.",
-    "adhdTip": "🧪 Playwright = robotti joka testaa sivustoa puolestasi. Se klikkaa, kirjoittaa ja tarkistaa nopeammin kuin kukaan ihminen — eikä koskaan väsy."  }
+    "adhdTip": "🧪 Playwright = robotti joka testaa sivustoa puolestasi. Se klikkaa, kirjoittaa ja tarkistaa nopeammin kuin kukaan ihminen — eikä koskaan väsy."  },
+  {
+    "id": "q-06-agent-patterns-1",
+    "chapterSlug": "06-agent-patterns",
+    "scenario": "Rakennat agenttia, jonka pitää analysoida markkinatutkimusraportti, tunnistaa trendit ja kirjoittaa niistä sähköposti. Yrität tehdä tämän yhdellä massiivisella promptilla, mutta malli jättää osan ohjeista huomiotta ja hallusinoi datapisteitä.",
+    "question": "Mikä suunnittelumalli pelastaa tilanteen?",
+    "options": [
+      "Vaihda isompaan malliin",
+      "Prompt Chaining: pilko tehtävä kolmeen vaiheeseen (tiivistä → tunnista trendit → kirjoita sähköposti), jokaiselle oma prompti ja rooli, ja välitä strukturoitu JSON output vaiheiden välillä",
+      "Käytä parallelizationia",
+      "Lisää enemmän ohjeita samaan promptiin"
+    ],
+    "correctIndex": 1,
+    "explanation": "Yksi massiivinen prompti kärsii viidestä ongelmasta: ohjeiden unohtamisesta, kontekstin ajautumisesta, virheiden kumuloitumisesta, kognitiivisesta ylikuormasta ja epätäydellisestä suorituksesta. Prompt Chaining ratkaisee kaikki nämä pilkkomalla tehtävän fokusoituihin alitehtäviin.",
+    "adhdTip": "⛓️ Yksi iso prompti = yrität syödä koko pitsan kerralla. Prompt Chaining = leikkaat pitsan siivuiksi ja syöt yhden kerrallaan. Helpompi sulattaa."
+  },
+  {
+    "id": "q-06-agent-patterns-2",
+    "chapterSlug": "06-agent-patterns",
+    "scenario": "Asiakaspalvelu-chatbotissa on kolme eri toimintoa: tilauksen seuranta, tuotetiedot ja tekninen tuki. Yksi 'yleisagentti' yrittää vastata kaikkeen — ja epäonnistuu tilausten seurannassa, koska se ei osaa käyttää tilausjärjestelmän API:a.",
+    "question": "Mikä patterni ratkaisee tämän?",
+    "options": [
+      "Prompt Chaining",
+      "Routing: analysoi kysely ensin (LLM luokittelee → booker/info/support), ohjaa oikealle erikoistuneelle käsittelijälle, jolla on oikeat työkalut",
+      "Reflection",
+      "Parallelization"
+    ],
+    "correctIndex": 1,
+    "explanation": "Routing on oikea patterni kun syötteitä on useita eri tyyppejä ja jokainen tarvitsee erilaisen käsittelyputken. Asiakaspalvelu-chatbot on klassinen esimerkki: myynti, tuki ja tiliasiat ohjataan kukin omalle reitilleen.",
+    "adhdTip": "🚦 Routing = lentokentän turvatarkastus. 'Lento Pariisiin' ohjataan terminaaliin 2, 'lento Tokioon' terminaaliin 1. Kaikki eivät mene samaan jonoon."
+  },
+  {
+    "id": "q-06-agent-patterns-3",
+    "chapterSlug": "06-agent-patterns",
+    "scenario": "Agenttisi tekee hyvää työtä 80% ajasta, mutta 20% vastauksista sisältää pieniä virheitä. Haluat parantaa tarkkuutta ilman manuaalista korjausta.",
+    "question": "Mikä patterni auttaa tässä?",
+    "options": [
+      "Parallelization",
+      "Reflection (Generator-Critic): tuottaja-agentti tekee vastauksen, kriitikko-agentti arvioi sen, tuottaja parantaa vastauksen kritiikin perusteella — iteraatio kunnes tulos on riittävän hyvä",
+      "Routing",
+      "Context Engineering"
+    ],
+    "correctIndex": 1,
+    "explanation": "Reflection on itsekorjausmalli: tuottaja kirjoittaa version, kriitikko etsii virheet ja puutteet, tuottaja parantaa. Iteraatio toistuu kunnes kriitikko toteaa 'CODE_IS_PERFECT'. Huomio: jokainen iteraatio maksaa uuden LLM-kutsun.",
+    "adhdTip": "🪞 Reflection = kirjoitat esseen (producer), annat kaverille luettavaksi (critic), saat palautetta ('tämä kappale on epäselvä') ja korjaat. Toistat kunnes molemmat ovat tyytyväisiä."
+  },
+  {
+    "id": "q-06-agent-patterns-4",
+    "chapterSlug": "06-agent-patterns",
+    "scenario": "Agenttisi tietää paljon, mutta kun käyttäjä kysyy 'Mikä on tämänhetkinen sää Helsingissä?', agentti ei osaa vastata koska sen tieto on staattista koulutusdatasta.",
+    "question": "Mikä suunnittelumalli ja työkalu ratkaisevat ongelman?",
+    "options": [
+      "Prompt Chaining — pilko sääkysymys pienempiin osiin",
+      "Tool Use (Function Calling): anna agentille työkalu get_weather(location) jota se osaa kutsua. Agentti tuottaa JSON-kutsun, kehys suorittaa sen ja tulos palautetaan agentille vastauksen muotoilua varten",
+      "Reflection — agentti oppii säätiedot ajan myötä",
+      "Planning — agentti suunnittelee miten sää selvitetään"
+    ],
+    "correctIndex": 1,
+    "explanation": "Tool Use on ainoa tapa murtaa LLM:n staattinen tieto. Agentilla pitää olla pääsy reaaliaikaisiin työkaluihin (sää-API, haku, laskin, tietokanta) — ja se osaa itse päättää milloin työkalua tarvitaan.",
+    "adhdTip": "🔧 LLM ilman työkaluja = kokki ilman hellaa. Tool Use antaa kokille hellan, veitset ja ainekset — nyt se voi oikeasti kokata."
+  }
 ]
