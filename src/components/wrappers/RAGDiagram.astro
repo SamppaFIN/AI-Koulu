@@ -1,5 +1,23 @@
 ---
-import RAGDiagram from "../diagrams/RAGDiagram.tsx";
+import Flow from "../diagrams/Flow.astro";
 ---
-
-<RAGDiagram client:load />
+<div data-attn="fig:RAGDiagram">
+  <Flow
+    caption="RAG-putki. Indeksointi tehdään etukäteen ja kysely jokaisella kysymyksellä. Kysymys ja palat upotetaan samaan vektoriavaruuteen, jotta niiden etäisyyttä voi verrata."
+    lanes={[
+      { title: "Indeksointi (etukäteen)", steps: [
+        { title: "Dokumentit", text: "Lähdetekstit, esimerkiksi ohjeet tai tiketit", kind: "data" },
+        { title: "Pilkkominen", text: "Teksti jaetaan paloiksi (chunk)" },
+        { title: "Upotus", text: "Upotusmalli muuttaa jokaisen palan vektoriksi" },
+        { title: "Vektori-indeksi", text: "Vektorit ja palat tallennetaan haettaviksi", kind: "store" },
+      ] },
+      { title: "Kysely (jokaisella kysymyksellä)", steps: [
+        { title: "Kysymys", text: "Käyttäjän viesti", kind: "data" },
+        { title: "Kysymyksen upotus", text: "Kysymys vektoriksi samaan avaruuteen kuin palat" },
+        { title: "Haku", text: "Lähimmät palat indeksistä (top-k)", kind: "store" },
+        { title: "Kontekstin muodostus", text: "Palat lisätään kehotteeseen" },
+        { title: "Kielimalli vastaa", text: "Malli muodostaa vastauksen haettujen palojen avulla", kind: "model" },
+      ] },
+    ]}
+  />
+</div>

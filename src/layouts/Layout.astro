@@ -1,294 +1,163 @@
 ---
-import type { CollectionEntry } from "astro:content";
-import AuroraBackground from "../components/ui/AuroraBackground.tsx";
+import "@fontsource-variable/cinzel";
+import "@fontsource-variable/atkinson-hyperlegible-next";
+import "@fontsource-variable/atkinson-hyperlegible-mono";
+import "../styles/site.css";
+import { getCollection } from "astro:content";
+import { TECH } from "../data/tech";
+import { LINES, PERSONAS } from "../data/crew";
+import glossary from "../data/glossary.json";
+import { url } from "../lib/url";
 
-export interface Props {
+interface Props {
   title: string;
   description?: string;
-  /** Content collection entry for table of contents */
-  entry?: CollectionEntry<"ai-architecture"> | CollectionEntry<"ui-ux">;
+  /** Yläpalkin aktiivinen kohta */
+  nav?: "ai" | "ux" | "kehae" | "sanasto" | "haku";
 }
+const { title, description = "Suomenkielinen opetussivusto tekoälyjärjestelmien arkkitehtuurista ja UI/UX-käytännöistä insinööriopiskelijalle.", nav } = Astro.props;
 
-const { title, description } = Astro.props;
-
-const aiChapters = [
-  { num: "1", title: "Johdanto", slug: "ai-architecture/01-johdanto", hasDemo: "tokenisointi" },
-  { num: "2.1", title: "API-kääremallit", slug: "ai-architecture/02-1-api-wrappers" },
-  { num: "2.2", title: "RAG", slug: "ai-architecture/02-2-rag", hasDemo: "📚 leikkikenttä", hasDiagram: "🔗 kaavio" },
-  { num: "2.3", title: "Agentit", slug: "ai-architecture/02-3-agents", hasDemo: "🤖 simulointi" },
-  { num: "2.4", title: "Hienosäätö", slug: "ai-architecture/02-4-finetuning" },
-  { num: "2.5", title: "Multimodaali", slug: "ai-architecture/02-5-multimodal", hasDemo: "🖼️ vertailu" },
-  { num: "2.6", title: "Hybridi", slug: "ai-architecture/02-6-hybrid" },
-  { num: "3", title: "Infrastruktuuri", slug: "ai-architecture/03-infrastructure" },
-  { num: "4", title: "Suunnitteluperiaatteet", slug: "ai-architecture/04-design-principles" },
-  { num: "5", title: "Viitearkkitehtuurit", slug: "ai-architecture/05-reference-architectures" },
-  { num: "6", title: "Agenttisuunnittelumallit", slug: "ai-architecture/06-agent-patterns" },
+const ai = (await getCollection("ai-architecture", (e) => e.data.published)).sort((a, b) => a.data.order - b.data.order);
+const ux = (await getCollection("ui-ux", (e) => e.data.published)).sort((a, b) => a.data.order - b.data.order);
+const chapters = [
+  ...ai.map((c) => ({ path: `ai-architecture/${c.id}/`, n: c.data.order, title: c.data.title, part: c.data.section, desc: c.data.description, tags: c.data.tags ?? [] })),
+  ...ux.map((c) => ({ path: `ui-ux/${c.id}/`, n: c.data.order, title: c.data.title, part: "UI/UX", desc: c.data.description, tags: c.data.tags ?? [] })),
 ];
+const parts = ["Perusteet", "Rakennusmallit", "Agentit", "Tuotanto", "UI/UX"].map((p) => ({ name: p, items: chapters.filter((c) => c.part === p) }));
 
-const uxChapters = [
-  { num: "1", title: "HCD", slug: "ui-ux/01-hcd" },
-  { num: "2", title: "Visuaaliset trendit", slug: "ui-ux/02-visual-trends", hasDemo: "🎨 kontrasti" },
-  { num: "3", title: "IxD", slug: "ui-ux/03-interaction-design", hasDemo: "🎯 Hickin laki" },
-  { num: "4", title: "Saavutettavuus", slug: "ui-ux/04-accessibility", hasDemo: "♿ a11y-labra" },
-  { num: "5", title: "Suorituskyky", slug: "ui-ux/05-performance", hasDemo: "📐 CLS + 💀 skeleton" },
-  { num: "6", title: "Modernit UI", slug: "ui-ux/06-modern-ui" },
-  { num: "7", title: "AI & UI/UX", slug: "ui-ux/07-ai-ux" },
-  { num: "8", title: "UX-tutkimus", slug: "ui-ux/08-ux-research" },
-  { num: "9", title: "Työkalut", slug: "ui-ux/09-tools" },
-];
+// Selaimen tarvitsema data yhdessä JSON-lohkossa
+const siteData = {
+  base: url(""),
+  tech: TECH,
+  lines: LINES,
+  personas: PERSONAS,
+  chapters: chapters.map(({ path, n, title, part, desc, tags }) => ({ path, n, title, part, keys: [title, desc, ...tags].join(" ") })),
+  glossary: (glossary as { id: string; term: string; shortDef: string }[]).map(({ id, term, shortDef }) => ({ id, term, shortDef })),
+};
+const cur = (k: string) => (nav === k ? "page" : undefined);
 ---
-
 <!doctype html>
-<html lang="fi" data-theme="system">
+<html lang="fi">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description ?? "AI-arkkitehtuurit & UI/UX-käytännöt - opetussivusto"} />
-    <title>{title} | AI & UI/UX Edu</title>
-
-    <!-- Fontit -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-
-    <!-- Globaalit tyylit -->
-    <link rel="stylesheet" href="/AI-Koulu/styles/site.css" />
-
-    <!-- Teema-skripti (suoritetaan ennen renderöintiä flashin estämiseksi) -->
-    <script is:inline>
-      (function() {
-        var theme = localStorage.getItem('ai-edu-theme') || 'system';
-        var root = document.documentElement;
-        if (theme === 'system') {
-          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-        root.setAttribute('data-theme', theme);
-      })();
-    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0f1630" />
+    <link rel="icon" href={url("favicon.svg")} type="image/svg+xml" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:title" content={`${title} · AI-Koulu`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="fi_FI" />
+    <title>{title} · AI-Koulu</title>
   </head>
   <body>
-    <AuroraBackground client:visible />
-
-    <!-- Yläpalkki -->
-    <header class="container-wide header-glass" style="
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-block: var(--space-md);
-    ">
-      <!-- Logo -->
-      <a href="/AI-Koulu/" style="
-        font-weight: 800;
-        font-size: 1.25rem;
-        color: var(--color-brand);
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      ">
-        <span style="font-size: 1.5rem;">⚡</span>
-        AI & UI/UX Edu
-      </a>
-
-      <!-- Navigaatio -->
-      <nav class="desktop-nav" aria-label="Päänavigaatio" style="display: flex; align-items: center; gap: var(--space-lg);">
-        <a href="/AI-Koulu/ai-architecture/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
-          AI-arkkitehtuurit
+    <a class="skip-link" href="#main">Siirry sisältöön</a>
+    <header class="topbar">
+      <div class="wrap topbar-row">
+        <a class="brand" href={url("")}>
+          <svg aria-hidden="true" width="30" height="30" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="oklch(0.82 0.13 85)" stroke-width="2"></circle><circle cx="16" cy="16" r="8" fill="none" stroke="oklch(0.82 0.13 85)" stroke-width="1.2"></circle><path d="M5 25 27 7" stroke="oklch(0.94 0.03 85)" stroke-width="1.6"></path><circle cx="16" cy="16" r="2.2" fill="oklch(0.82 0.13 85)"></circle></svg>
+          <span>AI-Koulu</span>
         </a>
-        <a href="/AI-Koulu/ui-ux/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
-          UI/UX-käytännöt
-        </a>
-        <a href="/AI-Koulu/haku/" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">
-          Haku
-        </a>
-
-        <!-- Teemanvaihtaja -->
-        <button
-          data-theme-btn
-          aria-label="Vaihda teemaa"
-          style="
-            background: none;
-            border: 1px solid var(--color-border);
-            border-radius: 999px;
-            padding: 0.5rem 0.75rem;
-            cursor: pointer;
-            color: var(--color-text);
-            font-size: 1rem;
-            line-height: 1;
-          "
-        >
-          🌓
-        </button>
-      </nav>
-
-      <!-- Hampurilaisvalikko-painike (mobiili) -->
-      <button
-        id="hamburger-btn"
-        class="hamburger-btn"
-        aria-label="Avaa valikko"
-        aria-expanded="false"
-      >
-        ☰
-      </button>
+        <nav class="nav" aria-label="Päänavigaatio">
+          <a href={url("ai-architecture/")} aria-current={cur("ai")}>AI-arkkitehtuurit</a>
+          <a href={url("ui-ux/")} aria-current={cur("ux")}>UI/UX</a>
+          <a href={url("aikakehae/")} aria-current={cur("kehae")}>Aikakehä</a>
+          <a href={url("sanasto/")} aria-current={cur("sanasto")}>Sanasto</a>
+        </nav>
+        <div class="topbar-tools">
+          <a class="btn btn-icon" href={url("haku/")} aria-label="Haku" aria-current={cur("haku")}>
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 16 16"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.6"></circle><path d="m11 11 3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+          </a>
+          <button type="button" class="btn btn-icon" id="map-btn" aria-label="Avaa kartta" aria-haspopup="dialog" aria-controls="map-dialog">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.5"></circle><circle cx="10" cy="10" r="4" fill="none" stroke="currentColor" stroke-width="1"></circle><path d="M3 16 17 4" stroke="currentColor" stroke-width="1.5"></path></svg>
+          </button>
+        </div>
+      </div>
     </header>
 
-    <!-- Mobiilivalikko (hampurilainen) -->
-    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
-    <nav id="mobile-menu" class="mobile-menu" aria-label="Mobiilivalikko">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <span style="font-weight: 800; color: var(--color-brand);">⚡ AI & UI/UX</span>
-        <button id="close-menu" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--color-text); padding: 0.5rem;">✕</button>
-      </div>
-
-      <!-- Pikalinkit -->
-      <a href="/AI-Koulu/" style="display: block; padding: 0.6rem 0.8rem; border-radius: 8px; font-weight: 700; font-size: 1rem; color: var(--color-brand); text-decoration: none;">🏠 Etusivu</a>
-
-      <!-- AI-arkkitehtuurit -->
-      <details style="margin-top: 0.25rem;">
-        <summary style="padding: 0.6rem 0.8rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; color: var(--color-text);">🤖 AI-arkkitehtuurit</summary>
-        <div style="margin-left: 0.5rem; border-left: 2px solid var(--color-border); padding-left: 0.5rem;">
-          {aiChapters.map(ch => (
-            <a href={`/AI-Koulu/${ch.slug}/`} style="display: flex; align-items: center; gap: 0.3rem; padding: 0.45rem 0.8rem; border-radius: 6px; color: var(--color-text-secondary); text-decoration: none; font-size: 0.85rem;">
-              <span style="font-size: 0.7rem; color: var(--color-brand); min-width: 1.8rem;">{ch.num}</span>
-              <span>{ch.title}</span>
-              {ch.hasDiagram && <span style="font-size: 0.7rem; margin-left: auto;" title="Kaavio">{ch.hasDiagram}</span>}
-              {ch.hasDemo && <span style="font-size: 0.7rem; margin-left: auto;" title="Interaktiivinen demo">{ch.hasDemo}</span>}
-            </a>
-          ))}
-        </div>
-      </details>
-
-      <!-- UI/UX-käytännöt -->
-      <details style="margin-top: 0.25rem;">
-        <summary style="padding: 0.6rem 0.8rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; color: var(--color-text);">🎨 UI/UX-käytännöt</summary>
-        <div style="margin-left: 0.5rem; border-left: 2px solid var(--color-border); padding-left: 0.5rem;">
-          {uxChapters.map(ch => (
-            <a href={`/AI-Koulu/${ch.slug}/`} style="display: flex; align-items: center; gap: 0.3rem; padding: 0.45rem 0.8rem; border-radius: 6px; color: var(--color-text-secondary); text-decoration: none; font-size: 0.85rem;">
-              <span style="font-size: 0.7rem; color: var(--color-brand); min-width: 1.8rem;">{ch.num}</span>
-              <span>{ch.title}</span>
-              {ch.hasDemo && <span style="font-size: 0.7rem; margin-left: auto;" title="Interaktiivinen demo">{ch.hasDemo}</span>}
-            </a>
-          ))}
-        </div>
-      </details>
-
-      <a href="/AI-Koulu/haku/" style="display: block; padding: 0.6rem 0.8rem; border-radius: 8px; font-weight: 500; font-size: 0.95rem; color: var(--color-text); text-decoration: none;">🔍 Haku</a>
-
-      <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--color-border);">
-        <button data-theme-btn style="
-          width: 100%;
-          background: var(--color-bg);
-          border: 1px solid var(--color-border);
-          border-radius: 8px;
-          padding: 0.5rem 1rem;
-          cursor: pointer;
-          color: var(--color-text);
-          font-family: inherit;
-          font-size: 0.9rem;
-        ">🌓 Vaihda teemaa</button>
-      </div>
-    </nav>
-
-    <!-- Pääsisältö -->
-    <main>
+    <main id="main">
       <slot />
     </main>
 
-    <!-- Alaosa -->
-    <footer class="container-wide footer-glass">
-      <p>
-        <strong>AI & UI/UX Edu</strong> — Interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä.
-      </p>
-      <p style="margin-top: var(--space-sm);">
-        Sisältö perustuu vuoden 2024–2026 tutkimukseen. Lähdeviitteet jokaisen luvun yhteydessä.
-      </p>
+    <footer class="footer">
+      <div class="wrap">
+        <p>AI-Koulu · Tekijä Infinite</p>
+        <p>Koodi MIT · Sisältö CC BY 4.0 · Fontit SIL OFL 1.1</p>
+      </div>
     </footer>
 
-    <!-- Mobiili-pohjanavigaatio (näkyy vain mobiilissa) -->
-    <nav
-      aria-label="Mobiilinavigaatio"
-      class="mobile-nav"
-      style="
-        display: none;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        background: var(--glass-bg);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-top: 1px solid var(--glass-border);
-        padding: 0.25rem 0;
-        justify-content: space-around;
-        align-items: center;
-      "
-    >
-      <a href="/AI-Koulu/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: clamp(0.6rem, 1.5vw, 0.7rem); padding: 0.5rem; min-width: 48px; min-height: 48px; justify-content: center;">
-        <span style="font-size: clamp(1.2rem, 2.5vw, 1.4rem);">🏠</span>
-        Etusivu
-      </a>
-      <a href="/AI-Koulu/ai-architecture/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: clamp(0.6rem, 1.5vw, 0.7rem); padding: 0.5rem; min-width: 48px; min-height: 48px; justify-content: center;">
-        <span style="font-size: clamp(1.2rem, 2.5vw, 1.4rem);">🤖</span>
-        AI
-      </a>
-      <a href="/AI-Koulu/ui-ux/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: clamp(0.6rem, 1.5vw, 0.7rem); padding: 0.5rem; min-width: 48px; min-height: 48px; justify-content: center;">
-        <span style="font-size: clamp(1.2rem, 2.5vw, 1.4rem);">🎨</span>
-        UI/UX
-      </a>
-      <a href="/AI-Koulu/haku/" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: var(--color-text-muted); text-decoration: none; font-size: clamp(0.6rem, 1.5vw, 0.7rem); padding: 0.5rem; min-width: 48px; min-height: 48px; justify-content: center;">
-        <span style="font-size: clamp(1.2rem, 2.5vw, 1.4rem);">🔍</span>
-        Haku
-      </a>
-    </nav>
+    <canvas class="crew-canvas" id="crew" aria-hidden="true"></canvas>
+    <p class="crew-bubble" id="crew-bubble" aria-hidden="true"></p>
+    <button type="button" class="ask-fab" id="ask-btn" aria-haspopup="dialog" aria-controls="ask-dialog">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18"><path d="M3 4h12v8H8l-4 3v-3H3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path></svg>
+      Kysy
+    </button>
 
-    <style>
-      @media (max-width: 768px) {
-        .mobile-nav { display: flex !important; }
-        body { padding-bottom: 4rem; }
-      }
-    </style>
+    <dialog id="ask-dialog" aria-labelledby="ask-title">
+      <div class="dlg">
+        <div class="dlg-head">
+          <h2 id="ask-title">Kysy insinööreiltä</h2>
+          <button type="button" class="btn btn-sm" id="crew-toggle" aria-pressed="false">Piilota insinöörit</button>
+          <button type="button" class="btn btn-icon" data-close aria-label="Sulje">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14"><path d="M2 2 12 12M12 2 2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+          </button>
+        </div>
+        <p class="muted" style="font-size: 0.875rem">Vastaukset tulevat sivuston omasta datasta: luvuista, sanastosta ja insinöörien repliikeistä. Kielimallia ei käytetä.</p>
+        <ol class="ask-log" id="ask-log" aria-label="Keskusteluloki" aria-live="polite"></ol>
+        <div class="chip-row" id="ask-chips">
+          <button type="button" class="btn btn-sm">Mitä kompaktointi on?</button>
+          <button type="button" class="btn btn-sm">Missä luvussa on RAG?</button>
+          <button type="button" class="btn btn-sm">Mistä aloitan?</button>
+        </div>
+        <form class="ask-form" id="ask-form">
+          <label for="ask-q" class="visually-hidden">Kysymyksesi</label>
+          <input id="ask-q" type="text" autocomplete="off" placeholder="Kirjoita kysymys, esim. mitä RAG tarkoittaa" />
+          <button type="submit" class="btn btn-primary">Kysy</button>
+        </form>
+      </div>
+    </dialog>
 
+    <dialog id="tech-dialog" aria-labelledby="tech-title">
+      <div class="dlg">
+        <div class="dlg-head">
+          <h2 id="tech-title">Tekniikka</h2>
+          <button type="button" class="btn btn-icon" data-close aria-label="Sulje">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14"><path d="M2 2 12 12M12 2 2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+          </button>
+        </div>
+        <div class="dlg-body">
+          <h3 class="eyebrow">Tekniikka</h3><p id="tech-technique"></p>
+          <h3 class="eyebrow">Kaava</h3><pre id="tech-formula"></pre>
+          <h3 class="eyebrow">Miksi</h3><p id="tech-why"></p>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="map-dialog" aria-labelledby="map-title">
+      <div class="dlg">
+        <div class="dlg-head">
+          <h2 id="map-title">Kartta</h2>
+          <button type="button" class="btn btn-icon" data-close aria-label="Sulje">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14"><path d="M2 2 12 12M12 2 2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+          </button>
+        </div>
+        <div class="dlg-body">
+          {parts.map((p) => p.items.length > 0 && (
+            <section>
+              <h3 class="eyebrow" style="margin-bottom: 4px">{p.name}</h3>
+              <ol class="map-list">
+                {p.items.map((c) => <li><a href={url(c.path)}><span>{c.n}</span>{c.title}</a></li>)}
+              </ol>
+            </section>
+          ))}
+          <p><a href={url("aikakehae/")}>Tekoälyn aikakehä 1950–2026</a> · <a href={url("sanasto/")}>Sanasto</a></p>
+        </div>
+      </div>
+    </dialog>
+
+    <script type="application/json" id="site-data" set:html={JSON.stringify(siteData)}></script>
     <script>
-      // ---- Teema (toimii aina, ei importteja) ----
-      (function() {
-        try {
-          var stored = localStorage.getItem("ai-edu-theme") || "system";
-          var root = document.documentElement;
-          if (stored === "system") stored = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-          root.setAttribute("data-theme", stored);
-        } catch(e) {}
-      })();
-
-      // ---- Teemanvaihtaja (data-theme-btn) ----
-      document.addEventListener("click", function(e) {
-        var btn = e.target.closest("[data-theme-btn]");
-        if (!btn) return;
-        try {
-          var current = localStorage.getItem("ai-edu-theme") || "system";
-          var next = { light: "dark", dark: "system", system: "light" }[current] || "light";
-          localStorage.setItem("ai-edu-theme", next);
-          var root = document.documentElement;
-          if (next === "system") next = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-          root.setAttribute("data-theme", next);
-        } catch(e) {}
-      });
-
-      // ---- Hampurilaisvalikko ----
-      var hb = document.getElementById("hamburger-btn");
-      var mm = document.getElementById("mobile-menu");
-      var mo = document.getElementById("mobile-menu-overlay");
-      var cm = document.getElementById("close-menu");
-      if (hb && mm && mo) {
-        hb.addEventListener("click", function() { mm.classList.add("open"); mo.classList.add("open"); hb.setAttribute("aria-expanded", "true"); });
-        if (cm) cm.addEventListener("click", function() { mm.classList.remove("open"); mo.classList.remove("open"); hb.setAttribute("aria-expanded", "false"); });
-        mo.addEventListener("click", function() { mm.classList.remove("open"); mo.classList.remove("open"); hb.setAttribute("aria-expanded", "false"); });
-      }
-
-      // ---- Scroll-to-top ----
-      var stt = document.getElementById("scroll-to-top");
-      window.addEventListener("scroll", function() { if (stt) stt.classList.toggle("visible", window.scrollY > 500); });
-      if (stt) stt.addEventListener("click", function() { window.scrollTo({ top: 0, behavior: "smooth" }); });
+      import "../scripts/site";
     </script>
   </body>
 </html>

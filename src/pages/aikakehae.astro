@@ -1,0 +1,21 @@
+---
+import Layout from "../layouts/Layout.astro";
+import TechTag from "../components/site/TechTag.astro";
+import TimeDial from "../components/demo/TimeDial.tsx";
+import { chapters } from "../lib/chapters";
+import { CONCEPTS } from "../data/aikakehae";
+import { url } from "../lib/url";
+const published = [...(await chapters("ai-architecture")).map((c) => `ai-architecture/${c.id}`), ...(await chapters("ui-ux")).map((c) => `ui-ux/${c.id}`)];
+---
+<Layout title="Tekoälyn aikakehä" description={`${CONCEPTS.length} tekoälyn käsitettä julkaisuvuoden mukaan 1950–2026`} nav="kehae">
+  <div class="chapter-head"><div class="wrap">
+    <p class="eyebrow">1950–2026</p>
+    <h1>Tekoälyn aikakehä</h1>
+    <p class="lead">Käsitteet julkaisuvuoden mukaan neljällä renkaalla: mallit, tieto ja konteksti, agentit ja työkalut sekä tuotanto ja luottamus. Asteikko ei ole lineaarinen, koska vuodet 2020–2026 saavat puolet kehästä.</p>
+    <p><TechTag id="kehae" label="paloittainen asteikko" /></p>
+  </div></div>
+  <div class="wrap" style="padding-block: 32px 96px" data-attn="kehae">
+    <TimeDial client:visible base={url("")} published={published} />
+    <p class="muted" style="margin-top: 24px; font-size: 0.9375rem">Vuosi on käsitteen ensimmäisen julkaisun tai esittelyn ajankohta, tilanne 11/2026. Jokaisen käsitteen lähde näkyy sen tiedoissa.</p>
+  </div>
+</Layout>

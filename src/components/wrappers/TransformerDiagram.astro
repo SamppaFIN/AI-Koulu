@@ -1,5 +1,26 @@
 ---
-import TransformerDiagram from "../diagrams/TransformerDiagram.tsx";
+import Flow from "../diagrams/Flow.astro";
 ---
-
-<TransformerDiagram client:load />
+<div data-attn="fig:TransformerDiagram">
+  <Flow
+    stack
+    caption="Dekooderi-Transformer, johon julkisesti dokumentoidut suuret kielimallit (esimerkiksi GPT-3, Llama ja Gemini) perustuvat. Keskimmäinen lohko toistetaan N kertaa, ja jokainen tuotettu token lisätään syötteeseen seuraavaa askelta varten."
+    note="Alkuperäisessä Transformerissa (Vaswani ym. 2017) oli lisäksi enkooderi ja ristihuomio; dekooderimalleissa niitä ei ole."
+    lanes={[
+      { steps: [
+        { title: "Syöteteksti", text: "Kehote ja tähän mennessä tuotetut tokenit", kind: "data" },
+        { title: "Tokenisointi", text: "Teksti tokeneiksi ja tokenit kokonaisluvuiksi" },
+        { title: "Upotus ja paikkatieto", text: "Jokainen token vektoriksi, ja järjestys koodataan mukaan" },
+      ] },
+      { repeat: "× N kerrosta", steps: [
+        { title: "Maskattu monipäinen itsehuomio", text: "Jokainen token näkee vain itsensä ja aiemmat tokenit" },
+        { title: "Eteenpäinkytketty verkko", text: "Sama verkko sovelletaan jokaiseen tokeniin erikseen" },
+        { title: "Jäännösyhteydet ja normalisointi", text: "Kummankin alikerroksen ympärillä" },
+      ] },
+      { steps: [
+        { title: "Lineaarikerros ja softmax", text: "Todennäköisyys jokaiselle sanaston tokenille" },
+        { title: "Seuraava token", text: "Valitaan jakaumasta, esimerkiksi otannalla, ja lisätään syötteeseen", kind: "model" },
+      ], loop: "Toistetaan token kerrallaan, kunnes malli tuottaa lopetustokenin tai pituusraja täyttyy." },
+    ]}
+  />
+</div>

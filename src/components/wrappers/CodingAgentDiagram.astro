@@ -1,0 +1,16 @@
+---
+import Flow from "../diagrams/Flow.astro";
+---
+<div data-attn="fig:CodingAgentDiagram">
+  <Flow
+    caption="Koodausagentin silmukka. Vaiheet sekoittuvat käytännössä, ja agentti käyttää työkaluja koko ajan. Ihminen voi keskeyttää ja ohjata missä vaiheessa tahansa."
+    lanes={[
+      { steps: [
+        { title: "Tehtävä", text: "Esimerkiksi ”korjaa epäonnistuvat testit”", kind: "data" },
+        { title: "Kontekstin keruu", text: "Projektiohjeet (CLAUDE.md, AGENTS.md), tiedostohaku, tiedostojen luku", kind: "store" },
+        { title: "Toiminta", text: "Tiedostojen muokkaus ja komentojen ajo", kind: "tool" },
+        { title: "Tarkistus", text: "Testit, tyyppitarkistus, linter tai build: tulos on läpi tai hylätty", kind: "process" },
+      ], loop: "Jos tarkistus epäonnistuu, agentti lukee virheen ja palaa toimintaan. Valmis on vasta, kun tarkistus menee läpi." },
+    ]}
+  />
+</div>

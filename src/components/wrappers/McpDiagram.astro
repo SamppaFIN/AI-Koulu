@@ -1,0 +1,18 @@
+---
+import Flow from "../diagrams/Flow.astro";
+---
+<div data-attn="fig:McpDiagram">
+  <Flow
+    caption="MCP-työkalukutsu. Isäntäsovellus hakee palvelimen työkalut, malli valitsee työkalun, ja asiakas kutsuu palvelinta. Viestit ovat JSON-RPC 2.0 -muotoisia."
+    lanes={[
+      { steps: [
+        { title: "Isäntä (host)", text: "LLM-sovellus, esimerkiksi chat tai koodieditori. Sisältää asiakkaan jokaista palvelinta kohti", kind: "process" },
+        { title: "tools/list", text: "Asiakas pyytää palvelimelta työkalujen nimet, kuvaukset ja syöteskeemat", kind: "data" },
+        { title: "Mallin valinta", text: "Työkalujen kuvaukset ovat mallin kontekstissa; malli palauttaa työkalukutsun", kind: "model" },
+        { title: "Hyväksyntä", text: "Spesifikaation suositus: käyttäjä näkee kutsun ja voi estää sen ennen suoritusta" },
+        { title: "tools/call", text: "Asiakas lähettää työkalun nimen ja argumentit palvelimelle", kind: "data" },
+        { title: "Palvelin (server)", text: "Validoi syötteen, tarkistaa oikeudet ja ajaa toiminnon, esimerkiksi tietokantakyselyn", kind: "tool" },
+      ], loop: "Tulos palautetaan isännälle, joka lisää sen mallin kontekstiin. Virhe, jonka malli voi korjata, palautetaan tuloksena (isError: true)." },
+    ]}
+  />
+</div>

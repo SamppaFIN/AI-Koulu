@@ -26,7 +26,7 @@ function SimulatedCard({ mode, delay }: { mode: Mode; delay: number }) {
           border: "1px solid var(--color-border)",
           padding: "1rem",
         }}
-        aria-label="Ladataan..."
+        role="status" aria-label="Ladataan..."
       >
         <div
           style={{
@@ -87,7 +87,7 @@ function SimulatedCard({ mode, delay }: { mode: Mode; delay: number }) {
           justifyContent: "center",
           minHeight: "160px",
         }}
-        aria-label="Ladataan..."
+        role="status" aria-label="Ladataan..."
       >
         <div
           style={{
@@ -241,7 +241,7 @@ export default function SkeletonStudio() {
             borderRadius: "6px",
             border: "none",
             background: "var(--color-brand)",
-            color: "white",
+            color: "var(--on-gold)",
             fontWeight: 600,
             cursor: "pointer",
           }}

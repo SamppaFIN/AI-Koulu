@@ -1,0 +1,22 @@
+---
+import { demosOf, type Chapter, type Coll } from "../../lib/chapters";
+import { url } from "../../lib/url";
+interface Props { c: Chapter; coll: Coll }
+const { c, coll } = Astro.props;
+const path = `${coll}/${c.id}/`, demos = demosOf(c), isNew = coll === "ai-architecture" && [2, 3, 9, 10, 11].includes(c.data.order);
+---
+{c.data.published
+  ? <a class="chapter-card" href={url(path)} data-path={path} data-attn={`ch:${coll}/${c.id}`}>
+      <span class="num"><span>Luku {c.data.order}</span><span class="read" hidden>Luettu</span></span>
+      <span class="title">{c.data.title}</span>
+      <span class="desc">{c.data.description}</span>
+      {(demos.length > 0 || isNew) && <span class="chip-row" style="margin-top: 6px">
+        {demos.map((d) => <span class="chip chip-gold">Demo: {d}</span>)}
+        {isNew && <span class="chip chip-holo">Uusi luku</span>}
+      </span>}
+    </a>
+  : <div class="chapter-card draft">
+      <span class="num"><span>Luku {c.data.order}</span><span>Tulossa</span></span>
+      <span class="title">{c.data.title}</span>
+      <span class="desc">{c.data.description}</span>
+    </div>}

@@ -1,335 +1,102 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import ContinueJourney from "../components/ui/ContinueJourney.tsx";
+import Astrolabe from "../components/site/Astrolabe.astro";
+import TechTag from "../components/site/TechTag.astro";
+import PartList from "../components/site/PartList.astro";
+import { chapters } from "../lib/chapters";
+import { CONCEPTS } from "../data/aikakehae";
+import { url } from "../lib/url";
+
+const ux = await chapters("ui-ux");
+const ai = await chapters("ai-architecture", { drafts: true });
 ---
-
-<Layout title="AI-arkkitehtuurit & UI/UX-käytännöt" description="Interaktiivinen opetussivusto modernista AI-ohjelmistoarkkitehtuurista ja UI/UX-käytännöistä">
-  <!-- Jatka matkaa -blokki -->
-  <ContinueJourney client:visible />
-
-  <!-- Hero -->
-  <section class="container-content" style="
-    text-align: center;
-    padding-block: var(--space-3xl) var(--space-2xl);
-  ">
-    <h1 style="color: var(--color-brand);">
-      AI-arkkitehtuurit<br />&amp; UI/UX-käytännöt
-    </h1>
-    <p style="
-      font-size: clamp(1.1rem, 2vw, 1.35rem);
-      color: var(--color-text-secondary);
-      max-width: 60ch;
-      margin-inline: auto;
-      margin-top: var(--space-lg);
-    ">
-      Kattava, interaktiivinen opas nykyaikaisen tekoäly- ja käyttöliittymäsuunnittelun arkkitehtuureihin, 
-      menetelmiin ja parhaisiin käytäntöihin — graafisine esimerkkeineen ja reaalimaailman analogioineen.
-    </p>
-  </section>
-
-  <!-- Osa 1: AI-arkkitehtuurit -->
-  <section class="container-content" style="padding-block: var(--space-2xl);">
-    <div style="
-      display: flex;
-      align-items: center;
-      gap: var(--space-lg);
-      margin-bottom: var(--space-xl);
-    ">
-      <span style="font-size: 2.5rem;">🤖</span>
-      <div>
-        <h2 style="margin: 0;">Osa 1: AI-arkkitehtuurit</h2>
-        <p style="color: var(--color-text-secondary); margin: 0;">
-          Nykyajan AI-kehityksen ohjelmistoarkkitehtuurimallit
-        </p>
+<Layout title="Etusivu">
+  <section class="hero" aria-labelledby="h-hero" data-attn="hero">
+    <div class="hero-art"><Astrolabe /></div>
+    <div class="wrap hero-inner">
+      <div class="hero-card">
+        <p class="eyebrow">Tekoälyjärjestelmien arkkitehtuuri · tilanne 11/2026</p>
+        <h1 id="h-hero">AI-Koulu</h1>
+        <p class="lead">Kielimallit, konteksti, RAG, agentit ja niiden käyttöliittymät insinööriopiskelijalle: miten ne toimivat, mitä ne maksavat ja miten niitä testataan.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href={url(`ai-architecture/${ai[0].id}/`)}>Aloita luvusta 1</a>
+          <a class="btn" href="#osat">Lukujärjestys</a>
+        </div>
+        <a class="continue" href={url("")}>
+          <span class="muted" style="font-size: 0.875rem">Jatka siitä, mihin jäit</span>
+          <span class="continue-title" style="font-weight: 700"></span>
+          <progress value="0" max="1" aria-label="Luettujen lukujen määrä"></progress>
+          <span class="continue-count muted" style="font-size: 0.875rem"></span>
+        </a>
       </div>
-    </div>
-
-    <div style="
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: var(--space-lg);
-    ">
-      <a href="/AI-Koulu/ai-architecture/01-johdanto/" class="card-link">
-        <div class="card">
-          <span class="card-number">1</span>
-          <h3 class="card-title">Johdanto AI-arkkitehtuureihin</h3>
-          <p class="card-desc">Paradigman muutos: deterministisestä probabilistiseen</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ai-architecture/02-1-api-wrappers/" class="card-link">
-        <div class="card">
-          <span class="card-number">2.1</span>
-          <h3 class="card-title">API-kääremallit</h3>
-          <p class="card-desc">UI + prompt + API-kutsu — yksinkertaisin malli</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ai-architecture/02-2-rag/" class="card-link">
-        <div class="card">
-          <span class="card-number">2.2</span>
-          <h3 class="card-title">RAG-arkkitehtuurit</h3>
-          <p class="card-desc">Tiedonhaku + generointi yhdistettynä</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ai-architecture/02-3-agents/" class="card-link">
-        <div class="card">
-          <span class="card-number">2.3</span>
-          <h3 class="card-title">Agenttipohjaiset arkkitehtuurit</h3>
-          <p class="card-desc">ReAct-malli, työkalut, monen agentin järjestelmät</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ai-architecture/02-4-finetuning/" class="card-link">
-        <div class="card">
-          <span class="card-number">2.4</span>
-          <h3 class="card-title">Hienosäädetyt mallit</h3>
-          <p class="card-desc">Milloin säätö kannattaa, kvanttisointi, palveluarkkitehtuurit</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ai-architecture/02-5-multimodal/" class="card-link">
-        <div class="card">
-          <span class="card-number">2.5</span>
-          <h3 class="card-title">Multimodaaliset arkkitehtuurit</h3>
-          <p class="card-desc">Kuva+teksti, video+ääni — yhteinen upotusavaruus</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ai-architecture/02-6-hybrid/" class="card-link">
-        <div class="card">
-          <span class="card-number">2.6</span>
-          <h3 class="card-title">Hybridiarkkitehtuurit</h3>
-          <p class="card-desc">Sääntöpohjaiset + neuroverkot, HITL</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ai-architecture/03-infrastructure/" class="card-link">
-        <div class="card">
-          <span class="card-number">3</span>
-          <h3 class="card-title">AI-infrastruktuuri &amp; alustat</h3>
-          <p class="card-desc">Koulutus, inferenssi, MLOps, kustannukset</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ai-architecture/04-design-principles/" class="card-link">
-        <div class="card">
-          <span class="card-number">4</span>
-          <h3 class="card-title">Suunnitteluperiaatteet</h3>
-          <p class="card-desc">Luotettavuus, skaalautuvuus, turvallisuus, havainnoitavuus</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ai-architecture/05-reference-architectures/" class="card-link">
-        <div class="card">
-          <span class="card-number">5</span>
-          <h3 class="card-title">Viitearkkitehtuurit</h3>
-          <p class="card-desc">Konkreettiset esimerkit: RAG, agentti, Copilot, dokumenttianalyysi</p>
-        </div>
-      </a>
+      <div class="hero-foot"><TechTag id="hero" label="astrolabi ja WebGL" /></div>
     </div>
   </section>
 
-  <!-- Osa 2: UI/UX-käytännöt -->
-  <section class="container-content" style="padding-block: var(--space-2xl);">
-    <div style="
-      display: flex;
-      align-items: center;
-      gap: var(--space-lg);
-      margin-bottom: var(--space-xl);
-    ">
-      <span style="font-size: 2.5rem;">🎨</span>
-      <div>
-        <h2 style="margin: 0;">Osa 2: UI/UX-käytännöt</h2>
-        <p style="color: var(--color-text-secondary); margin: 0;">
-          Nykyajan UI/UX-suunnittelun käytännöt ja trendit
-        </p>
+  <div class="sections" style="margin-top: var(--section-gap)">
+    <section class="sec wrap" id="osat" aria-labelledby="h-osat" data-attn="parts">
+      <canvas class="scape" data-scape="glyphs" aria-hidden="true"></canvas>
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">{ai.length} lukua neljässä osassa</p>
+          <h2 id="h-osat">AI-arkkitehtuurit</h2>
+          <p class="muted" style="max-width: 62ch">Osat etenevät mallista sovellukseen, agenttiin ja tuotantoon. Luvut etenevät määritelmästä mekanismiin ja esimerkkiin, ja aikasidonnaisten väitteiden lähteet on merkitty.</p>
+        </div>
+        <TechTag id="glyphs" label="kirjaimet hajoavat tokeneiksi" />
       </div>
-    </div>
+      <PartList />
+    </section>
 
-    <div style="
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: var(--space-lg);
-    ">
-      <a href="/AI-Koulu/ui-ux/01-hcd/" class="card-link">
-        <div class="card">
-          <span class="card-number">1</span>
-          <h3 class="card-title">Ihmiskeskeinen suunnittelu</h3>
-          <p class="card-desc">HCD, personat, empatiakartat, esteettömyys</p>
+    <section class="sec wrap" id="uiux" aria-labelledby="h-uiux" data-attn="uiux">
+      <div class="scape-colonnade" aria-hidden="true"></div>
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">{ux.length} lukua</p>
+          <h2 id="h-uiux">UI/UX-käytännöt</h2>
         </div>
-      </a>
-      <a href="/AI-Koulu/ui-ux/02-visual-trends/" class="card-link">
-        <div class="card">
-          <span class="card-number">2</span>
-          <h3 class="card-title">Visuaaliset trendit</h3>
-          <p class="card-desc">Typografia, OKLCH-värit, animaatio, tilallisuus</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ui-ux/03-interaction-design/" class="card-link">
-        <div class="card">
-          <span class="card-number">3</span>
-          <h3 class="card-title">Vuorovaikutussuunnittelu</h3>
-          <p class="card-desc">Navigaatio, lomakkeet, data, notifikaatiot</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ui-ux/04-accessibility/" class="card-link">
-        <div class="card">
-          <span class="card-number">4</span>
-          <h3 class="card-title">Saavutettavuus (A11y)</h3>
-          <p class="card-desc">WCAG 2.2, ARIA, ruudunlukijat, kognitiivinen a11y</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ui-ux/05-performance/" class="card-link">
-        <div class="card">
-          <span class="card-number">5</span>
-          <h3 class="card-title">Suorituskyky &amp; Web Vitals</h3>
-          <p class="card-desc">LCP, INP, CLS, optimointi, koettu suorituskyky</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ui-ux/06-modern-ui/" class="card-link">
-        <div class="card">
-          <span class="card-number">6</span>
-          <h3 class="card-title">Modernit UI-teknologiat</h3>
-          <p class="card-desc">Komponentit, tilanhallinta, CSS-arkkitehtuurit</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ui-ux/07-ai-ux/" class="card-link">
-        <div class="card">
-          <span class="card-number">7</span>
-          <h3 class="card-title">AI &amp; UI/UX leikkauspisteet</h3>
-          <p class="card-desc">Generatiivinen UI, conversational UI, eettisyys</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ui-ux/08-ux-research/" class="card-link">
-        <div class="card">
-          <span class="card-number">8</span>
-          <h3 class="card-title">UX-tutkimus &amp; data</h3>
-          <p class="card-desc">A/B-testaus, kvantitatiiviset ja kvalitatiiviset menetelmät</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ui-ux/09-tools/" class="card-link">
-        <div class="card">
-          <span class="card-number">9</span>
-          <h3 class="card-title">Työkalut &amp; toimintatavat</h3>
-          <p class="card-desc">Figma, Storybook, Playwright, design-to-code</p>
-        </div>
-      </a>
-    </div>
-  </section>
-
-  <!-- Demo-esittely -->
-  <section class="container-content" style="padding-block: var(--space-2xl);">
-    <div style="
-      display: flex;
-      align-items: center;
-      gap: var(--space-lg);
-      margin-bottom: var(--space-xl);
-    ">
-      <span style="font-size: 2.5rem;">🎮</span>
-      <div>
-        <h2 style="margin: 0;">Interaktiiviset demot</h2>
-        <p style="color: var(--color-text-secondary); margin: 0;">
-          Kokeile käsitteitä käytännössä — kaikki toimii selaimessasi
-        </p>
+        <TechTag id="colonnade" label="pylväikkö clip-pathilla" />
       </div>
-    </div>
+      <ol class="ux-list">
+        {ux.map((c) => (
+          <li><a href={url(`ui-ux/${c.id}/`)} data-path={`ui-ux/${c.id}/`} data-attn={`ch:ui-ux/${c.id}`}>
+            <span class="n">{c.data.order}</span>
+            <span class="t"><span style="font-weight: 700">{c.data.title}</span><small>{c.data.description}</small></span>
+          </a></li>
+        ))}
+      </ol>
+    </section>
 
-    <div style="
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: var(--space-lg);
-    ">
-      <a href="/AI-Koulu/ai-architecture/02-1-api-wrappers/" class="card-link">
-        <div class="card">
-          <h3 class="card-title">🔄 Tokenisointilelu</h3>
-          <p class="card-desc">Näe miten BPE pilkkoo tekstin tokeneiksi</p>
+    <section class="sec wrap" aria-labelledby="h-kehae" data-attn="kehae">
+      <div class="scape-sweep" aria-hidden="true"></div>
+      <div class="kehae-teaser">
+        <div>
+          <p class="eyebrow">1950–2026</p>
+          <h2 id="h-kehae">Tekoälyn aikakehä</h2>
+          <p class="muted" style="max-width: 60ch">{CONCEPTS.length} käsitettä julkaisuvuoden mukaan Turingin testistä vuoden 2026 adaptiiviseen päättelyyn. Jokaisesta pääsee lukuun, jossa se opetetaan.</p>
+          <div class="chip-row" style="align-items: center">
+            <a class="btn" href={url("aikakehae/")}>Avaa aikakehä</a>
+            <TechTag id="sweep" label="@property-pyyhkäisy" />
+          </div>
         </div>
-      </a>
-      <a href="/AI-Koulu/ai-architecture/02-2-rag/" class="card-link">
-        <div class="card">
-          <h3 class="card-title">📚 RAG-leikkikenttä</h3>
-          <p class="card-desc">Kokeile mockattua vektorihakua</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ai-architecture/02-3-agents/" class="card-link">
-        <div class="card">
-          <h3 class="card-title">🤖 Agenttisimulaatio</h3>
-          <p class="card-desc">Tarkkaile agentin päättelysilmukkaa</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ui-ux/03-interaction-design/" class="card-link">
-        <div class="card">
-          <h3 class="card-title">🎯 Hickin laki -peli</h3>
-          <p class="card-desc">Mittaa reaktioaikaasi eri valintamäärillä</p>
-        </div>
-      </a>
-      <a href="/AI-Koulu/ui-ux/04-accessibility/" class="card-link">
-        <div class="card">
-          <h3 class="card-title">🎨 Värikontrastityökalu</h3>
-          <p class="card-desc">Testaa värikontrasteja APCA-kaavalla</p>
-        </div>
-      </a>
-    </div>
-  </section>
+        <Astrolabe variant="mini" label={`Pienoiskuva aikakehästä: ${CONCEPTS.length} käsitettä neljällä renkaalla`} />
+      </div>
+    </section>
 
-  <!-- Tietoja / CTA -->
-  <section class="container-content" style="text-align: center; padding-block: var(--space-3xl);">
-    <p style="color: var(--color-text-secondary); max-width: 50ch; margin-inline: auto;">
-      Tämä sivusto on rakennettu Astrolla ja Reactilla, hostattu GitHub Pagesissa.
-      Kaikki demot toimivat asiakaspuolella ilman erillistä backendia.
-    </p>
-  </section>
+    <section class="sec wrap" id="sanasto" aria-labelledby="h-sanasto" data-attn="sanasto">
+      <canvas class="scape" data-scape="flow" aria-hidden="true"></canvas>
+      <div class="sec-head">
+        <div>
+          <h2 id="h-sanasto">Sanasto ja haku</h2>
+          <p class="muted" style="max-width: 60ch">Sanaston termit ovat samat kuin luvuissa. Luvun tekstissä termin määritelmä aukeaa osoittimella tai fokuksella.</p>
+        </div>
+        <TechTag id="flow" label="virtauskenttä" />
+      </div>
+      <form class="ask-form" action={url("haku/")} method="get" style="max-width: 560px">
+        <label for="home-q" class="visually-hidden">Hae luvuista ja sanastosta</label>
+        <input id="home-q" name="q" type="search" placeholder="esim. kompaktointi" />
+        <button class="btn btn-primary" type="submit">Hae</button>
+      </form>
+      <p style="margin-top: 14px"><a href={url("sanasto/")}>Koko sanasto</a></p>
+    </section>
+  </div>
 </Layout>
-
-<style is:global>
-  /* Korttityylit */
-  .card-link {
-    text-decoration: none;
-    color: inherit;
-  }
-  .card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    border-radius: 14px;
-    padding: var(--space-xl);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.3s ease,
-                border-color 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.06), transparent);
-    animation: cardGlow 4s linear infinite;
-    pointer-events: none;
-  }
-  .card:hover {
-    transform: translateY(-4px) scale(1.01);
-    box-shadow: 0 12px 40px oklch(0 0 0 / 0.15);
-    border-color: var(--color-brand-light);
-  }
-  .card-number {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 2rem;
-    height: 1.8rem;
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: white;
-    background: var(--aurora-gradient-1);
-    padding: 0 0.5rem;
-    border-radius: 999px;
-    margin-bottom: var(--space-sm);
-    box-shadow: 0 2px 8px oklch(0.55 0.24 280 / 0.25);
-  }
-  .card-title {
-    margin: 0 0 var(--space-xs) 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-  }
-  .card-desc {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-  }
-</style>

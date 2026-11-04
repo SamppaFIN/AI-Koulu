@@ -120,7 +120,7 @@ export default function CLSDemo() {
             borderRadius: "8px",
             border: "none",
             background: "var(--color-brand)",
-            color: "white",
+            color: "var(--on-gold)",
             fontWeight: 600,
             cursor: "pointer",
           }}

@@ -1,0 +1,11 @@
+---
+// Sanaston termi: painike, jonka kuvaus näkyy osoittimella ja näppäimistöfokuksella. Linkki vie sanastoon.
+import glossary from "../../data/glossary.json";
+interface Props { term: string }
+const { term } = Astro.props;
+const e = (glossary as { id: string; term: string; shortDef: string }[]).find((g) => g.id === term || g.term.toLowerCase() === term.toLowerCase());
+const pid = `term-${term}-${Math.random().toString(36).slice(2, 7)}`;
+---
+{e
+  ? <span class="term"><button type="button" aria-describedby={pid}><slot>{e.term}</slot></button><span class="term-pop" id={pid}><b>{e.term}</b>{e.shortDef} <a href={`${import.meta.env.BASE_URL}sanasto/#${e.id}`}>Sanastoon</a></span></span>
+  : <slot>{term}</slot>}

@@ -1,0 +1,6 @@
+---
+// "tausta ·" -merkintä avaa tekniikkamuistiinpanon (src/data/tech.ts) dialogissa
+interface Props { id: string; label: string }
+const { id, label } = Astro.props;
+---
+<button type="button" class="tech-tag" data-tech={id} aria-haspopup="dialog">tausta · {label}</button>

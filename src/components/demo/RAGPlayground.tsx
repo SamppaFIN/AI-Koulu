@@ -115,7 +115,7 @@ export default function RAGPlayground() {
             borderRadius: "8px",
             border: "none",
             background: "var(--color-brand)",
-            color: "white",
+            color: "var(--on-gold)",
             fontWeight: 600,
             cursor: "pointer",
             opacity: isSearching ? 0.6 : 1,

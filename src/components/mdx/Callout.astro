@@ -1,0 +1,15 @@
+---
+// Huomautuslaatikko. Tyyppi kerrotaan tekstinä ja ikonina, ei pelkällä värillä.
+interface Props { type?: "info" | "warning" | "tip" | "error" }
+const { type = "info" } = Astro.props;
+const label = { info: "Huomio", warning: "Varoitus", tip: "Vinkki", error: "Virhe" }[type];
+---
+<aside class={`note note-${type}`}>
+  <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20">
+    {type === "tip" ? <path d="M10 2a6 6 0 0 0-3.5 10.9V15h7v-2.1A6 6 0 0 0 10 2ZM7.5 17.5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+      : type === "info" ? <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10" cy="10" r="8"></circle><path d="M10 9v5M10 6v.5"></path></g>
+      : <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5 18 17H2Z"></path><path d="M10 8v4M10 14.5v.5"></path></g>}
+  </svg>
+  <div class="note-body"><p class="note-label">{label}</p><slot /></div>
+</aside>
+<style>.note svg { color: var(--muted); } .note-info svg { color: var(--holo); } .note-tip svg { color: var(--gold); } .note-warning svg, .note-error svg { color: var(--danger); }</style>

@@ -1,0 +1,58 @@
+---
+// Astrolabin staattinen piirros. Lasketaan buildissa, joten se toimii ilman JavaScriptiä ja on WebGL-heron varakuva.
+import { CONCEPTS, RING_R, angleOf, polar } from "../../data/aikakehae";
+
+interface Props { variant?: "hero" | "mini"; class?: string; label?: string }
+const { variant = "hero", class: cls, label } = Astro.props;
+
+const C = 360, R = 340, f = (v: number) => v.toFixed(1);
+const ticks = Array.from({ length: 72 }, (_, i) => {
+  const long = i % 6 === 0, [x1, y1] = polar(C, C, R, i * 5), [x2, y2] = polar(C, C, R - (long ? 18 : 9), i * 5);
+  return { x1: f(x1), y1: f(y1), x2: f(x2), y2: f(y2), w: long ? 2 : 1 };
+});
+// Kirjaimet kehän alkuosassa, tokenit vuodesta 2017 (Transformer) eteenpäin
+const aT = angleOf(2017.45), G = [..."ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟ"];
+const letters = G.map((ch, i) => {
+  const d = -136 + (i * (aT - 4 + 136)) / (G.length - 1), [x, y] = polar(C, C, R - 34, d);
+  return { ch, x: f(x), y: f(y), rot: f(d), o: i > G.length - 4 ? 0.3 : 0.8 };
+});
+const tokens: { x: string; y: string; cx: string; cy: string; rot: string; o: number }[] = [];
+for (let d = aT + 3; d <= 138; d += 4.5) {
+  const [x, y] = polar(C, C, R - 34, d);
+  tokens.push({ x: f(x - 3.5), y: f(y - 3.5), cx: f(x), cy: f(y), rot: f(d), o: d < aT + 12 ? 0.3 : 0.7 });
+}
+const scale = 340 / 400;
+const stars = CONCEPTS.map((c) => {
+  const [x, y] = polar(C, C, (RING_R[c.ring] + (c.dr ?? 0)) * scale, angleOf(c.y));
+  return { x: f(x), y: f(y), isNew: c.y >= 2024 };
+});
+const [sx, sy] = polar(C, C, R, -140), [ex, ey] = polar(C, C, R, 140);
+const sweep = `M ${f(sx)} ${f(sy)} A ${R} ${R} 0 1 1 ${f(ex)} ${f(ey)}`;
+---
+<svg class={cls} viewBox="0 0 720 720" role={label ? "img" : undefined} aria-label={label} aria-hidden={label ? undefined : "true"}>
+  <circle cx="360" cy="360" r="352" fill="oklch(0.82 0.13 85)" opacity="0.035"></circle>
+  <circle cx="360" cy="360" r={R} fill="none" stroke="oklch(0.82 0.13 85)" stroke-width="2"></circle>
+  {variant === "hero" && (
+    <g>
+      {[270, 200, 130].map((r, i) => <circle cx="360" cy="360" r={r} fill="none" stroke="oklch(0.82 0.13 85)" stroke-width="1" opacity={0.5 - i * 0.1}></circle>)}
+      {ticks.map((t) => <line x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} stroke="oklch(0.82 0.13 85)" stroke-width={t.w}></line>)}
+      {letters.map((l) => <text x={l.x} y={l.y} transform={`rotate(${l.rot} ${l.x} ${l.y})`} text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-size="20" fill="oklch(0.82 0.13 85)" opacity={l.o}>{l.ch}</text>)}
+      {tokens.map((k) => <rect x={k.x} y={k.y} width="7" height="7" rx="1.2" transform={`rotate(${k.rot} ${k.cx} ${k.cy})`} fill="oklch(0.80 0.035 85)" opacity={k.o}></rect>)}
+      <g class="alidade">
+        <line x1="120" y1="600" x2="600" y2="120" stroke="oklch(0.94 0.03 85)" stroke-width="2"></line>
+        <rect x="592" y="112" width="16" height="16" transform="rotate(45 600 120)" fill="oklch(0.94 0.03 85)"></rect>
+      </g>
+      <circle cx="360" cy="360" r="10" fill="oklch(0.82 0.13 85)"></circle>
+    </g>
+  )}
+  {variant === "mini" && (
+    <g>
+      {RING_R.map((r) => <circle cx="360" cy="360" r={r * scale} fill="none" stroke="oklch(0.82 0.13 85)" stroke-width="2" opacity="0.35"></circle>)}
+      <path d={sweep} fill="none" stroke="oklch(0.82 0.13 85)" stroke-width="8" stroke-linecap="round" opacity="0.8"></path>
+      {stars.map((s) => s.isNew
+        ? <circle cx={s.x} cy={s.y} r="9" fill="oklch(0.13 0.045 262)" stroke="oklch(0.84 0.11 200)" stroke-width="4"></circle>
+        : <circle cx={s.x} cy={s.y} r="9" fill="oklch(0.82 0.13 85)"></circle>)}
+      <circle cx="360" cy="360" r="12" fill="oklch(0.82 0.13 85)"></circle>
+    </g>
+  )}
+</svg>

@@ -1,37 +1,14 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { contrastRatio } from "../../lib/contrast";
 
 /**
- * Värikontrastityökalu: APCA-laskenta WCAG-kontrasteille.
+ * Värikontrastityökalu: WCAG 2.2:n kontrastisuhde.
  * Liu'uilla valitaan tausta- ja tekstivärit, demo kertoo kontrastisuhteen.
  */
 
-function hexToOklch(hex: string): { l: number; c: number; h: number } {
-  // Yksinkertaistettu: muunna heksadesimaali RGB:ksi, sitten arvioi OKLCH
-  const r = parseInt(hex.slice(1, 3), 16) / 255;
-  const g = parseInt(hex.slice(3, 5), 16) / 255;
-  const b = parseInt(hex.slice(5, 7), 16) / 255;
-
-  // Yksinkertaistettu luminanssi (sRGB)
-  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  return { l: luminance, c: Math.abs(luminance - 0.5) * 0.3, h: 0 };
-}
-
-function apcaContrast(textHex: string, bgHex: string): number {
-  const textLum = hexToOklch(textHex).l;
-  const bgLum = hexToOklch(bgHex).l;
-
-  // Yksinkertaistettu APCA-laskenta
-  const textLin = textLum <= 0.04045 ? textLum / 12.92 : Math.pow((textLum + 0.055) / 1.055, 2.4);
-  const bgLin = bgLum <= 0.04045 ? bgLum / 12.92 : Math.pow((bgLum + 0.055) / 1.055, 2.4);
-
-  const contrast = (Math.max(textLin, bgLin) + 0.05) / (Math.min(textLin, bgLin) + 0.05);
-  return Math.round((contrast - 1) * 100);
-}
-
-function getWcagLevel(contrast: number): { level: string; pass: boolean; aa: boolean; aaa: boolean } {
-  const ratio = (contrast / 100) + 1;
+function getWcagLevel(ratio: number): { level: string; pass: boolean; aa: boolean; aaa: boolean } {
   return {
     level: ratio >= 7 ? "AAA" : ratio >= 4.5 ? "AA" : ratio >= 3 ? "AA (large)" : "Fail",
     pass: ratio >= 4.5,
@@ -52,7 +29,7 @@ export default function ContrastTool() {
   const [textColor, setTextColor] = useState("#000000");
   const [bgColor, setBgColor] = useState("#ffffff");
 
-  const contrast = useMemo(() => apcaContrast(textColor, bgColor), [textColor, bgColor]);
+  const contrast = useMemo(() => contrastRatio(textColor, bgColor), [textColor, bgColor]);
   const wcag = useMemo(() => getWcagLevel(contrast), [contrast]);
 
   const setPreset = (text: string, bg: string) => {
@@ -140,9 +117,9 @@ export default function ContrastTool() {
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-          <span style={{ fontWeight: 600 }}>APCA-kontrasti:</span>
+          <span style={{ fontWeight: 600 }}>Kontrastisuhde (WCAG 2.2):</span>
           <span style={{ fontWeight: 700, fontSize: "1.3rem", color: wcag.pass ? "var(--color-success)" : "var(--color-error)" }}>
-            {contrast}
+            {contrast.toFixed(2).replace(".", ",")}:1
           </span>
         </div>
         <div style={{ display: "flex", gap: "0.5rem" }}>

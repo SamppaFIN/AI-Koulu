@@ -1,0 +1,11 @@
+---
+// Lähdeviite muodossa [Tekijä vuosi]. Puuttuva id näkyy virheenä, jotta se huomataan.
+import refs from "../../data/references.json";
+interface Props { id: string }
+const { id } = Astro.props;
+const ref = (refs as { id: string; authors: string; title: string; year: number; venue: string; url: string }[]).find((r) => r.id === id);
+const short = ref ? `${ref.authors.split(/[,.]/)[0].trim()} ${ref.year}` : "";
+---
+{ref
+  ? <a class="ref" href={ref.url} title={`${ref.authors} (${ref.year}). ${ref.title}. ${ref.venue}.`}>[{short}]</a>
+  : <span class="ref" style="color: var(--danger)">[lähde puuttuu: {id}]</span>}

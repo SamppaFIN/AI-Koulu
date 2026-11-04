@@ -1,0 +1,13 @@
+{
+  "/ai-architecture/01-johdanto/": "/ai-architecture/01-kielimalli/",
+  "/ai-architecture/02-1-api-wrappers/": "/ai-architecture/04-api-sovellukset/",
+  "/ai-architecture/02-2-rag/": "/ai-architecture/05-rag/",
+  "/ai-architecture/02-4-finetuning/": "/ai-architecture/06-hienosaato/",
+  "/ai-architecture/02-5-multimodal/": "/ai-architecture/07-multimodaalisuus/",
+  "/ai-architecture/03-infrastructure/": "/ai-architecture/12-infrastruktuuri/",
+  "/ai-architecture/05-reference-architectures/": "/ai-architecture/14-viitearkkitehtuurit/",
+  "/ai-architecture/02-3-agents/": "/ai-architecture/08-agentit/",
+  "/ai-architecture/06-agent-patterns/": "/ai-architecture/08-agentit/",
+  "/ai-architecture/04-design-principles/": "/ai-architecture/13-luotettavuus/",
+  "/ai-architecture/02-6-hybrid/": "/ai-architecture/13-luotettavuus/"
+}

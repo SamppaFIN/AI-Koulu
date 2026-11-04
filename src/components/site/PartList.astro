@@ -1,0 +1,20 @@
+---
+// AI-arkkitehtuurien osat suljettavina otsikoina. Ensimmäinen osa on auki.
+import ChapterCard from "./ChapterCard.astro";
+import { chapters, PARTS } from "../../lib/chapters";
+const all = await chapters("ai-architecture", { drafts: true });
+const parts = PARTS.map((p, i) => {
+  const items = all.filter((c) => c.data.section === p);
+  const nums = items.map((c) => c.data.order);
+  return { p, i, items, range: `Luvut ${Math.min(...nums)}–${Math.max(...nums)}` };
+});
+const roman = ["I", "II", "III", "IV"];
+---
+<div class="parts">
+  {parts.map(({ p, i, items, range }) => (
+    <details class="part" open={i === 0}>
+      <summary><h3>{roman[i]} · {p}</h3><span class="muted">{range}</span></summary>
+      <div class="card-grid">{items.map((c) => <ChapterCard c={c} coll="ai-architecture" />)}</div>
+    </details>
+  ))}
+</div>

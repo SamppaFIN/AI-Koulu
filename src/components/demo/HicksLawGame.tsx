@@ -20,7 +20,7 @@ export default function HicksLawGame() {
   const [results, setResults] = useState<RoundResult[]>([]);
   const [phase, setPhase] = useState<"waiting" | "ready" | "result">("waiting");
   const [startTime, setStartTime] = useState(0);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const startRound = useCallback(() => {
     const count = OPTION_COUNTS[Math.floor(Math.random() * OPTION_COUNTS.length)];
@@ -92,7 +92,7 @@ export default function HicksLawGame() {
                 borderRadius: "8px",
                 border: "none",
                 background: "var(--color-brand)",
-                color: "white",
+                color: "var(--on-gold)",
                 fontWeight: 600,
                 cursor: "pointer",
                 fontSize: "1rem",
@@ -182,7 +182,7 @@ export default function HicksLawGame() {
             )}
           </div>
           <p style={{ fontSize: "0.75rem", color: "var(--color-text-muted)", marginTop: "0.5rem" }}>
-            Hickin laki: T = a + b × log₂(n). Enemmän vaihtoehtoja → hitaampi reaktio.
+            Hickin laki: T = b · log₂(n + 1). Vaihtoehtojen kaksinkertaistaminen lisää aikaa vakiomäärän.
           </p>
           <button
             onClick={() => { setResults([]); setPhase("waiting"); }}

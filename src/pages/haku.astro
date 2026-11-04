@@ -1,20 +1,46 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import SearchBar from "../components/SearchBar.tsx";
+import { url } from "../lib/url";
 ---
-
-<Layout title="Haku" description="Hae AI-arkkitehtuurien ja UI/UX-käytäntöjen oppaista">
-  <section class="container-content" style="padding-block: var(--space-3xl);">
-    <h1 style="color: var(--color-brand);">Haku</h1>
-    <p style="color: var(--color-text-secondary); margin-bottom: var(--space-2xl);">
-      Hae koko sivuston sisällöstä — oppaista, käsitteistä ja esimerkeistä.
-    </p>
-
-    <div style="max-width: 600px;">
-      <SearchBar client:visible />
-    </div>
-  </section>
-</Layout>
-    </div>
-  </section>
+<Layout title="Haku" description="Hae AI-Koulun luvuista ja sanastosta" nav="haku">
+  <div class="chapter-head"><div class="wrap">
+    <h1>Haku</h1>
+    <p class="lead">Haku toimii selaimessa sivuston omasta indeksistä (Pagefind), eikä kysymyksiä lähetetä minnekään.</p>
+  </div></div>
+  <div class="wrap" style="padding-block: 32px 96px; display: flex; flex-direction: column; gap: 20px; max-width: 820px">
+    <form class="ask-form" id="search-form" role="search">
+      <label for="search-q" class="visually-hidden">Hakusana</label>
+      <input id="search-q" name="q" type="search" placeholder="esim. kompaktointi" autocomplete="off" />
+      <button class="btn btn-primary" type="submit">Hae</button>
+    </form>
+    <p id="search-status" role="status" class="muted"></p>
+    <ol id="search-results" class="glossary" style="grid-template-columns: 1fr"></ol>
+  </div>
+  <script define:vars={{ base: url("") }}>
+    window.__pagefindBase = base;
+  </script>
+  <script>
+    const base = (window as unknown as { __pagefindBase: string }).__pagefindBase;
+    const form = document.getElementById("search-form") as HTMLFormElement, input = document.getElementById("search-q") as HTMLInputElement;
+    const status = document.getElementById("search-status")!, list = document.getElementById("search-results")!;
+    let pf: { search: (q: string) => Promise<{ results: { data: () => Promise<{ url: string; meta: { title?: string }; excerpt: string }> }[] }> } | null = null;
+    const run = async (q: string) => {
+      list.innerHTML = "";
+      if (!q.trim()) { status.textContent = ""; return; }
+      status.textContent = "Haetaan…";
+      try { pf ??= await import(/* @vite-ignore */ `${base}pagefind/pagefind.js`); }
+      catch { status.textContent = "Hakuindeksiä ei löytynyt. Se luodaan buildin yhteydessä (npm run build)."; return; }
+      const r = await pf!.search(q), items = await Promise.all(r.results.slice(0, 12).map((x) => x.data()));
+      status.textContent = items.length ? `${r.results.length} osumaa haulla "${q}"` : `Ei osumia haulla "${q}".`;
+      for (const it of items) {
+        const li = document.createElement("li"), a = document.createElement("a"), p = document.createElement("p");
+        a.href = it.url; a.textContent = it.meta.title ?? it.url; a.style.fontWeight = "700";
+        p.innerHTML = it.excerpt; // Pagefind palauttaa otteen, jossa osumat on merkitty <mark>-elementeillä
+        p.className = "muted"; li.append(a, p); list.append(li);
+      }
+    };
+    form.addEventListener("submit", (e) => { e.preventDefault(); history.replaceState(null, "", `?q=${encodeURIComponent(input.value)}`); run(input.value); });
+    const q0 = new URLSearchParams(location.search).get("q");
+    if (q0) { input.value = q0; run(q0); }
+  </script>
 </Layout>

@@ -1,0 +1,6 @@
+---
+// Kaavio tai kuva kuvatekstin kanssa. `type` on kuvateksti.
+interface Props { type: string }
+const { type } = Astro.props;
+---
+<figure class="figure"><slot /><figcaption>Kaavio: {type}</figcaption></figure>

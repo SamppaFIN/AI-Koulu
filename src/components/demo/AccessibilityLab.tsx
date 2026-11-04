@@ -138,7 +138,7 @@ export default function AccessibilityLab() {
                 borderRadius: "6px",
                 border: "none",
                 background: "var(--color-brand)",
-                color: "white",
+                color: "var(--on-gold)",
                 fontWeight: 600,
                 cursor: "pointer",
                 /* outline: none — tahallinen a11y-virhe */

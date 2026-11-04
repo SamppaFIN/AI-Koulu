@@ -1,0 +1,8 @@
+---
+// Vertaus arkiseen asiaan. Otsikon voi antaa, oletus on "Vertaus".
+interface Props { title?: string }
+const raw = Astro.props.title ?? "Vertaus";
+// Vanhoissa luvuissa otsikon alussa on emoji; se jätetään pois
+const title = raw.replace(/^[\p{Extended_Pictographic}️\s]+/u, "");
+---
+<aside class="note note-analogy"><div class="note-body"><p class="note-label">{title}</p><slot /></div></aside>

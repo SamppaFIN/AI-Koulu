@@ -1,0 +1,87 @@
+---
+// Lukusivu molemmille osioille: otsikko, sisällysluettelo, MDX-sisältö, lähteet ja edellinen/seuraava.
+import Layout from "../../layouts/Layout.astro";
+import TechTag from "./TechTag.astro";
+import { render } from "astro:content";
+import { chapters, demosOf, refsOf, type Chapter, type Coll } from "../../lib/chapters";
+import { url } from "../../lib/url";
+import refs from "../../data/references.json";
+import quizzes from "../../data/quizzes.json";
+import Callout from "../mdx/Callout.astro";
+import AnalogyBox from "../mdx/AnalogyBox.astro";
+import WhyItMatters from "../mdx/WhyItMatters.astro";
+import Reference from "../mdx/Reference.astro";
+import Diagram from "../mdx/Diagram.astro";
+import TermTooltip from "../mdx/TermTooltip.astro";
+import TokenizerDemo from "../wrappers/TokenizerDemo.astro";
+import ContextDemo from "../wrappers/ContextDemo.astro";
+import RAGPlayground from "../wrappers/RAGPlayground.astro";
+import AgentSimulation from "../wrappers/AgentSimulation.astro";
+import MultimodalComparison from "../wrappers/MultimodalComparison.astro";
+import ChapterQuiz from "../wrappers/ChapterQuiz.astro";
+import RAGDiagram from "../wrappers/RAGDiagram.astro";
+import TransformerDiagram from "../wrappers/TransformerDiagram.astro";
+import AgentWorkflowDiagram from "../wrappers/AgentWorkflowDiagram.astro";
+import McpDiagram from "../wrappers/McpDiagram.astro";
+import CodingAgentDiagram from "../wrappers/CodingAgentDiagram.astro";
+import HicksLawGame from "../wrappers/HicksLawGame.astro";
+import ContrastTool from "../wrappers/ContrastTool.astro";
+import CLSDemo from "../wrappers/CLSDemo.astro";
+import AccessibilityLab from "../wrappers/AccessibilityLab.astro";
+import SkeletonStudio from "../wrappers/SkeletonStudio.astro";
+
+interface Props { chapter: Chapter; coll: Coll }
+const { chapter, coll } = Astro.props;
+const { Content, headings } = await render(chapter);
+const all = await chapters(coll);
+const i = all.findIndex((c) => c.id === chapter.id), prev = all[i - 1], next = all[i + 1];
+const path = `${coll}/${chapter.id}/`;
+const sources = refsOf(chapter).map((id) => (refs as { id: string; authors: string; title: string; year: number; venue: string; url: string }[]).find((r) => r.id === id)).filter(Boolean);
+const quizCount = (quizzes as { chapterSlug: string }[]).filter((q) => q.chapterSlug === chapter.id).length;
+const demos = demosOf(chapter);
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const partLabel = coll === "ai-architecture" ? `AI-arkkitehtuurit · ${chapter.data.section}` : "UI/UX-käytännöt";
+const components = { Callout, AnalogyBox, WhyItMatters, Reference, Diagram, TermTooltip, TokenizerDemo, ContextDemo, RAGPlayground, AgentSimulation, MultimodalComparison, ChapterQuiz, RAGDiagram, TransformerDiagram, AgentWorkflowDiagram, McpDiagram, CodingAgentDiagram, HicksLawGame, ContrastTool, CLSDemo, AccessibilityLab, SkeletonStudio };
+---
+<Layout title={chapter.data.title} description={chapter.data.description} nav={coll === "ai-architecture" ? "ai" : "ux"}>
+  <div class="chapter-head" data-chapter={path} data-title={`Luku ${chapter.data.order} · ${chapter.data.title}`} data-attn={`ch:${coll}/${chapter.id}`}>
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Murupolku">
+        <a href={url("")}>AI-Koulu</a><span aria-hidden="true">/</span><a href={url(`${coll}/`)}>{partLabel}</a><span aria-hidden="true">/</span><span aria-current="page">Luku {chapter.data.order}</span>
+      </nav>
+      <p class="eyebrow" style="color: var(--gold)">Luku {chapter.data.order}</p>
+      <h1>{chapter.data.title}</h1>
+      <p class="lead">{chapter.data.description}</p>
+      <div class="chip-row">
+        {coll === "ai-architecture" && <span class="chip">Tilanne 11/2026</span>}
+        {toc.filter((h) => h.depth === 2).length > 1 && <span class="chip">{toc.filter((h) => h.depth === 2).length} osaa</span>}
+        {demos.map((d) => <span class="chip chip-gold">Demo: {d}</span>)}
+        {quizCount > 0 && <span class="chip">Visa · {quizCount} kysymystä</span>}
+      </div>
+    </div>
+  </div>
+  <div class="wrap chapter-body">
+    {toc.length > 0 && (
+      <details class="toc-wrap" open>
+        <summary class="eyebrow">Tässä luvussa</summary>
+        <nav class="toc" aria-label="Luvun osat">
+          {toc.map((h) => <a href={`#${h.slug}`} class={h.depth === 3 ? "l3" : undefined}>{h.text}</a>)}
+        </nav>
+      </details>
+    )}
+    <article class="chapter-article">
+      <div class="mdx"><Content components={components} /></div>
+      {sources.length > 0 && (
+        <section class="sources" aria-labelledby="h-sources">
+          <h2 id="h-sources" style="font-size: 1.25rem; font-family: var(--font-body)">Lähteet</h2>
+          <ol>{sources.map((r) => <li>{r!.authors} {r!.year}. <a href={r!.url}>{r!.title}</a>. {r!.venue}.</li>)}</ol>
+        </section>
+      )}
+      <nav class="pager" aria-label="Luvusta toiseen">
+        {prev ? <a href={url(`${coll}/${prev.id}/`)}><small>Edellinen</small>Luku {prev.data.order} · {prev.data.title}</a> : <span></span>}
+        {next ? <a class="next" href={url(`${coll}/${next.id}/`)}><small>Seuraava</small>Luku {next.data.order} · {next.data.title}</a> : <a class="next" href={url(`${coll}/`)}><small>Osio valmis</small>Takaisin sisällykseen</a>}
+      </nav>
+      <p style="margin-top: 24px"><TechTag id="crew" label="insinöörit" /></p>
+    </article>
+  </div>
+</Layout>

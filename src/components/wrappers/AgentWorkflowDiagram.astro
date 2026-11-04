@@ -1,5 +1,17 @@
 ---
-import AgentWorkflowDiagram from "../diagrams/AgentWorkflowDiagram.tsx";
+import Flow from "../diagrams/Flow.astro";
 ---
-
-<AgentWorkflowDiagram client:load />
+<div data-attn="fig:AgentWorkflowDiagram">
+  <Flow
+    caption="Agenttisilmukka (ReAct-malli). Malli päättää seuraavan askeleen, sovellus suorittaa työkalun, ja tulos palautetaan mallille."
+    lanes={[
+      { steps: [
+        { title: "Tehtävä", text: "Käyttäjän pyyntö ja käytettävissä olevat työkalut", kind: "data" },
+        { title: "Päättely", text: "Malli päättää, tarvitaanko työkalua ja mitä" , kind: "model" },
+        { title: "Työkalukutsu", text: "Malli palauttaa työkalun nimen ja argumentit rakenteisena" },
+        { title: "Suoritus", text: "Sovellus ajaa työkalun, esimerkiksi haun tai API-kutsun", kind: "tool" },
+        { title: "Havainto", text: "Työkalun tulos lisätään kontekstiin", kind: "data" },
+      ], loop: "Silmukka palaa päättelyyn, kunnes malli antaa lopullisen vastauksen tai sovelluksen askel- tai kustannusraja täyttyy." },
+    ]}
+  />
+</div>

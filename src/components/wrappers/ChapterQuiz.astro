@@ -2,4 +2,4 @@
 import ChapterQuiz from "../demo/ChapterQuiz.tsx";
 ---
 
-<ChapterQuiz chapterSlug={Astro.props.chapterSlug} client:load />
+<div data-attn="quiz:ChapterQuiz"><ChapterQuiz chapterSlug={Astro.props.chapterSlug} client:visible /></div>
