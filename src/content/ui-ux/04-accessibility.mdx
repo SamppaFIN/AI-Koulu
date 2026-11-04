@@ -1,252 +1,102 @@
 ---
-title: "Saavutettavuus (A11y)"
-description: "WCAG 2.2, ARIA, ruudunlukijat ja kognitiivinen saavutettavuus."
+title: "Saavutettavuus"
+description: "WCAG 2.2:n rakenne ja uudet kriteerit, EU:n saavutettavuussäädökset, semanttinen HTML ja ARIA, näppäimistö ja fokus sekä automaattinen ja manuaalinen testaus."
 order: 4
 section: "Saavutettavuus"
-tags: ["a11y", "WCAG", "ARIA", "ruudunlukija", "saavutettavuus"]
+tags: ["a11y", "WCAG 2.2", "ARIA", "esteettömyysdirektiivi", "ruudunlukija"]
 published: true
 ---
 
-## 4.1 Standardit ja vaatimukset
+Saavutettavuus tarkoittaa, että palvelua voi käyttää myös näkö-, kuulo-, liikunta- tai kognitiivisen rajoitteen kanssa sekä apuvälineillä, kuten ruudunlukijalla, näppäimistöllä tai puheohjauksella. Tässä luvussa käsitellään vaatimukset, toteutus ja testaus.
 
-### <TermTooltip term="wcag">WCAG</TermTooltip> 2.2 AA/AAA
+## 4.1 WCAG 2.2
 
-WCAG (Web Content Accessibility Guidelines) on kansainvälinen standardi
-verkkosisällön saavutettavuudelle. **AA-taso** on lakisääteinen minimi
-useimmissa maissa (EU, USA, UK).
+<TermTooltip term="wcag">WCAG</TermTooltip> 2.2 tuli W3C:n suositukseksi 5.10.2023 <Reference id="wcag22-new" />. Ohjeisto on jaettu neljään periaatteeseen:
 
-| Periaate | Kuvaus | Esimerkkejä |
+| Periaate | Tarkoitus | Esimerkkejä |
 |---|---|---|
-| **Havaittava** | Sisältö on kaikkien aistittavissa | Tekstivastineet kuville, tekstitys videoille |
-| **Toiminnallinen** | Kaikki toiminnot on käytettävissä | Näppäimistönavigaatio, riittävä aika |
-| **Ymmärrettävä** | Sisältö ja käyttöliittymä on loogisia | Selkeä kieli, ennustettava toiminta |
-| **Toimintavarma** | Yhteensopiva apuvälineiden kanssa | Semanttinen HTML, <TermTooltip term="aria">ARIA</TermTooltip> |
+| Havaittava | Tieto on havaittavissa jollakin aistilla | Kuvan tekstivastine, videon tekstitys, riittävä kontrasti |
+| Hallittava | Kaikkia toimintoja voi käyttää | Näppäimistökäyttö, riittävä aika, ei kouristuksia aiheuttavaa vilkkumista |
+| Ymmärrettävä | Sisältö ja toiminta ovat ymmärrettäviä | Sivun kieli merkitty, ennustettava navigointi, virheiden selitykset |
+| Toimintavarma | Apuvälineet tulkitsevat sisällön oikein | Elementtien nimi, rooli ja arvo ohjelmallisesti saatavilla |
 
-### EN 301 549 (EU)
+Jokaisella onnistumiskriteerillä on taso A, AA tai AAA. Lainsäädäntö ja tämä sivusto käyttävät tasoa AA, joka sisältää A- ja AA-kriteerit.
 
-EU:n saavutettavuusdirektiivi — **pakollinen** julkisille verkkosivuille
-ja -palveluille EU-alueella.
+WCAG 2.2 lisäsi yhdeksän kriteeriä ja poisti vanhentuneen kriteerin 4.1.1 Parsing <Reference id="wcag22-new" />. Uusista A- ja AA-kriteereistä:
 
-### <TermTooltip term="screen-reader">Ruudunlukijat</TermTooltip>
-
-| Ruudunlukija | Alusta | Markkinaosuus |
+| Kriteeri | Taso | Vaatimus lyhyesti |
 |---|---|---|
-| **NVDA** | Windows | ~40% (ilmainen, avoin) |
-| **JAWS** | Windows | ~30% (maksullinen, vanhin) |
-| **VoiceOver** | macOS, iOS | ~20% (sisäänrakennettu) |
-| **TalkBack** | Android | ~10% (sisäänrakennettu) |
+| 2.4.11 Focus Not Obscured (Minimum) | AA | Kiinteä ylä- tai alapalkki ei saa peittää fokusoitua elementtiä kokonaan |
+| 2.5.7 Dragging Movements | AA | Raahaamalla tehtävän toiminnon voi tehdä myös yksittäisillä osoituksilla |
+| 2.5.8 Target Size (Minimum) | AA | Osoituskohde vähintään 24 × 24 CSS-pikseliä tai riittävä väli |
+| 3.2.6 Consistent Help | A | Jos ohjeet tai yhteystiedot toistuvat usealla sivulla, ne ovat samassa järjestyksessä muuhun sisältöön nähden |
+| 3.3.7 Redundant Entry | A | Samaa tietoa ei kysytä uudelleen samassa prosessissa |
+| 3.3.8 Accessible Authentication (Minimum) | AA | Kirjautuminen ei vaadi muistitehtävää ilman vaihtoehtoa |
 
-<Callout type="info">
-  **Testausvinkki:** Laita ruudunlukija päälle ja sulje silmäsi.
-  Pystytkö käyttämään sivustoa? Jos et, sinulla on saavutettavuusongelma.
-</Callout>
+## 4.2 Lainsäädäntö EU:ssa
 
-<AnalogyBox>
-  **Analogia:** Saavutettavuus on kuin rakennuksen esteettömyys.
-  - **Luiskat** (tekstitys) auttavat pyörätuolikäyttäjiä — ja myös
-    lastenvaunujen kanssa liikkuvia
-  - **Hissti** (näppäimistönavigaatio) auttaa pyörätuolissa — ja myös
-    kassien kanssa
-  - **Selkeät opasteet** (semanttinen HTML) auttavat näkövammaisia — ja
-    myös turisteja ja kiireisiä käyttäjiä
+- **Saavutettavuusdirektiivi** (EU) 2016/2102 koskee julkisen sektorin verkkosivustoja ja mobiilisovelluksia <Reference id="eu-wad" />.
+- **Esteettömyysdirektiivi** (European Accessibility Act, (EU) 2019/882) koskee tiettyjä tuotteita ja palveluja, muun muassa verkkokauppaa, pankkipalveluja, sähköisiä kirjoja, henkilöliikenteen palveluja, tietokoneita ja älypuhelimia <Reference id="eu-eaa" />. Sen vaatimuksia sovelletaan 28.6.2025 alkaen, ja palveluja tarjoavat mikroyritykset on rajattu palveluvaatimusten ulkopuolelle <Reference id="eu-eaa-text" />.
+- **EN 301 549** on eurooppalainen standardi, jonka avulla direktiivien vaatimusten täyttyminen osoitetaan. Sen versio 3.2.1 viittaa verkkosisällön osalta WCAG 2.1:n A- ja AA-tasoon ja sisältää lisäksi vaatimuksia, joita WCAG:ssa ei ole <Reference id="ec-en301549" />.
 
-  Kukaan ei rakenna portaita ilman luiskaa — älä tee samaa verkkosivullasi.
-</AnalogyBox>
+Standardi on siis eri asia kuin direktiivi: direktiivi velvoittaa, ja standardi kertoo, miten velvoitteen täyttymisen voi osoittaa.
 
-## 4.2 Tekninen saavutettavuus
+## 4.3 Yleisimmät virheet
 
-### Semanttinen HTML
+WebAIM analysoi vuosittain miljoonan suosituimman sivuston etusivut automaattisella työkalulla. Helmikuun 2026 aineistossa 95,9 %:lla etusivuista oli havaittavia WCAG 2 -virheitä, keskimäärin 56,1 virhettä sivua kohden <Reference id="webaim-million" />:
 
-```html
-<!-- Huono: div-pohjainen -->
-<div class="button" onclick="submit()">Lähetä</div>
-
-<!-- Hyvä: natiivi -->
-<button type="submit">Lähetä</button>
-```
-
-Natiivit elementit tulevat sisäänrakennetun saavutettavuuden kanssa —
-älä keksi pyörää uudelleen.
-
-### ARIA-attribuutit
-
-ARIA (Accessible Rich Internet Applications) korjaa semantiikan, kun
-natiivia elementtiä ei voi käyttää:
-
-```html
-<div
-  role="button"
-  tabindex="0"
-  aria-label="Sulje ikkuna"
-  onkeydown="if(event.key==='Enter') this.click()"
->
-  ×
-</div>
-```
-
-**ARIA-sääntö:** "No ARIA is better than bad ARIA." — Käytä vain kun
-natiivi elementti ei riitä.
-
-### Otsikkohierarkia ja maamerkit
-
-```html
-<header role="banner">
-<nav role="navigation" aria-label="Päänavigaatio">
-<main role="main">
-<aside role="complementary">
-<footer role="contentinfo">
-```
-
-### Väri ei ainoana informaationa
-
-- Älä koskaan käytä *pelkkää* väriä kertomaan jotain
-- Lisää aina teksti, ikoni tai kuvio värin rinnalle
-- Esim: virheilmoitus = punainen reunus + "Virhe" teksti + ⚠️ ikoni
-
-### ARIA-anti-patternit — älä tee näin
-
-❌ **Div-painike ilman roolia**
-```html
-<!-- ÄLÄ: ruudunlukija ei tunnista tätä painikkeeksi -->
-<div onclick="submit()">Lähetä</div>
-
-<!-- TEE: natiivi painike -->
-<button type="submit">Lähetä</button>
-```
-
-❌ **Näkymätön fokus**
-```css
-/* ÄLÄ: fokus katoaa, näppäimistökäyttäjä eksyy */
-*:focus { outline: none; }
-
-/* TEE: selkeä fokusindikaattori */
-*:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
-```
-
-❌ **Ikoni ilman tekstivastinetta**
-```html
-<!-- ÄLÄ: ruudunlukija sanoo "some image" -->
-<img src="check.svg" />
-
-<!-- TEE: alt-teksti kertoo merkityksen -->
-<img src="check.svg" alt="Vahvistettu" />
-<!-- TAI: jos ikoni on koristeellinen -->
-<img src="decoration.svg" alt="" role="presentation" />
-```
-
-### Näppäimistönavigaation kulku
-
-Tyypillinen näppäimistönavigaatio modaalissa:
-
-```
-1. TAB → Avaa modal (fokus menee modalille)
-2. TAB → Seuraava kenttä / painike
-3. SHIFT+TAB → Edellinen kenttä / painike
-4. ENTER → Valitse / lähetä
-5. ESC → Sulje modal (palaa edelliseen fokukseen)
-6. TAB → Kun modal on auki, fokus pysyy modalin sisällä (focus trap)
-```
-
-### Tekstin skaalautuvuus
-
-Sivun pitää toimia 200% zoomilla — ilman vaakasuoraa skrollausta.
-Testaa zoomaamalla selaimessa.
-
-## 4.3 Kognitiivinen saavutettavuus
-
-### Selkeä kieli
-
-- Vältä ammattislangia, käytä arkikieltä
-- Lyhyet virkkeet (max 20 sanaa)
-- Yksi idea per kappale
-
-### Johdonmukaisuus
-
-Sama toiminto → sama ulkoasu. "Osta"-nappi on aina sininen, ei joskus vihreä.
-
-### Virheiden ehkäisy
-
-"Oletko varma, että haluat poistaa?" on hyvä. "Peruuta"-painike ennen
-kuin on liian myöhäistä on vielä parempi.
-
-### Aikarajojen joustavuus
-
-Jos sivulla on aikaraja (istunto, tarjous), anna käyttäjälle:
-1. mahdollisuus pidentää aikaa
-2. varoitus ennen umpeutumista
-3. tieto siitä, että aika on loppumassa
-
-## 4.4 Saavutettavuuden testaus
-
-### Automaattiset työkalut
-
-| Työkalu | Käyttötarkoitus |
+| Virhe | Osuus etusivuista |
 |---|---|
-| **axe-core** | Parhaat säännöt, Playwright/CI-integraatio |
-| **Lighthouse** | Nopea yleiskatsaus, osana Chrome DevToolsia |
-| **WAVE** | Visuaalinen, näyttää ongelmat suoraan sivulla |
+| Matala tekstin kontrasti | 83,9 % |
+| Kuvalta puuttuu tekstivastine | 53,1 % |
+| Lomakekentältä puuttuu nimi | 51,0 % |
+| Tyhjä linkki | 46,3 % |
+| Tyhjä painike | 30,6 % |
+| Sivun kieli merkitsemättä | 13,5 % |
 
-### Manuaalinen testaus
+Kaikki kuusi korjataan HTML:llä ja CSS:llä ilman erityistekniikkaa.
 
-Automaattityökalut löytävät ~30% ongelmista. Loput vaativat ihmistä:
-- Navigoi pelkällä näppäimistöllä (TAB, Enter, Escape, nuolet)
-- Lue ruudunlukijalla (NVDA, VoiceOver)
-- Testaa zoomaamalla 200%
-- Testaa kontrastit fyysisellä etäisyydellä
+## 4.4 Semanttinen HTML ja ARIA
 
-#### Ruudunlukijatestaus NVDA:lla (Windows)
+Natiivi HTML-elementti tuo mukanaan roolin, näppäimistökäytön ja tilan. `<button>` on fokusoitava, aktivoituu Enterillä ja välilyönnillä ja kertoo ruudunlukijalle olevansa painike. `<div onclick>` ei tee mitään näistä.
 
-1. **Lataa NVDA:** https://www.nvaccess.org/ — ilmainen, avoin lähdekoodi
-2. **Käynnistä:** Asenna ja käynnistä NVDA (oletuspikanäppäin: CTRL+ALT+N)
-3. **Testaa:** Sulje silmäsi ja navigoi sivua TAB-näppäimellä
-   - Kuuletko kaikki elementit? Tiedätkö missä olet?
-   - Ymmärrätkö mitä kenttään pitää kirjoittaa?
-   - Toimiiko kaikki näppäimistöllä?
-4. **Lopeta:** NVDA + Q lopettaa
+```html
+<!-- Huono: ei fokusta, ei näppäimistöä, ei roolia -->
+<div class="btn" onclick="laheta()">Lähetä</div>
 
-> **Tavoiteltu lopputulos:** Sivun pitäisi olla käytettävissä täysin ilman hiirtä
-> ja ilman ruutua — pelkällä näppäimistöllä ja kuulokkeilla.
-
-### Saavutettavuuden tarkistuslista
-
-Ennen julkaisua, käy tämä läpi:
-
-- [ ] **Näppäimistö:** TAB kiertää koko sivun loogisessa järjestyksessä
-- [ ] **Fokus:** Jokaisella elementillä on näkyvä fokus-indikaattori
-- [ ] **Ruudunlukija:** NVDA/VoiceOver lukee kaikki elementit oikein
-- [ ] **<TermTooltip term="contrast">Kontrasti</TermTooltip>:** WCAG AA 4.5:1 normaalille tekstille, 3:1 suurelle
-- [ ] **Zoomaa 200%:** Sivu toimii ilman vaakasuoraa skrollausta
-- [ ] **Väri:** Väriä ei käytetä ainoana informaation lähteenä
-- [ ] **Alt-tekstit:** Kaikilla kuvilla on alt-teksti (tai role="presentation")
-- [ ] **Otsikot:** Otsikkohierarkia on looginen (h1 → h2 → h3, ei hypyillä)
-- [ ] **Lomakkeet:** Kaikilla kentillä on label
-
-### CI-putki
-
-```yaml
-# Playwright + axe-core
-- name: Accessibility tests
-  run: npx playwright test --grep @a11y
+<!-- Hyvä -->
+<button type="submit">Lähetä</button>
 ```
 
-### Kokeile itse: Saavutettavuuslabra
+ARIA lisää rooleja ja tiloja silloin, kun HTML:ssä ei ole sopivaa elementtiä, esimerkiksi välilehdille. ARIA:n käytön ensimmäinen sääntö on: jos natiivi HTML-elementti tai -attribuutti sisältää jo tarvittavan semantiikan ja toiminnan, käytä sitä <Reference id="using-aria" />. ARIA muuttaa vain sen, mitä apuväline kuulee, ei sitä, miten elementti toimii: `role="button"` ei tee elementistä fokusoitavaa eikä lisää Enter-käsittelyä.
+
+Sivun rakenne näkyy apuvälineille maamerkkeinä ja otsikoina. Käytä elementtejä `<header>`, `<nav>`, `<main>` ja `<footer>` sekä otsikkotasoja järjestyksessä, jolloin ruudunlukijan käyttäjä voi hypätä suoraan haluamaansa kohtaan.
+
+## 4.5 Näppäimistö ja fokus
+
+- **Kaikki toiminnot näppäimistöllä** (2.1.1, A). Testaa sivu pelkillä Tab-, Shift+Tab-, Enter-, välilyönti-, nuoli- ja Esc-näppäimillä.
+- **Näkyvä fokus** (2.4.7, AA). Älä poista fokuskehystä (`outline: none`) ilman korvaavaa tyyliä. `:focus-visible` näyttää kehyksen näppäimistökäytössä mutta yleensä ei hiirellä klikatessa.
+- **Fokus ei jää piiloon** (2.4.11, AA). Kiinteä yläpalkki voi peittää fokusoidun elementin. `scroll-padding-top` jättää vieritettäessä tilaa palkille.
+- **Looginen järjestys** (2.4.3, A). Fokus kulkee samassa järjestyksessä kuin sisältö luetaan. Positiivinen `tabindex`-arvo rikkoo järjestyksen.
 
 <AccessibilityLab />
 
-<WhyItMatters>
-  **Miksi tällä on väliä?** Saavutettavuus ei ole "nice to have" — se on
-  laillinen vaatimus (EU:n saavutettavuusdirektiivi) ja moraalinen velvollisuus.
-  15-20% väestöstä tarvitsee saavutettavuutta. Ja jokainen meistä on joskus
-  tilanteessa, jossa saavutettavuus auttaa: kirkas aurinko (kontrasti),
-  meluisa ympäristö (tekstitys), kipsissä oleva käsi (näppäimistönavigaatio).
-</WhyItMatters>
+## 4.6 Testaus
 
-<Reference id="w3c2023" />
-<Reference id="norman2013" />
+**Automaattinen testaus**, kuten axe-core, Lighthouse ja WAVE, löytää koneellisesti tunnistettavat virheet, esimerkiksi puuttuvat nimet ja matalan kontrastin. Se ei voi arvioida, onko tekstivastine osuva tai onko fokusjärjestys järkevä. Tämä sivusto ajaa axe-coren jokaisella sivulla sekä desktop- että mobiilinäkymässä ennen julkaisua.
 
----
+**Manuaalinen testaus** täydentää automaattista:
 
-**Seuraavaksi:** [Suorituskyky ja Web Vitals](/AI-Koulu/ui-ux/05-performance/)
+1. Käytä sivua pelkällä näppäimistöllä.
+2. Kuuntele sivu ruudunlukijalla: NVDA Windowsissa, VoiceOver macOS:ssä ja iOS:ssä tai TalkBack Androidissa.
+3. Suurenna teksti 200 %:iin ja kavenna ikkuna 320 CSS-pikseliin (1.4.4 ja 1.4.10).
+4. Ota käyttöön käyttöjärjestelmän "vähennä liikettä" -asetus ja suuri kontrasti.
 
+## Sudenkuopat
+
+- **ARIA korjauksena.** `role="button"` divissä on yhä div ilman näppäimistökäyttöä. Käytä `<button>`-elementtiä.
+- **Fokuskehyksen poisto.** Näppäimistön käyttäjä ei näe, missä hän on.
+- **Automaattinen testi ainoana.** Puhdas axe-raportti ei tarkoita saavutettavaa sivua.
+- **Saavutettavuus lopussa.** Valmiin komponenttikirjaston korjaaminen on kalliimpaa kuin oikein rakentaminen alusta.
 
 <ChapterQuiz chapterSlug="04-accessibility" />

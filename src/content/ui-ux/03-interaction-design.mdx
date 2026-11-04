@@ -1,155 +1,101 @@
 ---
-title: "Vuorovaikutussuunnittelu (IxD)"
-description: "Navigaatio, lomakkeet, data ja notifikaatiot — käyttäjän toimintojen suunnittelu."
+title: "Vuorovaikutussuunnittelu"
+description: "Normanin käsitteet, Nielsenin heuristiikat, Hickin ja Fittsin lait, vasteaikojen rajat sekä lomakkeet, ilmoitukset ja modaalit WCAG 2.2:n vaatimuksin."
 order: 3
 section: "Vuorovaikutussuunnittelu"
-tags: ["IxD", "navigaatio", "lomakkeet", "notifikaatiot"]
+tags: ["IxD", "Fittsin laki", "Hickin laki", "heuristiikat", "lomakkeet"]
 published: true
 ---
 
-## 3.1 Navigaatiomallit
+Vuorovaikutussuunnittelu käsittelee sitä, mitä käyttäjä *tekee*: miten hän löytää toiminnon, käynnistää sen, saa palautteen ja korjaa virheen. Tässä luvussa on käsitteet, joilla suunnittelua voi perustella, ja kaksi lakia, joilla sitä voi laskea.
 
-Navigaatio on käyttäjän kompassi — ilman sitä käyttäjä eksyy.
+## 3.1 Normanin käsitteet
 
-### Perinteinen navigaatio vs. haku-keskeinen
+Norman kuvaa vuorovaikutuksen muutamalla käsitteellä <Reference id="norman2013" />:
 
-| Malli | Milloin sopii | Esimerkki |
-|---|---|---|
-| **Ylävalikko** | Harva, hierarkkinen sisältö | Uutissivusto, verkkokauppa |
-| **Sivupalkki** | Syvä, monitasoinen sisältö | Dokumentaatio, työkalut |
-| **Haku-keskeinen** | Suuri määrä sisältöä | Tietokanta, API-dokkarit |
-| **Pohja-navigaatio** | Mobiili, 3-5 näkymää | Sovellukset, some |
+- **Käyttömahdollisuus** (affordance): mitä esineellä tai elementillä voi tehdä.
+- **Merkki** (signifier): mistä käyttäjä näkee, mitä voi tehdä. Painikkeen muoto ja teksti ovat merkkejä.
+- **Vastaavuus** (mapping): säätimen ja sen vaikutuksen suhde, esimerkiksi liukusäädin, joka liikkuu samaan suuntaan kuin arvo kasvaa.
+- **Palaute** (feedback): järjestelmä kertoo heti, että toiminto vastaanotettiin ja mitä tapahtui.
+- **Rajoitteet** (constraints): virheelliset toiminnot estetään etukäteen, esimerkiksi päivämäärävalitsin, jossa ei voi valita mennyttä päivää.
 
-### Megamenut
+## 3.2 Nielsenin heuristiikat
 
-Leveät, monitasoiset valikot — tehokkaita mutta vaativat huolellista
-saavutettavuustestausta. Varmista: näppäimistö saavuttaa kaikki linkit,
-valikko sulkeutuu Escape-näppäimellä.
+Nielsenin kymmenen heuristiikkaa vuodelta 1994 ovat yleisin tarkistuslista asiantuntija-arvioon <Reference id="nielsen1994" />:
 
-### Leivänmurut ja progressiivinen paljastus
+1. Järjestelmän tilan näkyvyys
+2. Järjestelmän ja todellisen maailman vastaavuus
+3. Käyttäjän hallinta ja vapaus
+4. Johdonmukaisuus ja standardit
+5. Virheiden ennaltaehkäisy
+6. Tunnistaminen mieluummin kuin muistaminen
+7. Joustavuus ja tehokkuus
+8. Esteettinen ja minimalistinen suunnittelu
+9. Virheiden tunnistamisen, ymmärtämisen ja korjaamisen tukeminen
+10. Ohjeet ja dokumentaatio
 
-```html
-<nav aria-label="Leivänmurut">
-  <ol>
-    <li><a href="/">Etusivu</a></li>
-    <li><a href="/oppaat">Oppaat</a></li>
-    <li aria-current="page">RAG-arkkitehtuurit</li>
-  </ol>
-</nav>
-```
+Heuristinen arvio löytää ilmeisiä ongelmia nopeasti, mutta se ei korvaa testiä oikeilla käyttäjillä (luku 1).
 
-<AnalogyBox>
-  **Analogia:** Navigaatio on kuin kyltit kaupungissa.
-  - **Ylävalikko:** pääväylät (valtatie 4, valtatie 5)
-  - **Leivänmurut:** "Olet täällä" -kartta
-  - **Haku:** kysy paikalliselta (Google Maps)
-  - **Pohja-navigaatio:** metrokartta — 5 linjaa, helppo muistaa
+## 3.3 Hickin ja Fittsin lait
 
-  Hyvä navigaatio ei vaadi karttaa — tiedät aina missä olet ja miten pääset
-  minne haluat.
-</AnalogyBox>
+**Hickin laki** kuvaa, miten valinta-aika kasvaa vaihtoehtojen määrän *n* mukana. Koska aika kasvaa logaritmisesti, vaihtoehtojen kaksinkertaistaminen lisää aikaa vakiomäärän eikä kaksinkertaista sitä <Reference id="hick1952" />:
 
-### Kokeile itse: Hickin laki -peli
+<div class="formula">T = b · log₂(n + 1)</div>
+
+Hickin kokeissa koehenkilöt tunsivat vaihtoehdot ja reagoivat niihin. Jos käyttäjän pitää ensin lukea vaihtoehdot yksi kerrallaan, myös lukemiseen kuluu aikaa jokaista vaihtoehtoa kohden, eikä logaritminen malli enää riitä. Pitkä valikko kannattaa siksi ryhmitellä ja järjestää ennustettavasti, esimerkiksi aakkosjärjestykseen.
 
 <HicksLawGame />
 
-## 3.2 Lomakkeet ja datan syöttö
+**Fittsin laki** kuvaa osoitusliikkeen keston, kun kohteen etäisyys on *D* ja leveys liikkeen suunnassa *W*. Yleisin muoto on MacKenzien Shannon-muotoilu <Reference id="fitts1954" /> <Reference id="mackenzie1992" />:
 
-### Yksikenttäiset lomakkeet
+<div class="formula">MT = a + b · log₂(D / W + 1)</div>
 
-Yksi kenttä kerrallaan vähentää kognitiivista kuormaa — käyttäjä keskittyy
-yhteen asiaan. Toimii erityisesti mobiilissa.
+Logaritmin argumentti on vaikeusindeksi biteinä. Seuraukset: suuri ja lähellä oleva kohde on nopea osua, ja näytön reunalla olevalla kohteella on hiirellä käytännössä ääretön leveys, koska osoitin pysähtyy reunaan. Kosketusnäytöllä pieni kohde lisää virheitä. WCAG 2.2 vaatii AA-tasolla, että osoituskohde on vähintään 24 × 24 CSS-pikseliä tai että pienet kohteet ovat riittävän kaukana toisistaan <Reference id="wcag-target-size" />.
 
-### Inline-validointi
+## 3.4 Vasteajat
 
-```html
-<input
-  type="email"
-  aria-describedby="email-error"
-  aria-invalid="false"
-/>
-<span id="email-error" role="alert">
-  Tarkista sähköpostiosoite
-</span>
-```
+Nielsen kokosi kolme rajaa, jotka perustuvat Millerin (1968) ja Cardin ym. (1991) tutkimuksiin <Reference id="nielsen1993" />:
 
-- Validointi tapahtuu *kun kenttä menettää fokuksen*, ei ennen
-- Virheviesti on selkeä ja toiminnallinen: "Syötä vähintään 8 merkkiä"
-- Onnistunut validointi näytetään vihreänä (ärlä luota pelkkään väriin)
-
-### Virhetilat ja palautuminen
-
-| Tila | UI-ratkaisu |
-|---|---|
-| **Tyhjä kenttä** | Placeholder + label |
-| **Virheellinen** | Punainen reunus + selite + korjausehdotus |
-| **Onnistunut** | Vihreä reunus + vahvistus |
-| **Lataus** | Spinneri + "Tallennetaan..." |
-
-### Wizard-mallit monimutkaisille lomakkeille
-
-1/4 → 2/4 → 3/4 → 4/4
-
-Näytä edistyminen, salli palaaminen taaksepäin, älä tyhjennä kenttiä
-jos käyttäjä palaa edelliseen vaiheeseen.
-
-## 3.3 Data ja tietonäkymät
-
-### Taulukot
-
-```html
-<table role="grid">
-  <caption>Asiakkaat ja tilaukset</caption>
-  <thead>
-    <tr>
-      <th scope="col" aria-sort="ascending">Nimi</th>
-      <th scope="col">Tilauksia</th>
-    </tr>
-  </thead>
-  <tbody><!-- ... --></tbody>
-</table>
-```
-
-### Dashboardit
-
-- Oikea visualisointi oikeaan dataan: aikasarjat → viivakaavio, osuudet → piirakka
-- Progressiivinen paljastus: aloita tiivistelmällä, poraudu yksityiskohtiin
-- Tyhjät tilat: "Ei dataa vielä" → "Lisää ensimmäinen asiakas" → ohjaus
-
-## 3.4 Notifikaatiot ja palautejärjestelmät
-
-### Toastit, bannerit, modaalit
-
-| Komponentti | Milloin | Huomioitavaa |
+| Raja | Kokemus | Seuraus suunnittelulle |
 |---|---|---|
-| **Toast** | Lyhyt, ei-kriittinen tieto | Häviää automaattisesti, ei keskeytä |
-| **Banneri** | Tärkeä, koko sivua koskeva | Voi vaatia toimintaa ("Hyväksy evästeet") |
-| **Modaali** | Kriittinen, keskeyttävä | Estä taustan vuorovaikutus, sulje Esc |
+| 0,1 s | Toiminto tuntuu välittömältä | Riittää näyttää tulos |
+| 1 s | Ajatus ei katkea, vaikka viive huomataan | Erillistä palautetta ei yleensä tarvita |
+| 10 s | Huomio pysyy vielä tehtävässä | Tätä pidemmissä viiveissä näytetään, milloin työ valmistuu, jotta käyttäjä voi tehdä muuta sillä välin |
 
-### Push-notifikaatiot
+Kielimallin vastaus kestää usein sekunteja (luku 12 AI-osiossa). Suoratoisto pitää ensimmäisen palautteen ensimmäisen sekunnin sisällä, vaikka koko vastaus kestäisi kauemmin.
 
-Ajoitus ja frekvenssi ovat kaikki kaikessa: liian monet → käyttäjä poistaa
-käyttöoikeudet. Personoi: "Maanantaisin uudet artikkelit" vs. "Tässä 5 uutista tänään".
+## 3.5 Lomakkeet
 
-### Järjestelmän tilan kommunikointi
+WCAG 2.2:n lomakevaatimuksista tärkeimmät <Reference id="w3c2023" />:
 
-Sama sääntö kuin AI-järjestelmissä: **käyttäjän pitää tietää mitä tapahtuu**.
-"Lähetetään..." "Tallennettu." "Virhe: yhteys katkesi, yritetään uudelleen..."
+| Kriteeri | Taso | Vaatimus |
+|---|---|---|
+| 3.3.1 Error Identification | A | Virheellinen kenttä tunnistetaan ja virhe kuvataan tekstinä |
+| 3.3.2 Labels or Instructions | A | Jokaisella kentällä on nimi tai ohje |
+| 3.3.3 Error Suggestion | AA | Jos korjaus tiedetään, se ehdotetaan |
+| 3.3.7 Redundant Entry | A | Samassa prosessissa jo annettua tietoa ei kysytä uudelleen, vaan se täytetään valmiiksi tai on valittavissa |
+| 3.3.8 Accessible Authentication (Minimum) | AA | Kirjautuminen ei vaadi muistitehtävää, kuten salasanan muistamista, ilman vaihtoehtoa. Salasanan liittäminen ja salasanojen hallintaohjelma sallitaan |
 
-<WhyItMatters>
-  **Miksi tällä on väliä?** Vuorovaikutussuunnittelu on sitä, mitä käyttäjä
-  *tekee* — ei sitä, miltä se *näyttää*. Hyvä IxD tuntuu luonnolliselta:
-  käyttäjä tietää intuitiivisesti mitä tehdä, saa palautetta jokaisesta
-  toiminnosta, ja osaa palautua virheistä. Huono IxD saa käyttäjän tuntemaan
-  itsensä tyhmäksi — ja se on suunnittelijan vika, ei käyttäjän.
-</WhyItMatters>
+Kaksi viimeistä ovat uusia WCAG 2.2:ssa <Reference id="wcag22-new" />. Toteutuksessa kentän nimi kuuluu `<label>`-elementtiin. Paikkamerkki (placeholder) katoaa kirjoitettaessa eikä siksi korvaa nimeä.
 
-<Reference id="norman2013" />
-<Reference id="nielsen2012" />
+```html
+<label for="email">Sähköposti</label>
+<input id="email" type="email" autocomplete="email"
+       aria-invalid="true" aria-describedby="email-virhe">
+<p id="email-virhe">Osoitteesta puuttuu @-merkki.</p>
+```
 
----
+## 3.6 Ilmoitukset ja modaalit
 
-**Seuraavaksi:** [Saavutettavuus](/AI-Koulu/ui-ux/04-accessibility/)
+- **Tilaviesti** (esimerkiksi "Tallennettu") ei siirrä fokusta, mutta ruudunlukijan pitää ilmoittaa se. WCAG 4.1.3 Status Messages (AA) vaatii tämän, ja se toteutetaan esimerkiksi `role="status"`-alueella <Reference id="w3c2023" />.
+- **Itsestään katoava ilmoitus** ei saa olla ainoa paikka, jossa tärkeä tieto on: käyttäjä voi olla hidas lukija tai katsoa muualle. Virheet jäävät näkyviin, kunnes ne on korjattu.
+- **Modaali** keskeyttää työn, joten se on varattu päätöksille, joita ilman ei voi jatkaa. `<dialog>`-elementti ja `showModal()`-metodi tekevät muun sivun passiiviseksi ja sulkevat ikkunan Esc-näppäimellä ilman omaa koodia <Reference id="mdn-dialog" />. Kun ikkuna suljetaan, fokus palautetaan elementtiin, josta se avattiin.
 
+## Sudenkuopat
+
+- **Ei palautetta.** Painike, joka ei reagoi heti, painetaan uudelleen. Näytä tila alle 0,1 sekunnissa.
+- **Paikkamerkki nimen sijaan.** Nimi katoaa, kun käyttäjä alkaa kirjoittaa.
+- **Pienet kosketuskohteet vierekkäin.** Tarkista 24 × 24 px tai riittävä väli.
+- **Modaali ilmoitukselle.** Ilmoitus, joka ei vaadi päätöstä, ei saa estää työtä.
 
 <ChapterQuiz chapterSlug="03-interaction-design" />

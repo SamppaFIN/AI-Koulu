@@ -1,0 +1,76 @@
+---
+title: "RAG"
+description: "Haku ennen vastausta: pilkkominen, upotukset, hybridihaku, uudelleenjärjestys, arviointi ja tavallisimmat vikatilat."
+order: 5
+section: "Rakennusmallit"
+part: 2
+tags: ["RAG", "upotus", "vektorihaku", "BM25", "uudelleenjärjestys", "haku"]
+---
+
+<TermTooltip term="rag">RAG</TermTooltip> (Retrieval-Augmented Generation) yhdistää haun ja tekstin tuottamisen: ennen vastausta haetaan aiheeseen liittyvät tekstinpalat ja annetaan ne mallille kontekstissa <Reference id="lewis2020" />. Malli saa näin käyttöönsä tietoa, jota sen koulutusaineistossa ei ole, kuten yrityksen omat dokumentit tai koulutuksen rajapäivän jälkeiset asiat. Lisäksi vastaukseen voi liittää lähteet.
+
+## 5.1 Miksi hakea, kun konteksti on miljoonan tokenin kokoinen
+
+Koko aineiston voi joskus lähettää kontekstissa (luku 3). Haku on silti usein parempi:
+
+- **Kustannus ja viive:** jokainen kutsu maksaa syötetokenien mukaan (luku 2), joten tuhansien sivujen lähettäminen jokaisen kysymyksen mukana on kallista.
+- **Laatu:** pitkän kontekstin keskelle jäävää tietoa hyödynnetään heikommin kuin alussa ja lopussa olevaa <Reference id="liu2023" />.
+- **Ajantasaisuus ja oikeudet:** indeksin voi päivittää dokumentti kerrallaan, ja haun voi rajata siihen, mitä käyttäjä saa nähdä.
+
+## 5.2 Indeksointi
+
+<RAGDiagram />
+
+**Pilkkominen.** Dokumentit jaetaan paloiksi (chunk). Yksinkertaisin tapa on kiinteä pituus ja pieni päällekkäisyys, jotta palan rajalle osuva lause ei katkea kokonaan. Rakenteen mukainen pilkkominen otsikoiden ja kappaleiden kohdalta pitää yhteen kuuluvat asiat samassa palassa. Palan koko on kompromissi: liian pieni pala menettää asiayhteyden, ja liian suuri pala laimentaa osuman.
+
+**Upotus.** Upotusmalli muuttaa jokaisen palan vektoriksi, jossa merkitykseltään samankaltaiset tekstit ovat lähellä toisiaan. Samankaltaisuutta mitataan tavallisesti kosinisamankaltaisuudella:
+
+<div class="formula">cos(a, b) = (a · b) / (‖a‖ · ‖b‖)</div>
+
+**Indeksi.** Lähimpien naapurien tarkka haku käy läpi kaikki vektorit, mikä on suurella aineistolla hidasta. Vektoritietokannat käyttävät likimääräistä hakua, esimerkiksi HNSW-graafia, jossa haku etenee kerroksittain lähimpiä naapureita pitkin <Reference id="malkov2018" />. Sama toiminto löytyy sekä erillisistä vektoritietokannoista että tavallisten tietokantojen laajennuksista.
+
+## 5.3 Haku
+
+- **Tiheä haku** vertaa kysymyksen ja palojen upotuksia. Esimerkiksi DPR opettaa kysymyksille ja dokumenteille omat enkooderit, jotka tuottavat vektorit samaan avaruuteen <Reference id="karpukhin2020" />. Tiheä haku löytää merkitykseltään samankaltaisen tekstin, vaikka sanat olisivat eri.
+- **Harva haku** (esimerkiksi BM25) pisteyttää palat yhteisten sanojen perusteella <Reference id="robertson2009" />. Se löytää tarkat termit, kuten tuotekoodit ja nimet, joita upotus voi hukata.
+- **Hybridihaku** yhdistää molemmat. Tulosjoukot voi yhdistää esimerkiksi sijoituksiin perustuvalla RRF-menetelmällä, joka ei vaadi pisteiden skaalaamista samaan asteikkoon <Reference id="cormack2009" />.
+- **Uudelleenjärjestys** pisteyttää haun ehdokkaat uudelleen tarkemmalla mallilla, joka lukee kysymyksen ja palan yhdessä (cross-encoder) <Reference id="nogueira2019" />. Se on hitaampi, joten sitä käytetään vain kymmeniin ehdokkaisiin.
+
+**Kontekstuaalinen haku.** Yksittäinen pala menettää usein asiayhteytensä: lause "liikevaihto kasvoi 3 %" ei kerro, minkä yrityksen tai minkä vuoden luvusta on kyse. Anthropicin menetelmässä kielimalli kirjoittaa jokaiselle palalle lyhyen kuvauksen sen paikasta dokumentissa, ja kuvaus lisätään palan alkuun ennen upotusta ja BM25-indeksointia. Julkaistuissa kokeissa 20 parhaan palan joukosta puuttuvien osumien osuus pieneni 35 % kontekstuaalisilla upotuksilla, 49 %, kun mukana oli myös kontekstuaalinen BM25, ja 67 %, kun lisäksi käytettiin uudelleenjärjestystä <Reference id="anthropic-contextual-retrieval" />.
+
+## 5.4 Vastauksen muodostaminen
+
+Haetut palat lisätään kehotteeseen ohjeen kanssa: vastaa vain annetun aineiston perusteella, kerro lähde ja sano, jos vastausta ei löydy. Lähdeviittaus tekee vastauksesta tarkistettavan. Jos aineistoa ei löydy, rehellinen "en löydä tätä aineistosta" on parempi kuin uskottava arvaus.
+
+<RAGPlayground />
+
+Leikkikenttä on havainnollistus: sen dokumentit ja haku ovat yksinkertaistettuja, eikä se käytä oikeaa upotusmallia.
+
+## 5.5 Arviointi
+
+Haku ja vastaus arvioidaan erikseen, koska virhe voi olla kummassa tahansa.
+
+| Vaihe | Mittari | Mitä se kertoo |
+|---|---|---|
+| Haku | Recall@k | Löytyikö oikea pala k:n ensimmäisen joukosta |
+| Haku | MRR | Kuinka korkealla ensimmäinen oikea pala on |
+| Vastaus | Uskollisuus (faithfulness) | Perustuuko vastaus haettuihin paloihin |
+| Vastaus | Relevanssi | Vastaako vastaus kysymykseen |
+
+Vastauksen mittarit voi laskea automaattisesti kielimallin avulla, esimerkiksi RAGAS-kehyksellä <Reference id="es2023" />. Automaattinen arvio on kuitenkin itsekin mittari, jonka luotettavuus tarkistetaan vertaamalla sitä ihmisen arvioihin (luku 11).
+
+## 5.6 Vikatilat
+
+| Oire | Todennäköinen syy | Korjaus |
+|---|---|---|
+| Oikea tieto on aineistossa, mutta vastaus on väärä | Haku ei löytänyt palaa | Mittaa recall@k; kokeile hybridihakua, kontekstuaalisia paloja tai uudelleenjärjestystä |
+| Vastaus yhdistelee eri asiakirjoja väärin | Palat ovat menettäneet asiayhteytensä | Rakenteen mukainen pilkkominen, metatiedot, kontekstuaalinen haku |
+| Vastaus on vanhentunut | Indeksi on vanha | Päivitä indeksi dokumentin muuttuessa |
+| Käyttäjä näkee tietoa, johon hänellä ei ole oikeutta | Haku ei huomioi käyttöoikeuksia | Suodata palat oikeuksien mukaan jo haussa |
+| Malli noudattaa dokumenttiin piilotettua ohjetta | Epäsuora prompt injection | Käsittele haettua tekstiä datana, älä ohjeena (luku 13) |
+
+<WhyItMatters>
+  RAG-järjestelmän laatu ratkeaa usein haussa eikä mallissa. Jos oikeaa palaa ei haeta, paraskaan malli ei voi vastata oikein. Mittaa haku erikseen ennen kuin vaihdat mallia.
+</WhyItMatters>
+
+<ChapterQuiz chapterSlug="05-rag" />

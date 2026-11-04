@@ -1,200 +1,100 @@
 ---
-title: "Modernit UI-teknologiat"
-description: "Komponenttiarkkitehtuurit, tilanhallinta ja CSS-arkkitehtuurit."
+title: "Käyttöliittymän arkkitehtuuri"
+description: "Renderöintitavat ja hydraatio, saarekearkkitehtuuri, komponenttien koostaminen, design tokenit, tilan kolme lajia ja container queryt."
 order: 6
 section: "Modernit teknologiat"
-tags: ["komponentit", "tilanhallinta", "CSS", "TypeScript"]
+tags: ["renderöinti", "saarekkeet", "komponentit", "design tokenit", "tilanhallinta"]
 published: true
 ---
 
-## 6.1 Komponenttiarkkitehtuurit
+Käyttöliittymän arkkitehtuuri ratkaisee, missä HTML syntyy, kuinka paljon JavaScriptiä selain lataa ja miten ulkoasu ja tila pysyvät hallinnassa, kun sovellus kasvaa. Tässä luvussa käsitellään viisi päätöstä, jotka vaikuttavat suoraan suorituskykyyn (luku 5) ja saavutettavuuteen (luku 4).
 
-### Web-komponentit
+## 6.1 Missä HTML syntyy
 
-Natiivit selainkomponentit — kehyksestä riippumattomia. Toimivat Reactissa,
-Vuessa, Angularissa ja vanilja-JS:ssä.
-
-### Headless-komponenttikirjastot
-
-Antavat toiminnallisuuden ja saavutettavuuden, mutta *sinä* päätät ulkoasun.
-
-| Kirjasto | Kehys | Vahvuus | Tila 2026 |
+| Tapa | Milloin HTML tehdään | Hyvä | Haitta |
 |---|---|---|---|
-| **Radix UI** | React | Monipuolisin, paras a11y | Aktiivinen, de facto React-headless |
-| **Headless UI** | React, Vue | Yksinkertainen, Tailwind-ystävä | Tailwind Labs, vakaa |
-| **Ark UI** | Kehyksistä riippumaton | Web-komponentit, Zag.js-pohjainen | Nouseva, monikehystuki |
-| **Base UI** (MUI) | React | Material Design -headless | Uusi, 2025 |
-| **shadcn/ui** | React | Suosituin komponenttikirjasto 2025-2026 | Copy-paste, ei npm-paketti |
+| Staattinen generointi (SSG) | Buildissa | Nopein tarjoilla, toimii CDN:stä | Sisältö päivittyy vasta uudessa buildissa |
+| Palvelinrenderöinti (SSR) | Jokaisella pyynnöllä | Ajantasainen ja käyttäjäkohtainen sisältö | Palvelin tarvitaan, viive kasvaa |
+| Selainrenderöinti (CSR) | Selaimessa JavaScriptillä | Rikas vuorovaikutus ilman sivunlatauksia | Tyhjä sivu ennen JavaScriptin latausta, LCP kärsii |
 
-### Tilanhallinta 2026
+Kun SSG- tai SSR-sivulla on vuorovaikutteinen komponentti, selain lataa komponentin JavaScriptin ja liittää sen valmiiseen HTML:ään. Tätä kutsutaan **hydraatioksi**. Jos koko sivu hydratoidaan, selain lataa ja suorittaa koodin myös osille, jotka eivät koskaan muutu.
 
-| Ratkaisu | Tyyppi | Vahvuus | Milloin |
-|---|---|---|---|
-| **TanStack Query v5** | Server state | Automaattinen cache, retry, dedup | Aina API-datalle |
-| **Zustand v5** | Client state | Yksinkertaisin, pienin (~1KB) | UI-tila, globaali tila |
-| **Jotai v2** | Atominen | Tarkka, komponenttikohtainen | Kun tarvitset hienojakoista hallintaa |
-| **Signals (Preact/Solid)** | Reaktiivinen | Nopein, automaattinen päivitys | Suorituskykykriittiset |
-| **URL state (nuqs, TanStack Router)** | URL-tila | Jaettava, kirjanmerkkauskelpoinen | Suodattimet, haku, sivutus |
+## 6.2 Saarekearkkitehtuuri
 
-### Komponenttien koostaminen (Composition)
+**Saarekearkkitehtuurissa** valtaosa sivusta renderöidään staattiseksi HTML:ksi, ja JavaScriptiä ladataan vain vuorovaikutteisille "saarekkeille". Termin "component island" otti käyttöön Etsyn frontend-arkkitehti Katie Sylor-Miller vuonna 2019, ja Preactin tekijä Jason Miller kuvasi mallin laajemmin vuonna 2020 <Reference id="astro-islands" />.
 
-```typescript
-// Huono: jäykkä, paljon propseja
-<Card
-  title="Otsikko"
-  description="Kuvaus"
-  image="/kuva.jpg"
-  actions={[<Button>Lue lisää</Button>]}
-  footer={<Footer />}
-/>
+Tämä sivusto on rakennettu Astrolla, joka renderöi jokaisen komponentin oletuksena HTML:ksi ja CSS:ksi ilman JavaScriptiä. Komponentista tulee vuorovaikutteinen vasta `client:*`-direktiivillä <Reference id="astro-islands" />:
 
-// Hyvä: kompositio, joustava
+```astro
+<TokenizerDemo client:visible />  <!-- ladataan, kun demo tulee näkyviin -->
+<Uutiskirje client:idle />        <!-- esimerkki: ladataan, kun selain on joutilas -->
+```
+
+Tämän sivuston demot ja visat käyttävät `client:visible`-direktiiviä. Teksti, taulukot ja kaaviot ovat pelkkää HTML:ää, ja vain demot ja visat ladataan Reactina. Siksi pitkä luku ei kuormita pääsäiettä (luku 5).
+
+## 6.3 Komponentit ja koostaminen
+
+Komponentti kapseloi rakenteen, tyylin ja toiminnan yhteen nimettyyn osaan. Kun komponentilla on paljon vaihtoehtoisia ominaisuuksia (props), siitä tulee vaikea muuttaa. Koostaminen pitää osat pieninä:
+
+```tsx
+// Jäykkä: jokainen uusi tarve on uusi prop
+<Card title="Otsikko" image="/k.jpg" actions={[…]} footer={…} />
+
+// Koostettu: käyttäjä päättää rakenteen
 <Card>
-  <CardImage src="/kuva.jpg" alt="..." />
-  <CardContent>
-    <h3>Otsikko</h3>
-    <p>Kuvaus</p>
-  </CardContent>
-  <CardActions>
-    <Button>Lue lisää</Button>
-  </CardActions>
+  <Card.Image src="/k.jpg" alt="…" />
+  <Card.Body><h3>Otsikko</h3><p>Kuvaus</p></Card.Body>
+  <Card.Actions><button>Lue lisää</button></Card.Actions>
 </Card>
 ```
 
-<AnalogyBox>
-  **Analogia:** Komponenttiarkkitehtuuri on kuin LEGO-palikat.
-  - **Web-komponentit:** yleispalikat, sopivat kaikkiin sarjoihin
-  - **Headless-komponentit:** tekniset palikat (akselit, nivelet) — et näe
-    niitä, mutta ne mahdollistavat liikkeen
-  - **Kompositio:** et rakenna "linnan palikkaa" vaan yhdistät seinä-,
-    katto- ja tornipalikoista linnan
-</AnalogyBox>
+**Headless-komponentti** toteuttaa toiminnan ja saavutettavuuden, kuten näppäimistökäytön, fokuksen hallinnan ja ARIA-tilat, mutta jättää ulkoasun käyttäjälle. Valikko, välilehdet ja yhdistelmäkenttä ovat vaikeita tehdä saavutettaviksi itse, joten niihin kannattaa käyttää testattua toteutusta tai natiivia elementtiä, kuten `<dialog>` (luku 3).
 
-## 6.2 Tilanhallinta
+## 6.4 Design tokenit
 
-### Kolme tilatyyppiä
+**Design token** on nimetty arvo, kuten väri, väli tai fonttikoko, jota sekä suunnittelutyökalu että koodi käyttävät. Design Tokens Community Groupin muodon ensimmäinen vakaa versio 2025.10 julkaistiin lokakuussa 2025. Tokenit ovat JSON-tiedostoja, joissa jokaisella tokenilla on `$value` ja tyyppi `$type`, ja toiseen tokeniin viitataan aaltosuluilla <Reference id="design-tokens" />:
 
-| Tila | Kuvaus | Esimerkki |
+```json
+{
+  "color": {
+    "$type": "color",
+    "brand": { "$value": "#1d4ed8" },
+    "link":  { "$value": "{color.brand}" }
+  }
+}
+```
+
+Viittaukset tekevät tokeneista kerroksellisia: perusarvot (sininen 700) ja niiden käyttötarkoitukset (linkin väri). Kun brändiväri muuttuu, muutos tehdään yhteen paikkaan, ja käyttötarkoitukset seuraavat. Kontrasti tarkistetaan käyttötarkoitusten pareille, kuten linkki taustaa vasten (luku 2).
+
+## 6.5 Tilan kolme lajia
+
+| Laji | Esimerkki | Missä se kuuluu pitää |
 |---|---|---|
-| **Palvelimen tila** | Data, joka tulee backendista | Käyttäjät, tuotteet |
-| **Asiakkaan tila** | Käyttöliittymän tila | Valikko auki/kiinni, valittu välilehti |
-| **URL-tila** | Sivun osoitteessa | Hakuparametrit, filtterit |
+| Palvelimen tila | Tilaukset, käyttäjät | Palvelimella; selaimessa vain välimuistina, jolla on vanhenemisaika |
+| Käyttöliittymän tila | Valikko auki, valittu välilehti | Lähimmässä komponentissa, joka sitä tarvitsee |
+| URL-tila | Hakusana, suodattimet, sivunumero | Osoitteessa, jolloin näkymän voi jakaa ja kirjanmerkitä ja selaimen Takaisin-painike toimii |
 
-### React Query / TanStack Query
+Yleinen virhe on kopioida palvelimen data globaaliin asiakastilaan, jolloin kopio vanhenee eikä kukaan tiedä, kumpi on oikein. Toinen on pitää suodattimet vain muistissa, jolloin sivun päivitys tai jaettu linkki hukkaa ne.
 
-```typescript
-const { data, isLoading, error } = useQuery({
-  queryKey: ["users"],
-  queryFn: () => fetch("/api/users").then(r => r.json()),
-  staleTime: 5 * 60 * 1000,  // 5 minuuttia ennen uudelleenhakua
-});
-```
+## 6.6 Container queryt
 
-### Signaalit ja reaktiivisuus
-
-```typescript
-// Solid.js/Preact Signals: suoraviivaisempi kuin useState
-const [count, setCount] = signal(0);
-
-// Efekti reagoi automaattisesti signaalin muutoksiin
-effect(() => {
-  console.log("Count muuttui:", count());
-});
-```
-
-## 6.3 CSS-arkkitehtuurit
-
-### Utility-first (Tailwind CSS)
-
-```html
-<!-- Utility-first: luokat kertovat tarkalleen mitä tekevät -->
-<div class="flex items-center gap-4 p-6 rounded-xl bg-white shadow-md">
-```
-
-### Cascade Layers
+Mediakysely muuttaa tyyliä näkymän leveyden mukaan. **Container query** muuttaa sitä komponentin säiliön koon mukaan, joten sama kortti voi olla kapea sivupalkissa ja leveä pääalueella ilman näkymäkohtaisia sääntöjä <Reference id="mdn-container-queries" />:
 
 ```css
-/* @layer: määrittele tyylien prioriteettijärjestys */
-@layer base, components, utilities;
+.kortit { container-type: inline-size; }
 
-@layer base {
-  h1 { font-size: 2rem; }       /* Matalin prioriteetti */
-}
-@layer utilities {
-  .text-large { font-size: 3rem; }  /* Korkein prioriteetti */
+@container (width > 40rem) {
+  .kortti { display: grid; grid-template-columns: 12rem 1fr; }
 }
 ```
 
-### Container Queries
+Säiliö määritellään `container-type`-ominaisuudella, ja arvo `inline-size` sallii kyselyt säiliön leveyden perusteella <Reference id="mdn-container-queries" />.
 
-```css
-/* Reagoi komponentin kokoon, ei ikkunan kokoon */
-@container (min-width: 400px) {
-  .card {
-    flex-direction: row;  /* Isossa kontissa vierekkäin */
-  }
-}
-```
+## Sudenkuopat
 
-### CSS Nesting (natiivi)
-
-```css
-.card {
-  background: white;
-
-  & .title {
-    font-weight: bold;        /* .card .title */
-  }
-
-  &:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);  /* .card:hover */
-  }
-}
-```
-
-## 6.4 Tyyppiturvallisuus ja kehittäjäkokemus
-
-### TypeScript UI-arkkitehtuurissa
-
-```typescript
-interface ButtonProps {
-  variant: "primary" | "secondary" | "ghost";
-  size: "sm" | "md" | "lg";
-  disabled?: boolean;
-  children: ReactNode;
-}
-```
-
-### Skeemapohjaiset lomakkeet
-
-```typescript
-import { z } from "zod";
-
-const UserSchema = z.object({
-  name: z.string().min(2, "Liian lyhyt nimi"),
-  email: z.string().email("Virheellinen sähköposti"),
-  age: z.number().min(18, "Pitää olla täysi-ikäinen"),
-});
-```
-
-### Storybook
-
-Komponenttikirjasto, jossa jokainen komponentti on dokumentoituna
-erikseen — erillään sovelluksesta. Mahdollistaa komponenttien
-kehittämisen ja testaamisen eristyksissä.
-
-<WhyItMatters>
-  **Miksi tällä on väliä?** Teknologiavalinnat — React vs. Solid, Tailwind vs.
-  CSS-in-JS, TanStack Query vs. Redux — ovat tiimisi tuottavuuden ydin.
-  Älä valitse hype-pohjalta. Valitse sen perusteella, mikä ratkaisee
-  *todellisen ongelmasi* yksinkertaisimmin.
-</WhyItMatters>
-
-<Reference id="norman2013" />
-
----
-
-**Seuraavaksi:** [AI ja UI/UX leikkauspisteet](/AI-Koulu/ui-ux/07-ai-ux/)
-
+- **Koko sivu selainrenderöitynä.** Sisältösivulla tyhjä HTML ja suuri JavaScript-paketti heikentävät LCP:tä ja INP:tä.
+- **Kaikki hydratoidaan.** Lataa JavaScriptiä vain komponenteille, jotka sitä tarvitsevat.
+- **Itse tehty valikko tai yhdistelmäkenttä.** Saavutettavuus jää helposti puolitiehen. Käytä natiivia elementtiä tai testattua headless-toteutusta.
+- **Palvelimen data kopioituna globaaliin tilaan.** Kopio vanhenee. Pidä palvelin totuuden lähteenä.
 
 <ChapterQuiz chapterSlug="06-modern-ui" />

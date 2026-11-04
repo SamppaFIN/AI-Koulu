@@ -1,0 +1,52 @@
+---
+title: "Hienosäätö"
+description: "Milloin hienosäätö kannattaa, miten LoRA ja QLoRA toimivat, mitä preferenssioppiminen tekee ja miten hienosäädetty malli palvellaan."
+order: 6
+section: "Rakennusmallit"
+part: 2
+tags: ["hienosäätö", "LoRA", "QLoRA", "DPO", "tislaus"]
+---
+
+<TermTooltip term="finetuning">Hienosäätö</TermTooltip> jatkaa valmiin mallin koulutusta omalla aineistolla. Se muuttaa mallin painoja, kun taas kehote (luku 4) ja haku (luku 5) muuttavat vain syötettä. Siksi hienosäätö on raskaampi ja hitaammin muutettava keino, ja se kannattaa valita vasta, kun kevyemmät keinot eivät riitä.
+
+## 6.1 Milloin hienosäätö kannattaa
+
+| Tarve | Ensisijainen keino | Miksi |
+|---|---|---|
+| Malli tarvitsee tietoa, joka muuttuu | Haku (RAG) | Indeksin voi päivittää heti; hienosäädetty tieto vanhenee |
+| Tietty muoto tai tyyli joka kerta | Kehote ja rakenteinen tuloste, sitten hienosäätö | Hienosäätö voi lyhentää kehotetta, kun esimerkkejä ei tarvitse lähettää joka kerta |
+| Kapea tehtävä pienellä ja nopealla mallilla | Hienosäätö tai tislaus | Pieni malli voi oppia yhden tehtävän riittävän hyvin |
+| Oma ammattikieli tai harvinainen formaatti | Hienosäätö | Esimerkit opettavat sanaston ja rakenteen |
+
+Hienosäätö ei korvaa arviointia. Varaa osa aineistosta testiksi, jota ei käytetä koulutuksessa, ja vertaa hienosäädettyä mallia samaan testiin ennen ja jälkeen (luku 11).
+
+## 6.2 LoRA ja QLoRA
+
+Täysi hienosäätö päivittää kaikki parametrit, mikä vaatii saman verran muistia kuin alkuperäinen koulutus. **LoRA** jäädyttää alkuperäiset painot ja lisää jokaiseen valittuun painomatriisiin kaksi pientä matriisia, joiden tulo on painojen muutos:
+
+<div class="formula">W' = W + B · A,   B ∈ ℝ^(d×r),  A ∈ ℝ^(r×k),  r ≪ min(d, k)</div>
+
+Koulutettavien parametrien määrä laskee kertoimesta *d · k* kertoimeen *r · (d + k)*. Alkuperäisessä artikkelissa GPT-3:n (175 mrd. parametria) koulutettavien parametrien määrä pieneni 10 000-kertaisesti ja GPU-muistin tarve kolmasosaan täyteen hienosäätöön verrattuna <Reference id="hu2021" />.
+
+**QLoRA** tallentaa jäädytetyn perusmallin 4-bittisenä ja kouluttaa sen päälle LoRA-matriisit. Menetelmällä hienosäädettiin 65 miljardin parametrin malli yhdellä 48 gigatavun GPU:lla <Reference id="dettmers2023" />.
+
+## 6.3 Preferenssioppiminen
+
+Ohjeistusviritys opettaa mallille esimerkkivastauksia. Preferenssioppiminen opettaa, kumpi kahdesta vastauksesta on parempi. Perinteinen tapa on opettaa ensin palkkiomalli ja sitten optimoida kielimallia vahvistusoppimisella (luku 1). **DPO** (Direct Preference Optimization) optimoi mallia suoraan vastauspareista ilman erillistä palkkiomallia ja vahvistusoppimissilmukkaa <Reference id="rafailov2023" />.
+
+## 6.4 Tislaus
+
+Tislauksessa suuren mallin vastauksilla koulutetaan pienempi malli tekemään samaa tehtävää. Pienempi malli on halvempi ja nopeampi ajaa, mutta se oppii vain sen, mitä aineistossa on. Tarkista ennen tislausta palvelun käyttöehdot ja mallin lisenssi, koska ne voivat rajoittaa tulosteiden käyttöä toisen mallin koulutukseen.
+
+## 6.5 Palvelu tuotannossa
+
+LoRA-adapteri on pieni erillinen tiedosto, joten saman perusmallin päällä voi ajaa useita adaptereita. Esimerkiksi vLLM osaa palvella useita LoRA-adaptereita yhdellä perusmallilla <Reference id="vllm-lora" />. Muut tuotannon kysymykset, kuten kvantisointi, eräajo ja muistinkäyttö, käsitellään luvussa 12.
+
+## Sudenkuopat
+
+- **Vähän ja huonoa dataa.** Hienosäätö oppii myös aineiston virheet. Muutama sata huolellista esimerkkiä on parempi kuin tuhansia sekalaisia.
+- **Ei testijoukkoa.** Ilman erillistä testiä et tiedä, paraniko malli vai oppiko se ulkoa.
+- **Muiden taitojen heikkeneminen.** Kapea hienosäätö voi heikentää mallia muissa tehtävissä. Testaa myös tehtäviä, joita et hienosäätänyt.
+- **Tieto vanhenee.** Painoihin opetettu tieto ei päivity. Muuttuva tieto kuuluu hakuun.
+
+<ChapterQuiz chapterSlug="06-hienosaato" />

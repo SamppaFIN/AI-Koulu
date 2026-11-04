@@ -1,0 +1,55 @@
+---
+title: "Agentit ja suunnittelumallit"
+description: "Työnkulut ja agentit, ReAct-silmukka sekä suunnittelumallit: ketjutus, reititys, rinnakkaistus, orkestroija ja arvioija. Milloin agentti kannattaa ja mitä se maksaa."
+order: 8
+section: "Agentit"
+part: 3
+tags: ["agentti", "ReAct", "työnkulku", "suunnittelumallit", "reflektio"]
+---
+
+Kun yksi mallikutsu ei riitä, kutsuja ketjutetaan. Anthropic erottaa kaksi tapaa tehdä se <Reference id="anthropic-effective-agents" />:
+
+- **Työnkulku** (workflow): kielimallit ja työkalut on yhdistetty koodissa ennalta määrättyjä polkuja pitkin.
+- **Agentti**: kielimalli ohjaa itse omaa etenemistään ja työkalujen käyttöä.
+
+Työnkulku on ennustettavampi, halvempi ja helpompi testata. Agentti sopii tehtäviin, joiden askeleita ei voi tietää etukäteen.
+
+## 8.1 ReAct-silmukka
+
+<TermTooltip term="react">ReAct</TermTooltip>-mallissa päättely ja toiminta vuorottelevat: malli päättää askeleen, käyttää työkalua, lukee tuloksen ja päättää seuraavan askeleen <Reference id="yao2022" />. Nykyisissä rajapinnoissa silmukka toteutetaan työkalukutsuilla (luku 4).
+
+<AgentWorkflowDiagram />
+
+Silmukka tarvitsee pysäytysehdot. Tavalliset ovat askelten enimmäismäärä, token- tai kustannusraja sekä aikaraja. Ilman niitä virheeseen jumittunut agentti voi kuluttaa budjettia loputtomiin.
+
+<AgentSimulation />
+
+Simulaatio on havainnollistus: työkalujen tulokset ovat valmiiksi kirjoitettuja, eikä demo kutsu mallia.
+
+## 8.2 Suunnittelumallit
+
+| Malli | Miten toimii | Milloin |
+|---|---|---|
+| Ketjutus (prompt chaining) | Tehtävä jaetaan vaiheisiin; jokainen kutsu käsittelee edellisen tuloksen | Tehtävä jakautuu luonnostaan selviin vaiheisiin |
+| Reititys (routing) | Syöte luokitellaan ja ohjataan erikoistuneelle käsittelylle | Erilaiset syötteet tarvitsevat erilaisen käsittelyn tai mallin |
+| Rinnakkaistus (parallelization) | Usea kutsu tekee osia rinnakkain tai samaa tehtävää äänestäen; tulokset yhdistetään koodissa | Osat ovat riippumattomia, tai varmuutta halutaan usealla yrityksellä |
+| Orkestroija ja työntekijät | Keskusmalli pilkkoo tehtävän, delegoi osat ja kokoaa tulokset | Osatehtäviä ei voi tietää etukäteen |
+| Arvioija ja optimoija | Yksi kutsu tuottaa, toinen arvioi ja antaa palautteen silmukassa | Laadulle on selvä arviointiperuste |
+
+Taulukon mallit ovat Anthropicin artikkelista <Reference id="anthropic-effective-agents" />. Samoja ja muita malleja, kuten reflektio ja suunnittelu, kuvataan myös Gullin kirjassa <Reference id="gulli2025" />. Reflektiossa malli arvioi oman epäonnistuneen yrityksensä sanallisesti ja käyttää arviota seuraavassa yrityksessä <Reference id="shinn2023" />.
+
+## 8.3 Mitä agentti maksaa
+
+Agentti tekee useita kutsuja, ja jokainen kutsu lähettää kasvavan kontekstin (luku 3). Anthropicin mittauksissa agentit käyttivät noin nelinkertaisesti ja monen agentin järjestelmät noin 15-kertaisesti tokeneita tavalliseen keskusteluun verrattuna. Samassa raportissa monen agentin järjestelmä paransi tulosta sisäisessä tutkimustehtävien evalissa 90,2 % yhteen agenttiin verrattuna <Reference id="anthropic-multi-agent" />. Hyöty ja hinta kasvavat siis yhdessä, ja agentti kannattaa vain, jos tehtävän arvo kattaa kulut.
+
+## 8.4 Ennen kuin rakennat agentin
+
+1. **Kokeile ensin yhtä kutsua** hyvällä kehotteella ja tarvittaessa haulla.
+2. **Kokeile sitten työnkulkua.** Jos askeleet tiedetään etukäteen, koodi ohjaa ne luotettavammin kuin malli.
+3. **Rakenna agentti vain**, kun askelia ei voi tietää etukäteen, tehtävä on arvokas ja virheet voidaan havaita ja korjata, esimerkiksi testeillä tai ihmisen tarkistuksella.
+
+<Callout type="warning">
+  Agentin oikeudet ovat sen työkalujen oikeudet. Anna vain tarvittavat oikeudet, vaadi ihmisen hyväksyntä peruuttamattomille toimille ja kirjaa jokainen työkalukutsu (luku 13).
+</Callout>
+
+<ChapterQuiz chapterSlug="08-agentit" />

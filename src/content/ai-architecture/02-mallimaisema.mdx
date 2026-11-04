@@ -1,0 +1,97 @@
+---
+title: "Mallimaisema 11/2026"
+description: "Mallit, hinnat ja valinta. Ainoa luku, jossa hinnat ovat: muut luvut viittaavat tänne."
+order: 2
+section: "Perusteet"
+part: 1
+tags: ["mallit", "hinnat", "mallin valinta", "avoimet painot", "kustannukset"]
+---
+
+Tämän luvun luvut ovat **tilanne 11/2026**. Mallit ja hinnat muuttuvat usein: esimerkiksi Googlen hinnaston mukaan Gemini 4 Argonin hinta kaksinkertaistuu 1.12.2026 <Reference id="google-gemini-pricing" />. Siksi hinnat ovat vain tässä luvussa, ja muut luvut viittaavat tänne. Tarkista ajantasainen hinta aina valmistajan omalta sivulta ennen laskelmaa.
+
+## 2.1 Miten malleja verrataan
+
+| Ominaisuus | Mitä se tarkoittaa | Miten sen saa selville |
+|---|---|---|
+| Kyky | Kuinka hyvin malli ratkaisee juuri sinun tehtäväsi | Omat evalit (luku 11), ei pelkkä julkinen vertailutaulukko |
+| Hinta | Syöte-, tuloste- ja välimuistitokenien hinta | Valmistajan hinnasto |
+| Kontekstiikkuna | Suurin tokenimäärä yhdessä kutsussa | Valmistajan mallisivu |
+| Viive | Aika ensimmäiseen tokeniin ja tokeneita sekunnissa | Oma mittaus omilla kehotteilla |
+| Modaliteetit | Teksti, kuva, ääni, video | Valmistajan mallisivu |
+| Painot | Suljettu API vai ladattavat avoimet painot | Lisenssi ja mallikortti |
+
+## 2.2 Suljetut mallit
+
+Hinnat ovat dollareina miljoonaa tokenia kohden (syöte / tuloste). Hinnat ovat valmistajan omasta rajapinnasta; pilvipalveluiden kautta hinta voi poiketa.
+
+### Anthropic <Reference id="anthropic-models" />
+
+| Malli | Tunniste | Konteksti | Syöte / tuloste |
+|---|---|---|---|
+| Claude Fable 5.1 | `claude-fable-5-1` | 1M | 10 / 50 |
+| Claude Opus 5.5 | `claude-opus-5-5` | 1M | 4 / 20 |
+| Claude Sonnet 5.5 | `claude-sonnet-5-5` | 1M | 2 / 10 |
+| Claude Haiku 5.5 | `claude-haiku-5-5` | 1M | 0,10 / 0,50 |
+
+Claude Haiku 5.5:n hinta koskee alle 100 000 tokenin kehotteita; sitä pidemmissä se on 0,50 / 2,50. Kaikkien taulukon mallien suurin tuloste on 128 000 tokenia. Välimuistista luku maksaa Opus 5.5:llä ja Sonnet 5.5:llä 0,20 ja Fable 5.1:llä 0,25 dollaria miljoonalta tokenilta. Eräajo (Message Batches) puolittaa hinnan, kun vastausta ei tarvita heti.
+
+### OpenAI <Reference id="openai-models" /> <Reference id="openai-pricing" />
+
+| Malli | Tunniste | Konteksti | Syöte / tuloste |
+|---|---|---|---|
+| GPT-6 Astra | `gpt-6-astra` | 1,05M | 10 / 50 |
+| GPT-6.1 Sol | `gpt-6.1-sol` | 1,05M | 2 / 10 |
+| GPT-6.1 Terra | `gpt-6.1-terra` | 1,05M | 1 / 5 |
+| GPT-6 Luna | `gpt-6-luna` | 1,05M | 0,10 / 0,50 |
+
+Hinnat koskevat enintään 272 000 tokenin syötettä. Sitä pidemmistä syötteistä hinta on korkeampi, esimerkiksi GPT-6.1 Solilla 4 / 15. Kaikkien taulukon mallien suurin tuloste on 128 000 tokenia, ja eräajon hinta on puolet tavallisesta.
+
+### Google <Reference id="google-gemini-models" /> <Reference id="google-gemini-pricing" />
+
+| Malli | Tunniste | Konteksti | Syöte / tuloste |
+|---|---|---|---|
+| Gemini 4 Argon | `gemini-4-argon` | 1M | 2 / 10 (1.12.2026 alkaen 4 / 20) |
+| Gemini 3.8 Flash | `gemini-3.8-flash` | ei ilmoitettu | 0,75 / 3,75 (1.1.2027 alkaen 1,50 / 7,50) |
+
+Googlen hinnastossa tulostehintaan sisältyvät päättelytokenit. Gemini 4 Argon hyväksyy syötteenä tekstiä, kuvia, ääntä, videota ja PDF-tiedostoja.
+
+## 2.3 Avoimet painot
+
+Avoimen painon mallin voi ajaa omalla laitteistolla, jolloin data ei poistu omasta ympäristöstä. Vastineeksi ylläpito, laitteisto ja skaalaus ovat omalla vastuulla (luku 12). Lisenssit vaihtelevat, joten tarkista ehdot mallikortista ennen kaupallista käyttöä.
+
+| Malli | Julkaisija | Lisenssi | Huomioita |
+|---|---|---|---|
+| gpt-oss-120b | OpenAI | Apache 2.0 | MoE, 117 mrd. parametria, joista 5,1 mrd. aktiivisia <Reference id="gpt-oss" /> |
+| DeepSeek V4.1 Flash | DeepSeek | MIT | MoE, konteksti enintään miljoona tokenia, syötteenä kuva ja teksti <Reference id="deepseek-v41" /> |
+| Kimi K3 | Moonshot AI | tarkista mallikortista | Hugging Facessa ilmoitettu koko 2,8 biljoonaa parametria <Reference id="hf-kimi" /> |
+| Qwen3.8 | Alibaba (Qwen) | vaihtelee malleittain | Kokoja 27 miljardista 2,4 biljoonaan parametriin <Reference id="hf-qwen" /> |
+
+Muistitarpeen voi arvioida painoista: parametrien määrä kertaa bittimäärä jaettuna kahdeksalla antaa tavut. Esimerkiksi 117 miljardin parametrin malli 4 bitin tarkkuudella vie painoina noin 117 · 4 / 8 ≈ 58,5 Gt, ja lisäksi tarvitaan muistia avain–arvo-välimuistille (luku 12).
+
+## 2.4 Kustannusten laskeminen
+
+<div class="formula">C = N_syöte · p_syöte + N_tuloste · p_tuloste</div>
+
+Esimerkki: palvelu tekee 10 000 kutsua päivässä Claude Sonnet 5.5:llä. Jokaisessa on 3 000 syötetokenia ja 500 tulostetokenia.
+
+- Syöte: 10 000 · 3 000 = 30 miljoonaa tokenia · 2 $ = 60 $
+- Tuloste: 10 000 · 500 = 5 miljoonaa tokenia · 10 $ = 50 $
+- Yhteensä 110 $ päivässä
+
+Jos 2 500 syötetokenista on jokaisella kutsulla sama etuliite ja se luetaan välimuistista (luku 3), syötteen hinta on 25 miljoonaa · 0,20 $ + 5 miljoonaa · 2 $ = 5 $ + 10 $ = 15 $, eli yhteensä noin 65 $ päivässä. Välimuistiin kirjoittamisesta tulee lisäksi pieni kustannus aina, kun välimuisti vanhenee.
+
+<WhyItMatters>
+  Tuloste on näissä hinnastoissa viisinkertaisesti kalliimpaa kuin syöte, ja päättelytokenit laskutetaan tulosteena. Pitkä päättely tai pitkä vastaus voi siis maksaa enemmän kuin pitkä kehote. Mittaa molemmat.
+</WhyItMatters>
+
+## 2.5 Mallin valinta käytännössä
+
+1. **Määritä laatuvaatimus omilla esimerkeillä** ja tee niistä eval (luku 11).
+2. **Aloita kyvykkäästä mallista**, jotta tiedät, mikä laatu on saavutettavissa.
+3. **Kokeile halvempaa mallia tai matalampaa effort-tasoa** samalla evalilla. Valitse halvin vaihtoehto, joka täyttää vaatimuksen.
+4. **Laske kustannus ratkaistua tehtävää kohden** äläkä kutsua kohden: halpa malli, joka tarvitsee useamman yrityksen, ei välttämättä ole halvempi.
+5. **Pidä mallin vaihto helppona.** Kapseloi mallikutsut omaan kerrokseensa, koska hinnat ja mallit vaihtuvat.
+
+Välimuisti on mallikohtainen. Jos järjestelmä vaihtaa mallia kesken keskustelun, välimuistin hyöty menetetään <Reference id="anthropic-caching" />.
+
+<ChapterQuiz chapterSlug="02-mallimaisema" />

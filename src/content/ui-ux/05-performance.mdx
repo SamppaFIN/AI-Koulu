@@ -1,171 +1,101 @@
 ---
 title: "Suorituskyky ja Web Vitals"
-description: "Core Web Vitals, optimointi ja koettu suorituskyky."
+description: "Core Web Vitals (LCP, INP ja CLS) määritelmineen ja raja-arvoineen, kenttä- ja laboratoriomittaus, pitkät tehtävät, kuvat, fontit ja koettu suorituskyky."
 order: 5
 section: "Suorituskyky"
-tags: ["Web Vitals", "LCP", "INP", "CLS", "optimointi"]
+tags: ["Web Vitals", "LCP", "INP", "CLS", "pitkä tehtävä"]
 published: true
 ---
 
-## 5.1 Core Web Vitals
+Suorituskyky on käytettävyyttä: hidas lataus tai viivästynyt reaktio painallukseen tuntuu käyttäjälle samalta kuin rikkinäinen toiminto (luku 3). Googlen Core Web Vitals -mittarit mittaavat kolmea asiaa: latautumista, vasteaikaa ja visuaalista vakautta.
 
-Google mittaa sivustosi käyttökokemusta kolmella metriikalla — nämä vaikuttavat
-suoraan hakukonesijoitukseen.
+## 5.1 Kolme mittaria
 
-### <TermTooltip term="lcp">LCP (Largest Contentful Paint)</TermTooltip>
+| Mittari | Mitä mittaa | Hyvä | Huono |
+|---|---|---|---|
+| <TermTooltip term="lcp">LCP</TermTooltip> (Largest Contentful Paint) | Aika navigoinnin alusta siihen, kun näkymän suurin kuva, tekstilohko tai video on piirretty | ≤ 2,5 s | > 4 s |
+| <TermTooltip term="inp">INP</TermTooltip> (Interaction to Next Paint) | Vuorovaikutuksen alusta seuraavan ruudun piirtämiseen; raportoidaan käynnin pisimpiä viiveitä | ≤ 200 ms | > 500 ms |
+| <TermTooltip term="cls">CLS</TermTooltip> (Cumulative Layout Shift) | Suurin odottamattomien asettelusiirtymien ryöppy | ≤ 0,1 | > 0,25 |
 
-**Mitä:** Suurimman sisältöelementin latautumisaika.
-**Tavoite:** < 2.5s. **Huono:** > 4.0s.
+Raja-arvot ovat web.devistä <Reference id="google2024" /> <Reference id="webdev-lcp" /> <Reference id="webdev-inp" /> <Reference id="webdev-cls" />. Sivu läpäisee mittarin, kun **75. persentiili** sivulatauksista on hyvällä alueella, erikseen mobiilissa ja desktopissa <Reference id="google2024" />. Persentiili valitaan siksi, että keskiarvo piilottaisi hitaiden laitteiden ja yhteyksien käyttäjät.
 
-Yleisin syy hitaaseen LCP:hen on kuvan latautuminen. Ratkaisu:
+**INP** korvasi aiemman FID-mittarin (First Input Delay) Core Web Vitalsina maaliskuussa 2024 <Reference id="webdev-inp-launch" />. FID mittasi vain ensimmäisen vuorovaikutuksen viiveen ennen käsittelyn alkua. INP mittaa kaikki napsautukset, napautukset ja näppäinpainallukset koko käynnin ajalta, ja viive lasketaan siihen asti, kun selain pystyy piirtämään seuraavan ruudun. Vieritys, hiiren vienti elementin päälle ja zoomaus eivät ole mukana <Reference id="webdev-inp" />.
+
+**CLS:n** yksittäisen siirtymän pistemäärä on vaikutusosuus kertaa siirtymäosuus: kuinka suuren osan näkymästä siirtyvät elementit kattavat ja kuinka pitkän matkan ne liikkuvat näkymän kokoon suhteutettuna. Siirtymät ryhmitellään ikkunoihin, joissa siirtymien väli on alle sekunti ja koko ikkuna enintään viisi sekuntia. CLS on suurimman ikkunan summa. Siirtymät, jotka tapahtuvat 500 ms sisällä käyttäjän toiminnosta, eivät ole odottamattomia, eikä niitä lasketa <Reference id="webdev-cls" />.
+
+<div class="formula">siirtymän pistemäärä = vaikutusosuus · siirtymäosuus</div>
+
+## 5.2 Kenttä- ja laboratoriomittaus
+
+- **Kenttädata** (real user monitoring) mitataan oikeiden käyttäjien selaimissa. Se kertoo todellisen kokemuksen, ja Core Web Vitals -arvio perustuu siihen.
+- **Laboratoriodata** (esimerkiksi Lighthouse) mitataan yhdellä koneella vakioiduissa oloissa. Se on toistettavaa ja sopii vianetsintään, mutta ei kerro, millä laitteilla ja yhteyksillä käyttäjät oikeasti ovat. INP:tä ei voi mitata ilman vuorovaikutusta, joten laboratoriossa seurataan sen sijaan, kuinka kauan pääsäie on latauksen aikana varattuna (Lighthousessa Total Blocking Time).
+
+Kehittäjän kone ja verkko ovat yleensä nopeampia kuin käyttäjien. Testaa siksi myös hidastetulla suorittimella ja verkolla.
+
+## 5.3 LCP:n parantaminen
+
+LCP-elementti on usein pääkuva tai suurin otsikko. Viive syntyy neljästä osasta: palvelimen vastaus, resurssin löytäminen, sen lataus ja piirto.
 
 ```html
-<img
-  src="hero-1200w.webp"
-  srcset="hero-800w.webp 800w, hero-1200w.webp 1200w"
-  sizes="(max-width: 800px) 100vw, 50vw"
-  loading="eager"  <!-- Älä lazy loadaa LCP-kuvaa -->
-  fetchpriority="high"
-  alt="Hero-kuva"
-/>
+<img src="kuva-1200.avif"
+     srcset="kuva-800.avif 800w, kuva-1200.avif 1200w"
+     sizes="(max-width: 800px) 100vw, 50vw"
+     width="1200" height="675"
+     fetchpriority="high" alt="…">
 ```
 
-### INP (Interaction to Next Frame)
+- Älä aseta LCP-kuvalle `loading="lazy"`: laiska lataus viivästää juuri sitä kuvaa, jota LCP mittaa.
+- `fetchpriority="high"` nostaa kuvan latausjärjestyksessä.
+- `srcset` ja `sizes` antavat selaimen valita näyttöön sopivan koon, jolloin mobiililaite ei lataa desktop-kokoista kuvaa.
+- Jos LCP-elementti on tekstiä, fontin lataus voi viivästää sitä. `font-display: swap` näyttää tekstin heti varafontilla.
 
-**Mitä:** Viive käyttäjän toiminnon (klikkaus, napautus) ja seuraavan ruudun
-päivityksen välillä. Korvasi FID:n (First Input Delay) 2024.
-**Tavoite:** < 200ms. **Huono:** > 500ms.
+## 5.4 INP:n parantaminen
 
-```typescript
-// INP-ongelma: raskas laskenta estää renderöinnin
-button.addEventListener("click", () => {
-  heavyComputation();  // ESTÄÄ renderöinnin 300ms ajaksi
-});
+Selain käsittelee vuorovaikutuksen pääsäikeessä. Jos pääsäikeessä on käynnissä **pitkä tehtävä** eli yli 50 ms kestävä tehtävä, vuorovaikutus odottaa sen loppuun <Reference id="webdev-long-tasks" />. Ratkaisu on pilkkoa työ osiin ja antaa selaimelle välissä vuoro:
 
-// Ratkaisu: siirrä laskenta pois pääsäikeestä
-button.addEventListener("click", async () => {
-  await new Promise(r => setTimeout(r, 0));  // Anna selaimen hengittää
-  heavyComputation();
-});
+```js
+async function kasitteleKaikki(rivit) {
+  for (const rivi of rivit) {
+    kasittele(rivi);
+    // Anna selaimelle vuoro käsitellä vuorovaikutukset ja piirtää
+    if (globalThis.scheduler?.yield) await scheduler.yield();
+    else await new Promise((r) => setTimeout(r, 0));
+  }
+}
 ```
 
-### CLS (Cumulative Layout Shift)
+`scheduler.yield()` jatkaa funktiota ennen muita jonossa olevia tehtäviä. `setTimeout` toimii kaikissa selaimissa, mutta jatko menee jonon loppuun. Tilanteessa 11/2026 `scheduler.yield()` toimii Chromessa, Edgessä ja Firefoxissa, mutta ei Safarissa <Reference id="webdev-long-tasks" />.
 
-**Mitä:** Sivun asettelun odottamattomat hyppäykset latauksen aikana.
-**Tavoite:** < 0.1. **Huono:** > 0.25.
+Muita keinoja: lataa vähemmän JavaScriptiä, siirrä raskas laskenta Web Workeriin, näytä palaute (esimerkiksi painikkeen tila) ennen raskasta työtä ja vältä suuria DOM-päivityksiä yhdellä kertaa.
 
-| Syy | Ratkaisu |
+## 5.5 CLS:n parantaminen
+
+| Syy | Korjaus |
 |---|---|
-| Kuva ilman kokoa | Aina `width` + `height` attribuutit |
-| Mainos tai upotus | Varaa tila etukäteen |
-| Fontin vaihto | `font-display: optional` tai preload |
-| Dynaaminen sisältö | Puskuroi tila ennen lisäystä |
-
-<Callout type="warning">
-  **CLS on salakavalin Web Vitals -ongelma.** Sitä ei huomaa kehityksessä
-  (lataus on liian nopea), mutta käyttäjät kokevat sen. Testaa aina
-  hitaalla verkolla (Slow 3G Chrome DevToolsissa).
-</Callout>
-
-## 5.2 Suorituskyvyn optimointi
-
-### Koodin jakaminen (Code splitting)
-
-```typescript
-// Lazy load: ladataan vasta kun käyttäjä tarvitsee
-const HeavyComponent = React.lazy(() => import("./HeavyComponent"));
-
-// Astrossa: island-arkkitehtuuri tekee tämän automaattisesti
-```
-
-### Kuvien optimointi
-
-| Formaatti | Käyttötapaus | Tiedostokoko (vs. PNG) |
-|---|---|---|
-| **WebP** | Valokuvat, grafiikka | -30% |
-| **AVIF** | Valokuvat, korkea laatu | -50% |
-| **SVG** | Ikonit, logot, grafiikka | Pieni, skaalautuva |
-
-### Fonttien optimointi
-
-```css
-/* Subsetattu fontti: vain tarvittavat merkit */
-@font-face {
-  font-family: 'Inter';
-  src: url('/fonts/inter-latin-subset.woff2') format('woff2');
-  unicode-range: U+0000-00FF;  /* Latin perusmerkit */
-}
-```
-
-### Bundle-koon analysointi
-
-```bash
-npx vite-bundle-analyzer  # Visualisoi bundle-koon
-```
-
-## 5.3 Koettu suorituskyky
-
-Todellinen nopeus on tärkeää, mutta *koettu nopeus* on sitäkin tärkeämpää.
-
-### Optimistiset päivitykset (Optimistic UI)
-
-```typescript
-// Perinteinen: odota palvelinta
-async function save() {
-  await api.save(data);  // Spinneri, 2s odotus
-  showSuccess();
-}
-
-// Optimistinen: oleta onnistuminen
-function save() {
-  showSuccess();          // Välitön palaute
-  api.save(data).catch(() => showError());  // Korjaa jos epäonnistuu
-}
-```
-
-### Skeleton-näytöt vs. spinnerit
-
-```html
-<!-- Skeleton: näyttää tulevan sisällön rakenteen -->
-<div class="skeleton-card">
-  <div class="skeleton-image" aria-hidden="true"></div>
-  <div class="skeleton-line" style="width: 80%" aria-hidden="true"></div>
-  <div class="skeleton-line" style="width: 60%" aria-hidden="true"></div>
-</div>
-```
-
-### Progressiivinen lataus
-
-Näytä ensin kriittinen sisältö, lataa loput myöhemmin.
-
-### Kokeile itse: Skeleton loader -studio
-
-<SkeletonStudio />
-
-### Kokeile itse: CLS-virheen visualisointi
+| Kuva tai video ilman mittoja | `width`- ja `height`-attribuutit tai CSS:n `aspect-ratio`, jolloin tila varataan ennen latausta |
+| Mainos, upotus tai myöhemmin ladattava komponentti | Varaa tila etukäteen kiinteällä vähimmäiskorkeudella |
+| Fontin vaihto muuttaa tekstin kokoa | Varafontti, jonka mitat on sovitettu (`size-adjust`), tai `font-display: optional` |
+| Sisältö lisätään olemassa olevan yläpuolelle | Lisää sisältö alle tai käyttäjän toiminnon seurauksena |
 
 <CLSDemo />
 
-### Web Workerit
+## 5.6 Koettu suorituskyky
 
-```typescript
-// Siirrä raskas laskenta taustasäikeeseen
-const worker = new Worker("analyze-worker.js");
-worker.postMessage(imageData);
-worker.onmessage = (e) => showResults(e.data);
-```
+Kun odotusta ei voi poistaa, sen voi tehdä ymmärrettäväksi:
 
-<WhyItMatters>
-  **Miksi tällä on väliä?** 53% käyttäjistä poistuu, jos sivu latautuu
-  yli 3 sekunnissa. Ja jokainen sekunti lisää konversiota 20%.
-  Suorituskyky on osa käyttökokemusta — ei erillinen tekninen ominaisuus.
-</WhyItMatters>
+- **Runkonäkymä** (skeleton) näyttää tulevan sisällön rakenteen ennen dataa. Se kertoo, mitä on tulossa, ja estää asettelun hyppäämisen, kun runko on samankokoinen kuin lopullinen sisältö.
+- **Optimistinen päivitys** näyttää toiminnon tuloksen heti ja peruu sen, jos palvelin hylkää muutoksen. Sopii toimintoihin, jotka onnistuvat lähes aina ja jotka on helppo perua, kuten tykkäykseen. Maksuun se ei sovi.
+- **Suoratoisto** näyttää pitkän vastauksen sitä mukaa kuin se syntyy, mikä on kielimallisovelluksissa tavallista (luku 7).
 
-<Reference id="google2024" />
+Runkonäkymän animaatio on koriste, joten se poistetaan, kun `prefers-reduced-motion` on päällä (luku 2), ja se piilotetaan ruudunlukijalta `aria-hidden`-attribuutilla. Lataustila kerrotaan ruudunlukijalle tekstinä, esimerkiksi `aria-busy`-attribuutilla tai tilaviestillä.
 
----
+<SkeletonStudio />
 
-**Seuraavaksi:** [Modernit UI-teknologiat](/AI-Koulu/ui-ux/06-modern-ui/)
+## Sudenkuopat
 
+- **Optimointi omalla koneella.** Mittaa kenttädatasta tai hidastetulla laitteella.
+- **Laiska lataus kaikille kuville.** Näkymän yläosan kuva latautuu silloin myöhään.
+- **Yksi suuri JavaScript-paketti.** Lataa vain se, mitä sivu tarvitsee. Tämä sivusto renderöi sivut valmiiksi HTML:ksi ja lataa React-koodin vain demoille (luku 6).
+- **Keskiarvon seuraaminen.** Core Web Vitals arvioidaan 75. persentiilistä.
 
 <ChapterQuiz chapterSlug="05-performance" />

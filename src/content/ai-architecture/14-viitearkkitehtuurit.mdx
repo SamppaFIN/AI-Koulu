@@ -1,0 +1,104 @@
+---
+title: "Viitearkkitehtuurit"
+description: "Kolme kokonaista järjestelmää aiempien lukujen osista: dokumenttihaku, asiakaspalveluagentti ja koodausagentti CI:ssä. Jokaisesta komponentit, päätökset, uhat, mittaus ja kustannus sekä lopuksi suunnittelun tarkistuslista."
+order: 14
+section: "Tuotanto"
+part: 4
+tags: ["viitearkkitehtuuri", "RAG", "asiakaspalvelu", "koodausagentti", "tarkistuslista"]
+---
+
+Viitearkkitehtuuri on tavallinen ratkaisu tavalliseen ongelmaan. Tämän luvun kolme esimerkkiä kootaan aiempien lukujen osista, ja jokaisesta käydään läpi samat kysymykset: mistä osista järjestelmä koostuu, mitkä päätökset ratkaisevat laadun, mikä voi mennä pieleen, miten laatu mitataan ja mistä kustannus syntyy. Tuotenimiä ei listata, koska samat osat löytyvät usealta valmistajalta ja valikoima muuttuu nopeasti.
+
+## 14.1 Dokumenttihaku (RAG)
+
+Työntekijä kysyy yrityksen ohjeista ja saa vastauksen lähdeviitteineen.
+
+**Komponentit**
+
+1. Lähdejärjestelmät ja niiden käyttöoikeudet
+2. Indeksointi: rakenteen mukainen pilkkominen, palan metatiedot (lähde, päivämäärä, oikeudet), upotus ja BM25-indeksi (luku 5)
+3. Kysely: hybridihaku, suodatus käyttäjän oikeuksilla, uudelleenjärjestys
+4. Vastaus: kehote, jossa on haetut palat ja ohje viitata lähteisiin ja sanoa, jos vastausta ei löydy
+5. Seuranta: haetut palat, vastaus ja käyttäjän palaute kirjataan (luku 12)
+
+**Ratkaisevat päätökset**
+
+- **Oikeudet haussa.** Pala, jota käyttäjä ei saa nähdä, ei saa päätyä kontekstiin (luku 5). Oikeudet tallennetaan palan metatietoihin indeksoinnissa, ja niitä päivitetään, kun lähteen oikeudet muuttuvat.
+- **Indeksin päivitys.** Muuttunut dokumentti indeksoidaan uudelleen, ja poistettu poistetaan indeksistä. Muuten vastaus perustuu vanhaan tietoon.
+- **Palan asiayhteys.** Kontekstuaalinen haku tai metatiedot palan alussa estävät irrallisen palan väärintulkinnan (luku 5).
+
+**Uhat.** Dokumentti voi sisältää epäsuoran prompt injectionin (luku 13). Järjestelmässä on yksityistä dataa ja epäluotettavaa sisältöä, joten kolmatta tappavan kolmikon osaa, ulospäin viestimistä, ei saa olla: avustajalla ei ole työkaluja, jotka lähettävät dataa ulos, eikä vastauksessa näytetä ulkoisia kuvalinkkejä.
+
+**Mittaus.** Haku ja vastaus mitataan erikseen: recall@k kysymyksillä, joiden oikea lähde tiedetään, ja vastauksen uskollisuus haettuihin paloihin (luvut 5 ja 11). Kysymykset kootaan oikeista käyttäjien kysymyksistä.
+
+**Kustannus.** Syötetokenit hallitsevat: haetut palat ja järjestelmäkehote lähetetään joka kerta. Pysyvä järjestelmäkehote välimuistiin (luku 3) ja *k* niin pieneksi, että recall pysyy riittävänä.
+
+## 14.2 Asiakaspalveluagentti
+
+Asiakas kysyy tilauksestaan chatissa. Agentti hakee tiedot, tekee rajatut toimet itse ja siirtää muut ihmiselle.
+
+**Komponentit**
+
+1. Tunnistus: asiakas tunnistetaan ennen kuin agentti näkee mitään asiakasdataa
+2. Reititys: viesti luokitellaan (luku 8), ja yksinkertaiset kysymykset hoidetaan ilman agenttia
+3. Työkalut: tilauksen haku tunnistetun asiakkaan tunnuksella, palautuspyynnön luonti ja siirto ihmiselle (luvut 4 ja 9)
+4. Keskustelun konteksti: pitkä keskustelu tiivistetään tai vanhat työkalutulokset poistetaan (luku 3)
+5. Pysäytysehdot: askelten, tokenien ja ajan rajat (luku 8)
+
+**Ratkaisevat päätökset**
+
+- **Rajat koodissa.** Esimerkiksi "hyvitys enintään tilauksen summa" ja "vain oman tilauksen tiedot" tarkistetaan työkalun koodissa, ei kehotteessa (luku 10). Malli ehdottaa, koodi päättää.
+- **Hyväksyntä.** Rahaan liittyvät toimet rajan yli menevät ihmiselle. Hyväksyjä näkee toimen tiedot, ei pelkkää "hyväksy"-painiketta (luku 13).
+- **Siirto ihmiselle.** Agentti siirtää keskustelun, kun se ei löydä vastausta, asiakas pyytää ihmistä tai pysäytysehto täyttyy. Ihminen saa keskustelun ja työkalujen tulokset mukaan.
+- **Läpinäkyvyys.** EU:n tekoälysäädöksen 50 artiklan mukaan asiakkaalle kerrotaan, että hän keskustelee tekoälyn kanssa, ellei se ole ilmeistä (luku 13).
+
+**Uhat.** Asiakkaan viesti on epäluotettavaa sisältöä, ja agentti näkee asiakasdataa. Kolmikon kolmas osa jätetään pois: agentti ei voi hakea mielivaltaisia URL-osoitteita eikä lähettää viestejä muille kuin keskustelun asiakkaalle. Toisen asiakkaan dataa se ei näe, koska työkalut toimivat tunnistetun asiakkaan tunnuksella.
+
+**Mittaus.** Tehtävät kootaan oikeista asiakaskeskusteluista. Arvioija tarkistaa lopputilan, esimerkiksi onko palautuspyyntö järjestelmässä oikein tiedoin (luku 11). Asiakkaalle näkyvässä agentissa merkitsevä luku on pass^k, koska jokaisen asiakkaan pitää saada oikea palvelu.
+
+**Kustannus.** Agentti tekee useita kutsuja keskustelua kohden, ja konteksti kasvaa joka kutsulla (luku 8). Laske kustannus ratkaistua keskustelua kohden (luku 2), ja seuraa, kuinka suuri osa keskusteluista päätyy ihmiselle.
+
+## 14.3 Koodausagentti CI:ssä
+
+Agentti saa issuen, tekee korjauksen erillisessä ympäristössä ja avaa pull requestin ihmisen katselmoitavaksi.
+
+**Komponentit**
+
+1. Eristetty ajoympäristö: kontti tai virtuaalikone, jossa ei ole tuotantotunnuksia (luku 10)
+2. Verkko rajattu pakettirekisteriin ja muihin välttämättömiin osoitteisiin
+3. Projektiohje (`AGENTS.md` tai `CLAUDE.md`), jossa ovat testi-, tyyppitarkistus- ja lint-komennot
+4. Tarkistukset, jotka palauttavat läpi tai hylätty, ja pakotteet (hookit), jotka estävät kielletyt toimet
+5. Pull request ja haaran suojaus: ihminen hyväksyy yhdistämisen
+
+**Ratkaisevat päätökset**
+
+- **Tarkistus on valmiin määritelmä.** Agentti saa avata pull requestin vasta, kun testit menevät läpi, ja liittää siihen ajetut komennot ja niiden tulosteet (luku 10).
+- **Testimuutokset erikseen.** Jos agentti muuttaa testejä, muutos merkitään katselmoijalle erikseen.
+- **Ei oikeutta yhdistää.** Agentti voi avata pull requestin, mutta ei yhdistää sitä päähaaraan eikä julkaista.
+
+**Uhat.** Julkisessa repossa kuka tahansa voi kirjoittaa issuen, joten issuen teksti on epäluotettavaa sisältöä. Jos ympäristössä on salaisuuksia ja avoin verkko, tappava kolmikko on koossa. Siksi ympäristössä ei ole salaisuuksia, joita tehtävä ei välttämättä tarvitse, ja verkko on rajattu.
+
+**Mittaus.** Oma tehtäväjoukko kootaan suljetuista issueista samalla periaatteella kuin SWE-bench: testi, joka epäonnistuu ennen korjausta ja menee läpi sen jälkeen, sekä testit, joiden pitää pysyä vihreinä (luvut 10 ja 11).
+
+**Kustannus.** Pitkä istunto kerää kontekstiin tiedostoja ja komentojen tulosteita. Aliagentit ja tiivistys pitävät pääkontekstin pienenä (luku 10). Aseta tehtäväkohtainen token- tai kustannusraja.
+
+## 14.4 Suunnittelun tarkistuslista
+
+Käy nämä kysymykset läpi ennen toteutusta ja aina, kun järjestelmään lisätään työkalu tai tietolähde:
+
+| # | Kysymys | Luku |
+|---|---|---|
+| 1 | Riittääkö yksi kutsu tai ennalta määritelty työnkulku, vai tarvitaanko agentti? | 8 |
+| 2 | Mistä malli saa tietonsa, ja kuka saa nähdä minkäkin osan? | 5 |
+| 3 | Mitä työkaluja on, millä oikeuksilla, ja onko tappava kolmikko koossa? | 9, 13 |
+| 4 | Mitkä toimet vaativat ihmisen hyväksynnän, ja mitkä säännöt toteutetaan pakotteina? | 10, 13 |
+| 5 | Miten laatu mitataan ennen muutosta ja sen jälkeen? | 11 |
+| 6 | Mitä yksi ratkaistu tehtävä maksaa, ja mitkä ovat askel-, token- ja kustannusrajat? | 2, 8, 12 |
+| 7 | Mitä käyttäjä näkee, kun malli ei vastaa tai vastaus katkeaa? | 4, 13 |
+| 8 | Mitä jokaisesta kutsusta ja työkalukutsusta kirjataan? | 12 |
+
+<WhyItMatters>
+  Kolmessa esimerkissä toistuvat samat ratkaisut: tieto haetaan oikeuksien mukaan, säännöt toteutetaan koodissa eikä kehotteessa, peruuttamattomat toimet hyväksyy ihminen ja laatu mitataan lopputilasta. Mallit ja hinnat vaihtuvat usein (luku 2), mutta nämä rakenteet säilyvät.
+</WhyItMatters>
+
+<ChapterQuiz chapterSlug="14-viitearkkitehtuurit" />

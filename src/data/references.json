@@ -4,8 +4,9 @@
     "authors": "Gulli, A.",
     "title": "Agentic Design Patterns: A Hands-On Guide to Building Intelligent Systems",
     "year": 2025,
-    "venue": "Springer",
-    "url": "https://irp.cdn-website.com/ca79032a/files/uploaded/Agentic-Design-Patterns.pdf"
+    "venue": "Springer Cham",
+    "url": "https://link.springer.com/doi/10.1007/978-3-032-01402-3",
+    "doi": "10.1007/978-3-032-01402-3"
   },
   {
     "id": "vaswani2017",
@@ -182,5 +183,949 @@
     "year": 2024,
     "venue": "web.dev",
     "url": "https://web.dev/articles/vitals"
+  },
+  {
+    "id": "liu2023",
+    "authors": "Liu, N. F. et al.",
+    "title": "Lost in the Middle: How Language Models Use Long Contexts",
+    "year": 2023,
+    "venue": "arXiv:2307.03172 (Transactions of the ACL 2024)",
+    "url": "https://arxiv.org/abs/2307.03172"
+  },
+  {
+    "id": "anthropic-caching",
+    "authors": "Anthropic",
+    "title": "Prompt caching",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  },
+  {
+    "id": "anthropic-compaction",
+    "authors": "Anthropic",
+    "title": "Compaction",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/compaction"
+  },
+  {
+    "id": "anthropic-context-editing",
+    "authors": "Anthropic",
+    "title": "Context editing",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/context-editing"
+  },
+  {
+    "id": "anthropic-context-windows",
+    "authors": "Anthropic",
+    "title": "Context windows",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows"
+  },
+  {
+    "id": "sennrich2016",
+    "authors": "Sennrich, R., Haddow, B. & Birch, A.",
+    "title": "Neural Machine Translation of Rare Words with Subword Units",
+    "year": 2016,
+    "venue": "ACL",
+    "url": "https://arxiv.org/abs/1508.07909"
+  },
+  {
+    "id": "petrov2023",
+    "authors": "Petrov, A. et al.",
+    "title": "Language Model Tokenizers Introduce Unfairness Between Languages",
+    "year": 2023,
+    "venue": "NeurIPS",
+    "url": "https://arxiv.org/abs/2305.15425"
+  },
+  {
+    "id": "holtzman2020",
+    "authors": "Holtzman, A. et al.",
+    "title": "The Curious Case of Neural Text Degeneration",
+    "year": 2020,
+    "venue": "ICLR",
+    "url": "https://arxiv.org/abs/1904.09751"
+  },
+  {
+    "id": "ouyang2022",
+    "authors": "Ouyang, L. et al.",
+    "title": "Training Language Models to Follow Instructions with Human Feedback",
+    "year": 2022,
+    "venue": "NeurIPS",
+    "url": "https://arxiv.org/abs/2203.02155"
+  },
+  {
+    "id": "openai-o1",
+    "authors": "OpenAI",
+    "title": "Learning to Reason with LLMs",
+    "year": 2024,
+    "venue": "OpenAI",
+    "url": "https://openai.com/index/learning-to-reason-with-llms/"
+  },
+  {
+    "id": "anthropic-opus46",
+    "authors": "Anthropic",
+    "title": "Introducing Claude Opus 4.6",
+    "year": 2026,
+    "venue": "Anthropic",
+    "url": "https://www.anthropic.com/news/claude-opus-4-6"
+  },
+  {
+    "id": "anthropic-thinking",
+    "authors": "Anthropic",
+    "title": "Extended thinking",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking"
+  },
+  {
+    "id": "anthropic-effort",
+    "authors": "Anthropic",
+    "title": "Effort",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/effort"
+  },
+  {
+    "id": "anthropic-api-2026-10-21",
+    "authors": "Anthropic",
+    "title": "Migrating to API version 2026-10-21",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio",
+    "url": "https://platform.claude.com/docs/en/api/migration-2026-10-21"
+  },
+  {
+    "id": "deepseek-v41",
+    "authors": "DeepSeek-AI",
+    "title": "DeepSeek-V4.1-Flash (mallikortti)",
+    "year": 2026,
+    "venue": "Hugging Face",
+    "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash"
+  },
+  {
+    "id": "gpt-oss",
+    "authors": "OpenAI",
+    "title": "gpt-oss-120b (mallikortti)",
+    "year": 2025,
+    "venue": "Hugging Face",
+    "url": "https://huggingface.co/openai/gpt-oss-120b"
+  },
+  {
+    "id": "anthropic-models",
+    "authors": "Anthropic",
+    "title": "Models overview",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/about-claude/models/overview"
+  },
+  {
+    "id": "openai-models",
+    "authors": "OpenAI",
+    "title": "Models",
+    "year": 2026,
+    "venue": "OpenAI API -dokumentaatio, tilanne 11/2026",
+    "url": "https://developers.openai.com/api/docs/models"
+  },
+  {
+    "id": "openai-pricing",
+    "authors": "OpenAI",
+    "title": "Pricing",
+    "year": 2026,
+    "venue": "OpenAI API -dokumentaatio, tilanne 11/2026",
+    "url": "https://developers.openai.com/api/docs/pricing"
+  },
+  {
+    "id": "google-gemini-models",
+    "authors": "Google",
+    "title": "Gemini models",
+    "year": 2026,
+    "venue": "Gemini API -dokumentaatio, tilanne 11/2026",
+    "url": "https://aistudio.google.com/docs/models"
+  },
+  {
+    "id": "google-gemini-pricing",
+    "authors": "Google",
+    "title": "Gemini API pricing",
+    "year": 2026,
+    "venue": "Gemini API -dokumentaatio, tilanne 11/2026",
+    "url": "https://aistudio.google.com/docs/pricing"
+  },
+  {
+    "id": "hf-kimi",
+    "authors": "Moonshot AI",
+    "title": "Kimi-K3",
+    "year": 2026,
+    "venue": "Hugging Face",
+    "url": "https://huggingface.co/moonshotai/Kimi-K3"
+  },
+  {
+    "id": "hf-qwen",
+    "authors": "Qwen",
+    "title": "Qwen-mallit",
+    "year": 2026,
+    "venue": "Hugging Face",
+    "url": "https://huggingface.co/Qwen"
+  },
+  {
+    "id": "anthropic-messages",
+    "authors": "Anthropic",
+    "title": "Working with the Messages API",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/working-with-messages"
+  },
+  {
+    "id": "anthropic-streaming",
+    "authors": "Anthropic",
+    "title": "Streaming messages",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/streaming"
+  },
+  {
+    "id": "anthropic-structured-outputs",
+    "authors": "Anthropic",
+    "title": "Structured outputs",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+  },
+  {
+    "id": "anthropic-tool-use",
+    "authors": "Anthropic",
+    "title": "Tool use",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview"
+  },
+  {
+    "id": "anthropic-errors",
+    "authors": "Anthropic",
+    "title": "Errors",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/api/errors"
+  },
+  {
+    "id": "anthropic-vision",
+    "authors": "Anthropic",
+    "title": "Vision",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/vision"
+  },
+  {
+    "id": "anthropic-contextual-retrieval",
+    "authors": "Anthropic",
+    "title": "Introducing Contextual Retrieval",
+    "year": 2024,
+    "venue": "Anthropic",
+    "url": "https://www.anthropic.com/news/contextual-retrieval"
+  },
+  {
+    "id": "anthropic-effective-agents",
+    "authors": "Schluntz, E. & Zhang, B. (Anthropic)",
+    "title": "Building effective agents",
+    "year": 2024,
+    "venue": "Anthropic Engineering",
+    "url": "https://www.anthropic.com/engineering/building-effective-agents"
+  },
+  {
+    "id": "anthropic-multi-agent",
+    "authors": "Anthropic",
+    "title": "How we built our multi-agent research system",
+    "year": 2025,
+    "venue": "Anthropic Engineering",
+    "url": "https://www.anthropic.com/engineering/multi-agent-research-system"
+  },
+  {
+    "id": "malkov2018",
+    "authors": "Malkov, Y. A. & Yashunin, D. A.",
+    "title": "Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs",
+    "year": 2018,
+    "venue": "IEEE TPAMI",
+    "url": "https://arxiv.org/abs/1603.09320"
+  },
+  {
+    "id": "karpukhin2020",
+    "authors": "Karpukhin, V. et al.",
+    "title": "Dense Passage Retrieval for Open-Domain Question Answering",
+    "year": 2020,
+    "venue": "EMNLP",
+    "url": "https://arxiv.org/abs/2004.04906"
+  },
+  {
+    "id": "robertson2009",
+    "authors": "Robertson, S. & Zaragoza, H.",
+    "title": "The Probabilistic Relevance Framework: BM25 and Beyond",
+    "year": 2009,
+    "venue": "Foundations and Trends in Information Retrieval",
+    "url": "https://doi.org/10.1561/1500000019"
+  },
+  {
+    "id": "cormack2009",
+    "authors": "Cormack, G. V., Clarke, C. L. A. & Büttcher, S.",
+    "title": "Reciprocal Rank Fusion Outperforms Condorcet and Individual Rank Learning Methods",
+    "year": 2009,
+    "venue": "SIGIR",
+    "url": "https://doi.org/10.1145/1571941.1572114"
+  },
+  {
+    "id": "nogueira2019",
+    "authors": "Nogueira, R. & Cho, K.",
+    "title": "Passage Re-ranking with BERT",
+    "year": 2019,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/1901.04085"
+  },
+  {
+    "id": "es2023",
+    "authors": "Es, S. et al.",
+    "title": "Ragas: Automated Evaluation of Retrieval Augmented Generation",
+    "year": 2023,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2309.15217"
+  },
+  {
+    "id": "hu2021",
+    "authors": "Hu, E. J. et al.",
+    "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+    "year": 2021,
+    "venue": "ICLR 2022",
+    "url": "https://arxiv.org/abs/2106.09685"
+  },
+  {
+    "id": "dettmers2023",
+    "authors": "Dettmers, T. et al.",
+    "title": "QLoRA: Efficient Finetuning of Quantized LLMs",
+    "year": 2023,
+    "venue": "NeurIPS",
+    "url": "https://arxiv.org/abs/2305.14314"
+  },
+  {
+    "id": "rafailov2023",
+    "authors": "Rafailov, R. et al.",
+    "title": "Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
+    "year": 2023,
+    "venue": "NeurIPS",
+    "url": "https://arxiv.org/abs/2305.18290"
+  },
+  {
+    "id": "vllm-lora",
+    "authors": "vLLM",
+    "title": "LoRA Adapters",
+    "year": 2026,
+    "venue": "vLLM-dokumentaatio",
+    "url": "https://docs.vllm.ai/en/latest/features/lora.html"
+  },
+  {
+    "id": "radford2022",
+    "authors": "Radford, A. et al.",
+    "title": "Robust Speech Recognition via Large-Scale Weak Supervision",
+    "year": 2022,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2212.04356"
+  },
+  {
+    "id": "shinn2023",
+    "authors": "Shinn, N. et al.",
+    "title": "Reflexion: Language Agents with Verbal Reinforcement Learning",
+    "year": 2023,
+    "venue": "NeurIPS",
+    "url": "https://arxiv.org/abs/2303.11366"
+  },
+  {
+    "id": "anthropic-mcp",
+    "authors": "Anthropic",
+    "title": "Introducing the Model Context Protocol",
+    "year": 2024,
+    "venue": "Anthropic",
+    "url": "https://www.anthropic.com/news/model-context-protocol"
+  },
+  {
+    "id": "mcp-spec",
+    "authors": "Model Context Protocol",
+    "title": "Specification, revision 2026-07-28",
+    "year": 2026,
+    "venue": "modelcontextprotocol.io, tilanne 11/2026",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28"
+  },
+  {
+    "id": "mcp-tools",
+    "authors": "Model Context Protocol",
+    "title": "Tools (specification 2026-07-28)",
+    "year": 2026,
+    "venue": "modelcontextprotocol.io, tilanne 11/2026",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools"
+  },
+  {
+    "id": "mcp-transports",
+    "authors": "Model Context Protocol",
+    "title": "Transports (specification 2026-07-28)",
+    "year": 2026,
+    "venue": "modelcontextprotocol.io, tilanne 11/2026",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports"
+  },
+  {
+    "id": "mcp-apps",
+    "authors": "Model Context Protocol",
+    "title": "MCP Apps – Bringing UI Capabilities To MCP Clients",
+    "year": 2026,
+    "venue": "MCP Blog",
+    "url": "https://blog.modelcontextprotocol.io/posts/2026-01-26-mcp-apps/"
+  },
+  {
+    "id": "lf-aaif",
+    "authors": "Linux Foundation",
+    "title": "Linux Foundation Announces the Formation of the Agentic AI Foundation",
+    "year": 2025,
+    "venue": "Linux Foundation, lehdistötiedote",
+    "url": "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation"
+  },
+  {
+    "id": "anthropic-skills",
+    "authors": "Anthropic",
+    "title": "Equipping agents for the real world with Agent Skills",
+    "year": 2025,
+    "venue": "Anthropic Engineering",
+    "url": "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills"
+  },
+  {
+    "id": "agentskills",
+    "authors": "Agent Skills",
+    "title": "Agent Skills Overview",
+    "year": 2026,
+    "venue": "agentskills.io, tilanne 11/2026",
+    "url": "https://agentskills.io/"
+  },
+  {
+    "id": "anthropic-computer-use-2024",
+    "authors": "Anthropic",
+    "title": "Introducing computer use, a new Claude 3.5 Sonnet, and Claude 3.5 Haiku",
+    "year": 2024,
+    "venue": "Anthropic",
+    "url": "https://www.anthropic.com/news/3-5-models-and-computer-use"
+  },
+  {
+    "id": "anthropic-computer-use",
+    "authors": "Anthropic",
+    "title": "Computer use tool",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool"
+  },
+  {
+    "id": "anthropic-claude-4",
+    "authors": "Anthropic",
+    "title": "Introducing Claude 4",
+    "year": 2025,
+    "venue": "Anthropic",
+    "url": "https://www.anthropic.com/news/claude-4"
+  },
+  {
+    "id": "claude-code-how",
+    "authors": "Anthropic",
+    "title": "How Claude Code works",
+    "year": 2026,
+    "venue": "Claude Code -dokumentaatio, tilanne 11/2026",
+    "url": "https://code.claude.com/docs/en/how-claude-code-works"
+  },
+  {
+    "id": "claude-code-best-practices",
+    "authors": "Anthropic",
+    "title": "Best practices for Claude Code",
+    "year": 2026,
+    "venue": "Claude Code -dokumentaatio, tilanne 11/2026",
+    "url": "https://code.claude.com/docs/en/best-practices"
+  },
+  {
+    "id": "claude-code-hooks",
+    "authors": "Anthropic",
+    "title": "Hooks",
+    "year": 2026,
+    "venue": "Claude Code -dokumentaatio, tilanne 11/2026",
+    "url": "https://code.claude.com/docs/en/hooks"
+  },
+  {
+    "id": "agents-md",
+    "authors": "Agentic AI Foundation",
+    "title": "AGENTS.md",
+    "year": 2026,
+    "venue": "agents.md, tilanne 11/2026",
+    "url": "https://agents.md/"
+  },
+  {
+    "id": "codex-cloud",
+    "authors": "OpenAI",
+    "title": "Codex cloud",
+    "year": 2026,
+    "venue": "Codex-dokumentaatio, tilanne 11/2026",
+    "url": "https://learn.chatgpt.com/docs/cloud"
+  },
+  {
+    "id": "jimenez2023",
+    "authors": "Jimenez, C. E. et al.",
+    "title": "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+    "year": 2023,
+    "venue": "ICLR 2024",
+    "url": "https://arxiv.org/abs/2310.06770"
+  },
+  {
+    "id": "openai-swebench-verified",
+    "authors": "OpenAI",
+    "title": "Introducing SWE-bench Verified",
+    "year": 2024,
+    "venue": "OpenAI (sivu estää automaattisen haun; sisältö tarkistettu hakukoneen otteista ja swebench.comista)",
+    "url": "https://openai.com/index/introducing-swe-bench-verified/"
+  },
+  {
+    "id": "anthropic-evals",
+    "authors": "Anthropic",
+    "title": "Demystifying evals for AI agents",
+    "year": 2026,
+    "venue": "Anthropic Engineering",
+    "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+  },
+  {
+    "id": "zheng2023",
+    "authors": "Zheng, L. et al.",
+    "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+    "year": 2023,
+    "venue": "NeurIPS 2023 Datasets and Benchmarks",
+    "url": "https://arxiv.org/abs/2306.05685"
+  },
+  {
+    "id": "mcp-resources",
+    "authors": "Model Context Protocol",
+    "title": "Resources (specification 2026-07-28)",
+    "year": 2026,
+    "venue": "modelcontextprotocol.io, tilanne 11/2026",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28/server/resources"
+  },
+  {
+    "id": "mcp-prompts",
+    "authors": "Model Context Protocol",
+    "title": "Prompts (specification 2026-07-28)",
+    "year": 2026,
+    "venue": "modelcontextprotocol.io, tilanne 11/2026",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28/server/prompts"
+  },
+  {
+    "id": "openai-swebench-retire",
+    "authors": "OpenAI",
+    "title": "Why we no longer evaluate SWE-bench Verified",
+    "year": 2026,
+    "venue": "OpenAI (sivu estää automaattisen haun; sisältö tarkistettu hakukoneen otteista)",
+    "url": "https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified/"
+  },
+  {
+    "id": "patel2023",
+    "authors": "Patel, P. et al.",
+    "title": "Splitwise: Efficient Generative LLM Inference Using Phase Splitting",
+    "year": 2023,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2311.18677"
+  },
+  {
+    "id": "zhong2024",
+    "authors": "Zhong, Y. et al.",
+    "title": "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving",
+    "year": 2024,
+    "venue": "OSDI 2024",
+    "url": "https://arxiv.org/abs/2401.09670"
+  },
+  {
+    "id": "ainslie2023",
+    "authors": "Ainslie, J. et al.",
+    "title": "GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints",
+    "year": 2023,
+    "venue": "EMNLP 2023",
+    "url": "https://arxiv.org/abs/2305.13245"
+  },
+  {
+    "id": "yu2022",
+    "authors": "Yu, G.-I. et al.",
+    "title": "Orca: A Distributed Serving System for Transformer-Based Generative Models",
+    "year": 2022,
+    "venue": "OSDI 2022",
+    "url": "https://www.usenix.org/conference/osdi22/presentation/yu"
+  },
+  {
+    "id": "kwon2023",
+    "authors": "Kwon, W. et al.",
+    "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+    "year": 2023,
+    "venue": "SOSP 2023",
+    "url": "https://arxiv.org/abs/2309.06180"
+  },
+  {
+    "id": "frantar2022",
+    "authors": "Frantar, E. et al.",
+    "title": "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers",
+    "year": 2022,
+    "venue": "ICLR 2023",
+    "url": "https://arxiv.org/abs/2210.17323"
+  },
+  {
+    "id": "lin2023",
+    "authors": "Lin, J. et al.",
+    "title": "AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration",
+    "year": 2023,
+    "venue": "MLSys 2024",
+    "url": "https://arxiv.org/abs/2306.00978"
+  },
+  {
+    "id": "leviathan2023",
+    "authors": "Leviathan, Y., Kalman, M. & Matias, Y.",
+    "title": "Fast Inference from Transformers via Speculative Decoding",
+    "year": 2023,
+    "venue": "ICML 2023",
+    "url": "https://arxiv.org/abs/2211.17192"
+  },
+  {
+    "id": "anthropic-rate-limits",
+    "authors": "Anthropic",
+    "title": "Rate limits",
+    "year": 2026,
+    "venue": "Claude API -dokumentaatio, tilanne 11/2026",
+    "url": "https://platform.claude.com/docs/en/api/rate-limits"
+  },
+  {
+    "id": "willison2022",
+    "authors": "Willison, S.",
+    "title": "Prompt injection attacks against GPT-3",
+    "year": 2022,
+    "venue": "simonwillison.net",
+    "url": "https://simonwillison.net/2022/Sep/12/prompt-injection/"
+  },
+  {
+    "id": "greshake2023",
+    "authors": "Greshake, K. et al.",
+    "title": "Not what you have signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection",
+    "year": 2023,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2302.12173"
+  },
+  {
+    "id": "willison2025",
+    "authors": "Willison, S.",
+    "title": "The lethal trifecta for AI agents: private data, untrusted content, and external communication",
+    "year": 2025,
+    "venue": "simonwillison.net",
+    "url": "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"
+  },
+  {
+    "id": "debenedetti2025",
+    "authors": "Debenedetti, E. et al.",
+    "title": "Defeating Prompt Injections by Design",
+    "year": 2025,
+    "venue": "arXiv",
+    "url": "https://arxiv.org/abs/2503.18813"
+  },
+  {
+    "id": "owasp-llm-2025",
+    "authors": "OWASP",
+    "title": "OWASP Top 10 for LLM Applications 2025",
+    "year": 2025,
+    "venue": "OWASP GenAI Security Project",
+    "url": "https://genai.owasp.org/llm-top-10/"
+  },
+  {
+    "id": "brooker2015",
+    "authors": "Brooker, M.",
+    "title": "Exponential Backoff And Jitter",
+    "year": 2015,
+    "venue": "AWS Architecture Blog",
+    "url": "https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/"
+  },
+  {
+    "id": "fowler2014",
+    "authors": "Fowler, M.",
+    "title": "CircuitBreaker",
+    "year": 2014,
+    "venue": "martinfowler.com",
+    "url": "https://martinfowler.com/bliki/CircuitBreaker.html"
+  },
+  {
+    "id": "eu-ai-act",
+    "authors": "Euroopan parlamentti ja neuvosto",
+    "title": "Asetus (EU) 2024/1689 (tekoälysäädös)",
+    "year": 2024,
+    "venue": "Euroopan unionin virallinen lehti",
+    "url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj"
+  },
+  {
+    "id": "aiact-timeline",
+    "authors": "Future of Life Institute",
+    "title": "Implementation Timeline – EU Artificial Intelligence Act",
+    "year": 2026,
+    "venue": "artificialintelligenceact.eu, toisen käden lähde, tilanne 11/2026",
+    "url": "https://artificialintelligenceact.eu/implementation-timeline/"
+  },
+  {
+    "id": "aiact-art50",
+    "authors": "Future of Life Institute",
+    "title": "Article 50: Transparency Obligations for Providers and Deployers of Certain AI Systems",
+    "year": 2024,
+    "venue": "artificialintelligenceact.eu, asetustekstin toisinto",
+    "url": "https://artificialintelligenceact.eu/article/50/"
+  },
+  {
+    "id": "owasp-llm06",
+    "authors": "OWASP",
+    "title": "LLM06:2025 Excessive Agency",
+    "year": 2025,
+    "venue": "OWASP GenAI Security Project",
+    "url": "https://genai.owasp.org/llmrisk/llm062025-excessive-agency/"
+  },
+  {
+    "id": "nielsen2000",
+    "authors": "Nielsen, J.",
+    "title": "Why You Only Need to Test with 5 Users",
+    "year": 2000,
+    "venue": "Nielsen Norman Group",
+    "url": "https://www.nngroup.com/articles/why-you-only-need-to-test-with-5-users/"
+  },
+  {
+    "id": "nielsen1993",
+    "authors": "Nielsen, J.",
+    "title": "Response Times: The 3 Important Limits",
+    "year": 1993,
+    "venue": "Nielsen Norman Group (ote kirjasta Usability Engineering)",
+    "url": "https://www.nngroup.com/articles/response-times-3-important-limits/"
+  },
+  {
+    "id": "nielsen1994",
+    "authors": "Nielsen, J.",
+    "title": "10 Usability Heuristics for User Interface Design",
+    "year": 1994,
+    "venue": "Nielsen Norman Group, päivitetty 2024",
+    "url": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+  },
+  {
+    "id": "who2023",
+    "authors": "WHO",
+    "title": "Disability (fact sheet)",
+    "year": 2023,
+    "venue": "World Health Organization",
+    "url": "https://www.who.int/news-room/fact-sheets/detail/disability-and-health"
+  },
+  {
+    "id": "mackenzie1992",
+    "authors": "MacKenzie, I. S.",
+    "title": "Fitts’ Law as a Research and Design Tool in Human-Computer Interaction",
+    "year": 1992,
+    "venue": "Human-Computer Interaction 7",
+    "url": "https://www.yorku.ca/mack/hci1992.html"
+  },
+  {
+    "id": "wcag22-new",
+    "authors": "W3C WAI",
+    "title": "What’s New in WCAG 2.2",
+    "year": 2023,
+    "venue": "W3C Web Accessibility Initiative",
+    "url": "https://www.w3.org/WAI/standards-guidelines/wcag/new-in-22/"
+  },
+  {
+    "id": "wcag-contrast",
+    "authors": "W3C WAI",
+    "title": "Understanding Success Criterion 1.4.3: Contrast (Minimum)",
+    "year": 2023,
+    "venue": "W3C",
+    "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
+  },
+  {
+    "id": "wcag-target-size",
+    "authors": "W3C WAI",
+    "title": "Understanding Success Criterion 2.5.8: Target Size (Minimum)",
+    "year": 2023,
+    "venue": "W3C",
+    "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html"
+  },
+  {
+    "id": "wcag3-wd",
+    "authors": "W3C",
+    "title": "W3C Accessibility Guidelines (WCAG) 3.0, Working Draft",
+    "year": 2026,
+    "venue": "W3C, työluonnos 10.9.2026",
+    "url": "https://www.w3.org/TR/wcag-3.0/"
+  },
+  {
+    "id": "webaim-million",
+    "authors": "WebAIM",
+    "title": "The WebAIM Million (2026)",
+    "year": 2026,
+    "venue": "WebAIM",
+    "url": "https://webaim.org/projects/million/"
+  },
+  {
+    "id": "using-aria",
+    "authors": "W3C",
+    "title": "Using ARIA",
+    "year": 2023,
+    "venue": "W3C",
+    "url": "https://www.w3.org/TR/using-aria/"
+  },
+  {
+    "id": "mdn-oklch",
+    "authors": "MDN",
+    "title": "oklch()",
+    "year": 2026,
+    "venue": "MDN Web Docs",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/oklch"
+  },
+  {
+    "id": "mdn-variable-fonts",
+    "authors": "MDN",
+    "title": "Variable fonts",
+    "year": 2026,
+    "venue": "MDN Web Docs",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Fonts/Variable_fonts"
+  },
+  {
+    "id": "mdn-dialog",
+    "authors": "MDN",
+    "title": "<dialog>: The Dialog element",
+    "year": 2026,
+    "venue": "MDN Web Docs",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog"
+  },
+  {
+    "id": "mdn-container-queries",
+    "authors": "MDN",
+    "title": "CSS container queries",
+    "year": 2026,
+    "venue": "MDN Web Docs",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries"
+  },
+  {
+    "id": "webdev-lcp",
+    "authors": "web.dev",
+    "title": "Largest Contentful Paint (LCP)",
+    "year": 2026,
+    "venue": "web.dev",
+    "url": "https://web.dev/articles/lcp"
+  },
+  {
+    "id": "webdev-inp",
+    "authors": "web.dev",
+    "title": "Interaction to Next Paint (INP)",
+    "year": 2026,
+    "venue": "web.dev",
+    "url": "https://web.dev/articles/inp"
+  },
+  {
+    "id": "webdev-cls",
+    "authors": "web.dev",
+    "title": "Cumulative Layout Shift (CLS)",
+    "year": 2026,
+    "venue": "web.dev",
+    "url": "https://web.dev/articles/cls"
+  },
+  {
+    "id": "webdev-inp-launch",
+    "authors": "web.dev",
+    "title": "Interaction to Next Paint becomes a Core Web Vital",
+    "year": 2024,
+    "venue": "web.dev blog",
+    "url": "https://web.dev/blog/inp-cwv-launch"
+  },
+  {
+    "id": "webdev-long-tasks",
+    "authors": "web.dev",
+    "title": "Optimize long tasks",
+    "year": 2026,
+    "venue": "web.dev",
+    "url": "https://web.dev/articles/optimize-long-tasks"
+  },
+  {
+    "id": "astro-islands",
+    "authors": "Astro",
+    "title": "Islands architecture",
+    "year": 2026,
+    "venue": "Astro Docs",
+    "url": "https://docs.astro.build/en/concepts/islands/"
+  },
+  {
+    "id": "design-tokens",
+    "authors": "Design Tokens Community Group",
+    "title": "Design Tokens Format Module 2025.10",
+    "year": 2025,
+    "venue": "W3C Community Group",
+    "url": "https://www.designtokens.org/tr/2025.10/format/"
+  },
+  {
+    "id": "amershi2019",
+    "authors": "Amershi, S. et al.",
+    "title": "Guidelines for Human-AI Interaction",
+    "year": 2019,
+    "venue": "CHI 2019",
+    "url": "https://www.microsoft.com/en-us/research/publication/guidelines-for-human-ai-interaction/"
+  },
+  {
+    "id": "google-genui",
+    "authors": "Google Research",
+    "title": "Generative UI: A rich, custom, visual interactive user experience for any prompt",
+    "year": 2025,
+    "venue": "Google Research Blog",
+    "url": "https://research.google/blog/generative-ui-a-rich-custom-visual-interactive-user-experience-for-any-prompt/"
+  },
+  {
+    "id": "sus",
+    "authors": "Sauro, J. (MeasuringU)",
+    "title": "Measuring Usability with the System Usability Scale (SUS)",
+    "year": 2011,
+    "venue": "MeasuringU",
+    "url": "https://measuringu.com/sus/"
+  },
+  {
+    "id": "rodden2010",
+    "authors": "Rodden, K., Hutchinson, H. & Fu, X.",
+    "title": "Measuring the User Experience on a Large Scale: User-Centered Metrics for Web Applications",
+    "year": 2010,
+    "venue": "CHI 2010",
+    "url": "https://research.google/pubs/measuring-the-user-experience-on-a-large-scale-user-centered-metrics-for-web-applications/"
+  },
+  {
+    "id": "eu-wad",
+    "authors": "Euroopan parlamentti ja neuvosto",
+    "title": "Direktiivi (EU) 2016/2102 julkisen sektorin elinten verkkosivustojen ja mobiilisovellusten saavutettavuudesta",
+    "year": 2016,
+    "venue": "Euroopan unionin virallinen lehti",
+    "url": "https://eur-lex.europa.eu/eli/dir/2016/2102/oj"
+  },
+  {
+    "id": "eu-eaa",
+    "authors": "Euroopan komissio",
+    "title": "European accessibility act",
+    "year": 2026,
+    "venue": "commission.europa.eu",
+    "url": "https://commission.europa.eu/strategy-and-policy/policies/justice-and-fundamental-rights/disability/union-equality-strategy-rights-persons-disabilities-2021-2030/european-accessibility-act_en"
+  },
+  {
+    "id": "eu-eaa-text",
+    "authors": "Euroopan parlamentti ja neuvosto",
+    "title": "Direktiivi (EU) 2019/882 tuotteiden ja palvelujen esteettömyysvaatimuksista",
+    "year": 2019,
+    "venue": "Euroopan unionin virallinen lehti (4 artikla ja 31 artikla)",
+    "url": "https://eur-lex.europa.eu/eli/dir/2019/882/oj"
+  },
+  {
+    "id": "ec-en301549",
+    "authors": "Euroopan komissio",
+    "title": "Web Accessibility Directive — Standards and harmonisation",
+    "year": 2026,
+    "venue": "digital-strategy.ec.europa.eu",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/web-accessibility-directive-standards-and-harmonisation"
+  },
+  {
+    "id": "figma-config-2025",
+    "authors": "Figma",
+    "title": "Config 2025: Pushing design further",
+    "year": 2025,
+    "venue": "Figma Blog",
+    "url": "https://www.figma.com/blog/config-2025-recap/"
   }
 ]

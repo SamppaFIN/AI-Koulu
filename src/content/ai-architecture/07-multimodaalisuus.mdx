@@ -1,0 +1,41 @@
+---
+title: "Multimodaalisuus"
+description: "Kuva, ääni ja video kielimallin syötteenä: yhteinen upotusavaruus, natiivit monimuotomallit ja putket, joissa erilliset mallit ketjutetaan."
+order: 7
+section: "Rakennusmallit"
+part: 2
+tags: ["multimodaalisuus", "CLIP", "puheentunnistus", "kuva", "ääni"]
+---
+
+Multimodaalinen järjestelmä käsittelee useampaa tietotyyppiä: tekstiä, kuvia, ääntä tai videota. Sen voi rakentaa kahdella tavalla. **Natiivi monimuotomalli** ottaa eri tietotyypit vastaan suoraan. **Putki** ketjuttaa erilliset mallit, esimerkiksi puheentunnistuksen, kielimallin ja puhesynteesin.
+
+## 7.1 Yhteinen upotusavaruus
+
+CLIP opetti kuva- ja tekstienkooderin tuottamaan vektorit samaan avaruuteen. Koulutusaineistona oli 400 miljoonaa kuva–teksti-paria, ja tavoitteena oli, että kuvan ja sen oikean kuvatekstin vektorit ovat lähellä toisiaan ja väärien parien kaukana (kontrastiivinen oppiminen) <Reference id="radford2021" />. Samassa avaruudessa kuvaa voi hakea tekstillä ja tekstiä kuvalla ilman erillistä luokittelijaa. Tämä on monimuotoisen haun (luku 5) perusta.
+
+## 7.2 Natiivit monimuotomallit
+
+Monet nykyiset mallit ottavat kuvan suoraan syötteenä tekstin rinnalla. Esimerkiksi Gemini 4 Argon hyväksyy tekstiä, kuvia, ääntä, videota ja PDF-tiedostoja <Reference id="google-gemini-models" />, ja Claude API ottaa vastaan kuvia ja PDF-dokumentteja <Reference id="anthropic-vision" />. Myös avoimissa malleissa on monimuotoisia vaihtoehtoja: DeepSeek V4.1 Flash käsittelee kuvia ja tekstiä <Reference id="deepseek-v41" />.
+
+Kuvat ja muut syötteet muunnetaan tokeneiksi, joten ne kuluttavat kontekstiikkunaa ja maksavat kuten tekstikin. Tarkista mallin dokumentaatiosta, miten kuvan koko vaikuttaa tokenimäärään.
+
+<MultimodalComparison />
+
+Vertailu on havainnollistus: kuvien kuvaukset ovat valmiiksi kirjoitettuja, eikä demo kutsu oikeaa mallia.
+
+## 7.3 Puhe
+
+Puheentunnistus muuttaa äänen tekstiksi. Whisper koulutettiin 680 000 tunnilla monikielistä ääntä, ja sama malli tunnistaa puhetta useilla kielillä <Reference id="radford2022" />. Putki, jossa on puheentunnistus, kielimalli ja puhesynteesi, on helppo rakentaa ja vaihtaa osa kerrallaan, mutta jokainen vaihe lisää viivettä. Reaaliaikaiseen keskusteluun on omia ääni- ja live-malleja, joissa sama malli käsittelee ääntä suoraan; esimerkiksi Googlen hinnastossa on erillinen Live-malliryhmä <Reference id="google-gemini-pricing" />.
+
+| Ratkaisu | Hyöty | Haitta |
+|---|---|---|
+| Putki (puheentunnistus → kielimalli → puhesynteesi) | Jokaisen osan voi vaihtaa ja testata erikseen | Viive kasautuu; äänensävy katoaa tekstiksi muutettaessa |
+| Natiivi äänimalli | Pienempi viive; malli kuulee äänensävyn | Vähemmän valinnanvaraa; vaikeampi testata osina |
+
+## 7.4 Vikatilat
+
+- **Kuvan yksityiskohdat keksitään.** Malli voi kuvata asioita, joita kuvassa ei ole, tai lukea pientä tekstiä väärin. Pyydä mallia lainaamaan näkemänsä teksti ja tarkista kriittiset tiedot.
+- **Kuvaan piilotettu teksti on syötettä.** Kuvassa oleva teksti voi sisältää ohjeita, joita malli yrittää noudattaa. Käsittele sitä kuten muutakin ulkoista dataa (luku 13).
+- **Laatu riippuu syötteestä.** Huono valaistus, pakkaus tai taustamelu heikentää tulosta. Testaa oikeilla, ei siistityillä näytteillä.
+
+<ChapterQuiz chapterSlug="07-multimodaalisuus" />

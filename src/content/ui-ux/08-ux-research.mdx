@@ -1,121 +1,67 @@
 ---
-title: "UX-tutkimus ja datavetoinen suunnittelu"
-description: "Kvantitatiiviset ja kvalitatiiviset menetelmät, analyysi ja iterointi."
+title: "UX-tutkimus ja mittaaminen"
+description: "Laadulliset ja määrälliset menetelmät, SUS-kysely ja sen pisteytys, HEART-kehys, A/B-testin otoskoko ja tutkimus jatkuvana työnä."
 order: 8
 section: "UX-tutkimus"
-tags: ["UX-tutkimus", "A/B-testaus", "analytiikka", "kvalitatiivinen"]
+tags: ["UX-tutkimus", "SUS", "HEART", "A/B-testaus", "otoskoko"]
 published: true
 ---
 
-## 8.1 Kvantitatiiviset menetelmät
+Luvussa 1 todettiin, että laadulliset menetelmät kertovat, miksi jotain tapahtuu, ja määrälliset, kuinka paljon. Tämä luku käsittelee mittaamisen: miten käytettävyydestä ja käyttökokemuksesta saadaan lukuja, ja kuinka suuri otos tarvitaan, jotta luvuista voi päätellä jotain.
 
-### A/B-testaus ja monikätiset bandiitit
+## 8.1 Laadulliset menetelmät
 
-```typescript
-// Yksinkertainen A/B-testi
-const variant = Math.random() < 0.5 ? "A" : "B";
+- **Käytettävyystesti:** käyttäjä tekee tyypillisiä tehtäviä, ja tutkija havainnoi, missä hän onnistuu ja missä hänellä on vaikeuksia <Reference id="nielsen2012" />. Ääneen ajattelu, jossa käyttäjä kertoo ajatuksistaan tehdessään, paljastaa väärinkäsitykset. Otoskoosta luvussa 1.
+- **Haastattelu:** avoimet kysymykset menneestä toiminnasta ("Kerro, miten viimeksi teit…") ovat luotettavampia kuin kysymykset tulevasta ("Käyttäisitkö…?").
+- **Kontekstuaalinen havainnointi:** tutkija seuraa työtä käyttäjän omassa ympäristössä ja näkee kiertotiet, joita käyttäjä ei itse mainitsisi.
 
-if (variant === "A") {
-  showButton("Osta nyt");        // Kontrolli
-} else {
-  showButton("Lisää ostoskoriin"); // Variantti
-}
+## 8.2 SUS-kysely
 
-// Mittaa: klikkausprosentti, konversio, hylkäysprosentti
-```
+**System Usability Scale** (SUS) on John Brooken vuonna 1986 julkaisema kymmenen väittämän kysely, johon vastataan viisiportaisella asteikolla <Reference id="sus" />. Pisteytys:
 
-**Monikätinen bandiitti (Multi-Armed Bandit)** on A/B-testin kehittyneempi
-versio: se ohjaa jatkuvasti enemmän liikennettä paremmin toimivaan varianttiin.
+1. Parittomat väittämät (myönteiset): pisteet = vastaus − 1
+2. Parilliset väittämät (kielteiset): pisteet = 5 − vastaus
+3. Laske kymmenen väittämän pisteet yhteen (0–40) ja kerro 2,5:llä
 
-### Suppiloanalyysi ja drop-off-pisteet
+<div class="formula">SUS = 2,5 · Σ pisteet,   vaihteluväli 0–100</div>
 
-```
-Kotisivu (100%) → Tuotesivu (65%) → Ostoskori (30%) → Maksu (10%) → Vahvistus (8%)
-```
+Noin 500 tutkimuksen keskiarvo on 68 <Reference id="sus" />. SUS-pisteet eivät ole prosentteja: 68 tarkoittaa keskitasoa, ei "68 % tyytyväisiä". Kysely kertoo kokonaistason muttei sitä, mikä on vialla. Siksi se yhdistetään käytettävyystestiin.
 
-Mistä suurin osa käyttäjistä putoaa? Ostoskorista maksuun (30% → 10%):
-- Onko maksu liian monimutkainen?
-- Puuttuuko luottokortin logo?
-- Onko toimituskulut yllätys?
+## 8.3 HEART-kehys
 
-### Lämpökartat ja klikkauskartat
+Googlen HEART-kehys jakaa käyttökokemuksen mittarit viiteen luokkaan: Happiness (tyytyväisyys), Engagement (sitoutuminen), Adoption (käyttöönotto), Retention (pysyvyys) ja Task success (tehtävän onnistuminen). Mittarit johdetaan Goals–Signals–Metrics-prosessilla <Reference id="rodden2010" />:
 
-Työkalut: Hotjar, Microsoft Clarity, FullStory. Näyttävät:
-- Mihin käyttäjät klikkaavat (klikkauskartta)
-- Kuinka pitkälle he vierittävät (vierityskartta)
-- Mihin heidän katseensa pysähtyy (lämpökartta)
-
-<AnalogyBox>
-  **Analogia:** UX-tutkimus on kuin lääkärintarkastus.
-  - **Kvantitatiivinen** (analytiikka, A/B-testaus) on kuin verikoe —
-    numeerista, objektiivista, kertoo *mitä* tapahtuu
-  - **Kvalitatiivinen** (haastattelut, testaus) on kuin lääkärin kysely —
-    subjektiivista, kertoo *miksi* jotain tapahtuu
-  - Molempia tarvitaan: verikoe kertoo että kolesteroli on korkea,
-    lääkärin kysely kertoo että syöt liikaa pizzaa
-</AnalogyBox>
-
-## 8.2 Kvalitatiiviset menetelmät
-
-### Käytettävyystestaus
-
-- **Moderoitu:** Testaaja ja moderaattori samassa tilassa — syvin ymmärrys
-- **Moderoimaton:** Testaaja tekee tehtävät itsenäisesti — isompi otos
-
-### Korttien lajittelu (Card Sorting)
-
-Käyttäjät järjestelevät sisältöä omalla tavallaan. Tuloksena
-informaatioarkkitehtuuri, joka perustuu käyttäjien mentaalimalliin.
-
-### 5 sekunnin testi
-
-Näytä käyttäjälle sivua 5 sekuntia, kysy sitten:
-- "Mitä tällä sivulla voi tehdä?"
-- "Mikä on tärkein asia?"
-- "Mitä jäi mieleen?"
-
-## 8.3 Jatkuva oppiminen ja iterointi
-
-### HEART-mittarit (Google)
-
-| Metriikka | Kuvaus | Esimerkki |
+| Vaihe | Kysymys | Esimerkki: haku |
 |---|---|---|
-| **H**appiness | Käyttäjätyytyväisyys | NPS, CSAT |
-| **E**ngagement | Sitoutuminen | Vierailujen tiheys, aika sivulla |
-| **A**doption | Uusien ominaisuuksien käyttöönotto | % käyttäjistä, jotka käyttävät uutta toimintoa |
-| **R**etention | Paluu käyttäjäksi | Päivittäin/viikoittain palaavat |
-| **T**ask Success | Tehtävän suorittaminen | Onnistumisprosentti, aika tehtävään |
+| Tavoite (goal) | Mitä käyttäjän pitää pystyä tekemään? | Löytää etsimänsä luku nopeasti |
+| Signaali (signal) | Miten onnistuminen tai epäonnistuminen näkyy käyttäytymisessä? | Haun jälkeen avataan tulos; haku toistetaan eri sanoilla |
+| Mittari (metric) | Mikä luku seuraa signaalia? | Osuus hauista, joissa avataan tulos ilman uutta hakua |
 
-### Palautesilmukka
+Kehyksen hyöty on järjestys: ensin tavoite ja vasta sitten mittari. Muuten mitataan sitä, mikä on helppo mitata, kuten sivulatauksia.
 
-```
-Käyttäjäpalaute → Analyysi → Priorisointi → Toteutus → Mittaus → Käyttäjäpalaute
-```
+## 8.4 A/B-testi ja otoskoko
 
-Sulje silmukka: kun käyttäjä antaa palautetta, kerro mitä teit sillä.
+A/B-testissä käyttäjät jaetaan satunnaisesti kahteen ryhmään, joista toinen näkee nykyisen ja toinen uuden version, ja mittaria verrataan ryhmien välillä. Satunnaistus on tärkein osa: se tekee ryhmistä keskimäärin samanlaisia, jolloin ero johtuu versiosta.
 
-### Hypoteesivetoinen kehitys
+Kuinka monta käyttäjää tarvitaan? Kun mitataan osuutta *p* (esimerkiksi tilauksen tehneiden osuus) ja halutaan havaita ero *δ*, ryhmäkohtainen otoskoko normaalijakauma-approksimaatiolla on:
 
-```
-Hypoteesi: "Jos lisäämme suodattimet, käyttäjät löytävät tuotteet nopeammin"
-Metriikka: Aika ensimmäiseen ostoon (min)
-Tavoite: -20%
-Testi: A/B, 2 viikkoa, 50% liikenteestä
-```
+<div class="formula">n ≈ (z₁₋α/₂ + z₁₋β)² · 2 · p(1 − p) / δ²</div>
 
-<WhyItMatters>
-  **Miksi tällä on väliä?** Data ei korvaa suunnittelijaa — mutta data estää
-  suunnittelijaa tekemästä päätöksiä mututuntumalla. Parhaat tiimit yhdistävät
-  kvantitatiivisen datan (mitä tapahtuu) ja kvalitatiivisen ymmärryksen
-  (miksi tapahtuu). Kumpikaan yksin ei riitä.
-</WhyItMatters>
+Tavallisilla valinnoilla, 5 %:n merkitsevyystasolla (z = 1,96) ja 80 %:n voimalla (z = 0,84), kerroin on (1,96 + 0,84)² · 2 ≈ 15,7, joten nyrkkisääntö on *n* ≈ 16 · *p*(1 − *p*) / *δ*².
 
-<Reference id="nielsen2012" />
-<Reference id="norman2013" />
+Esimerkki: nykyinen osuus on 10 %, ja halutaan havaita 2 prosenttiyksikön parannus. *n* ≈ 16 · 0,1 · 0,9 / 0,02² = 3 600 käyttäjää ryhmää kohden. Puolta pienemmän eron havaitseminen vaatii nelinkertaisen otoksen, koska *δ* on nimittäjässä toisessa potenssissa.
 
----
+Kaksi virhettä on tavallisia. **Kurkistus:** testi lopetetaan heti, kun ero näyttää merkitsevältä, mikä lisää vääriä löydöksiä. Päätä otoskoko etukäteen. **Monta mittaria:** jos mittareita on kaksikymmentä, yksi niistä näyttää 5 %:n tasolla merkitsevältä pelkän sattuman vuoksi.
 
-**Seuraavaksi:** [Työkalut ja toimintatavat](/AI-Koulu/ui-ux/09-tools/)
+## 8.5 Tutkimus jatkuvana työnä
 
+Tutkimus ei ole projektin alkuvaihe vaan toistuva rytmi: pieni käytettävyystesti jokaisen suuren muutoksen jälkeen (luku 1), analytiikan seuranta ja tukipyyntöjen läpikäynti. Määrällinen mittari kertoo, että jokin muuttui, ja laadullinen tutkimus kertoo miksi. Kun suppilo näyttää, että käyttäjät jättävät lomakkeen kesken tietyssä vaiheessa, viisi käytettävyystestiä kertoo, mikä vaiheessa on vialla.
+
+## Sudenkuopat
+
+- **Kysely ilman havainnointia.** SUS kertoo, että käytettävyys on heikko, mutta ei sitä, miksi.
+- **Liian pieni A/B-testi.** Pieni ero vaatii suuren otoksen. Laske *n* ennen testiä.
+- **Testin lopettaminen kesken.** Kurkistus lisää vääriä löydöksiä.
+- **Mittari ilman tavoitetta.** Johda mittari tavoitteesta ja signaalista.
 
 <ChapterQuiz chapterSlug="08-ux-research" />

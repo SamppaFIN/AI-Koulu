@@ -1,0 +1,112 @@
+---
+title: "Kontekstin hallinta"
+description: "Kontekstiikkuna, prompt-välimuisti, kompaktointi ja kontekstin suunnittelu: mitä yhteen mallikutsuun mahtuu ja mitä siitä maksetaan."
+order: 3
+section: "Perusteet"
+part: 1
+tags: ["konteksti", "prompt-välimuisti", "kompaktointi", "tokenit"]
+---
+
+Kielimalli on tilaton. Se näkee vain sen, mitä sovellus lähettää yhdessä kutsussa, eikä muista edellisiä kutsuja. Kaikki, mitä mallin halutaan "muistavan", on lähetettävä uudelleen joka kerta. Tämä luku käsittelee sitä, mitä tuohon kutsuun mahtuu, mitä se maksaa ja miten sen sisältöä hallitaan.
+
+## 3.1 Kontekstiikkuna
+
+<TermTooltip term="context-window">**Kontekstiikkuna**</TermTooltip> on suurin tokenimäärä, jonka malli pystyy käsittelemään yhdellä kutsulla. <TermTooltip term="token">Token</TermTooltip> on tekstin pala, jonka tokenisaattori tuottaa. Luvun 1 tokenisointidemosta näet, miten teksti pilkkoutuu.
+
+Yksi kutsu koostuu tyypillisesti viidestä osasta:
+
+1. **Järjestelmäkehote:** sovelluksen pysyvät ohjeet mallille.
+2. **Työkalujen kuvaukset:** nimi, kuvaus ja syötteen skeema jokaiselle työkalulle (luku 4).
+3. **Keskusteluhistoria:** kaikki aiemmat käyttäjän ja mallin vuorot.
+4. **Haettu tieto:** esimerkiksi RAG-haun palauttamat tekstipalat (luku 5).
+5. **Uusi viesti:** käyttäjän tämänkertainen kysymys.
+
+```json
+{
+  "system": "Olet verkkokaupan asiakaspalvelun avustaja. Vastaa lyhyesti.",
+  "tools": [{ "name": "hae_tilaus", "description": "Hakee tilauksen tilan", "input_schema": { "...": "..." } }],
+  "messages": [
+    { "role": "user", "content": "Missä tilaukseni 4711 on?" },
+    { "role": "assistant", "content": "Tilaus on lähtenyt varastolta tiistaina." },
+    { "role": "user", "content": "Entä arvioitu toimitusaika?" }
+  ]
+}
+```
+
+Kolmannessa kutsussa malli lukee koko historian uudelleen, vaikka käyttäjä kysyi vain yhden lauseen. Jos järjestelmäkehote ja työkalut vievät *P* tokenia ja jokainen vuoro keskimäärin *t* tokenia, vuoron *k* syöte on noin *P* + *k*·*t* tokenia. Koko *n* vuoron keskustelussa käsitellään yhteensä
+
+<div class="formula">Σ (P + k·t), k = 1…n  =  n·P + t·n(n + 1)/2</div>
+
+eli kokonaismäärä kasvaa vuorojen määrän neliössä. Pitkä keskustelu on kallis, vaikka yksittäiset viestit olisivat lyhyitä.
+
+Ikkunan koko vaihtelee mallin mukaan. Tilanteessa 11/2026 nykyisten Claude-mallien ikkuna on miljoona tokenia (Claude Haiku 4.5: 200 000) <Reference id="anthropic-context-windows" />. Muiden valmistajien luvut ovat luvussa 2.
+
+<Callout type="warning">
+  **Suuri ikkuna ei tarkoita, että kaikki tieto käytetään yhtä hyvin.** Mittauksissa kielimallit hyödynsivät pitkän kontekstin alussa ja lopussa olevaa tietoa paremmin kuin keskelle jäävää <Reference id="liu2023" />. Tärkeä ohje kannattaa sijoittaa alkuun tai toistaa lopussa, eikä sitä kannata hukuttaa pitkän liitteen keskelle.
+</Callout>
+
+<ContextDemo />
+
+## 3.2 Prompt-välimuisti
+
+**Prompt-välimuisti** tallentaa kutsun alkuosan eli etuliitteen käsitellyssä muodossa. Kun seuraava kutsu alkaa täsmälleen samalla etuliitteellä, palvelu lukee sen välimuistista eikä käsittele sitä uudelleen. Tämä nopeuttaa vastausta ja halventaa toistuvaa syötettä.
+
+Claude API:n välimuisti toimii näin (tilanne 11/2026) <Reference id="anthropic-caching" />:
+
+- **Etuliitteen täsmäys:** kutsu kootaan järjestyksessä työkalut → järjestelmäkehote → viestit. Mikä tahansa muutos etuliitteessä mitätöi kaiken sen jälkeen tulevan.
+- **Katkokohdat:** `cache_control`-merkintä kertoo, mihin asti etuliite tallennetaan. Katkokohtia voi olla enintään neljä yhdessä kutsussa.
+- **Minimipituus:** liian lyhyttä etuliitettä ei tallenneta. Raja on mallista riippuen 512–4096 tokenia, eikä virheilmoitusta tule.
+- **Elinikä:** oletuksena 5 minuuttia viimeisestä käytöstä, valinnaisesti 1 tunti.
+- **Hinta suhteessa tavalliseen syötteeseen:** tallennus noin 1,25-kertainen ja luku välimuistista noin 0,1-kertainen. Mallikohtaiset hinnat ovat luvussa 2.
+
+Syötteen kustannus on siis
+
+<div class="formula">C = p · (N_uusi + 1,25 · N_tallennus + 0,1 · N_luku)</div>
+
+missä *p* on mallin syötehinta tokenia kohden. Jos 90 % syötteestä luetaan välimuistista ja loput 10 % on uutta, syötteen hinta on 0,9 · 0,1 + 0,1 · 1 = 0,19 eli noin viidesosa välimuistittomasta.
+
+Välimuistin osuman voi tarkistaa vastauksen käyttötiedoista. Claude API:ssa `usage.cache_read_input_tokens` kertoo välimuistista luetut tokenit. Jos arvo on nolla toistuvilla samanlaisilla kutsuilla, jokin muuttaa etuliitettä.
+
+### Tavalliset syyt, joiden vuoksi välimuisti ei osu
+
+| Syy | Miksi etuliite muuttuu | Korjaus |
+|---|---|---|
+| Aikaleima tai pyyntötunniste järjestelmäkehotteessa | Teksti on eri joka kutsulla | Siirrä muuttuva tieto viimeiseen viestiin |
+| JSON-avaimet satunnaisessa järjestyksessä | Sama sisältö sarjallistuu eri merkkijonoksi | Järjestä avaimet aina samoin |
+| Työkalulista vaihtelee kutsusta toiseen | Työkalut ovat etuliitteen alussa | Pidä työkalulista vakiona |
+| Kutsujen väli on yli eliniän | Tallennus on vanhentunut | Valitse pidempi elinikä tai harkitse eräajoa |
+
+Muilla palveluilla välimuisti voi toimia automaattisesti ja kertoimet voivat olla erilaiset. Periaate on silti sama: pysyvä sisältö alkuun ja muuttuva loppuun.
+
+## 3.3 Kompaktointi ja kontekstin siivous
+
+Kun keskustelu kasvaa lähelle ikkunan rajaa, jotain on poistettava. Siihen on kaksi perustapaa.
+
+**Kompaktointi** tiivistää vanhan historian yhteenvedoksi. Claude API:n kompaktointi on beta-ominaisuus: kun keskustelu ylittää asetetun kynnyksen (oletuksena 150 000 tokenia), palvelu tiivistää aiemman historian ja palauttaa tiivistelmän erillisenä lohkona <Reference id="anthropic-compaction" />. Sovelluksen on lähetettävä tämä lohko takaisin seuraavassa kutsussa, eli koko vastauksen sisältö on lisättävä historiaan, ei pelkkää tekstiä.
+
+**Kontekstin siivous** (context editing) ei tiivistä vaan poistaa: se karsii keskustelusta vanhoja työkalujen tuloksia tai päättelylohkoja ennen kuin malli näkee kutsun <Reference id="anthropic-context-editing" />. Se sopii agenteille, joiden historia koostuu pääosin pitkistä työkalutuloksista.
+
+| Menetelmä | Mitä tekee | Mitä menetetään |
+|---|---|---|
+| Kompaktointi | Korvaa vanhan historian tiivistelmällä | Yksityiskohdat, joita tiivistelmä ei mainitse |
+| Kontekstin siivous | Poistaa vanhoja työkalutuloksia tai päättelyä | Poistettu sisältö kokonaan |
+| Haku tarpeen mukaan (RAG) | Ei tuo kaikkea kontekstiin, vaan hakee vain tarvittavan | Tieto, jota haku ei löydä |
+
+Molemmat ensimmäiset muuttavat historiaa, joten välimuisti osuu niiden jälkeen vain siihen etuliitteeseen, joka pysyi ennallaan: tyypillisesti järjestelmäkehotteeseen ja työkaluihin. Näet tämän yllä olevassa demossa.
+
+<WhyItMatters>
+  Kompaktointi on häviöllistä. Jos tiivistelmästä puuttuu käyttäjän alussa antama rajaus, malli ei voi enää noudattaa sitä. Pidä pysyvät ohjeet järjestelmäkehotteessa, jota ei tiivistetä, ja testaa samoilla tehtävillä ennen ja jälkeen kompaktoinnin.
+</WhyItMatters>
+
+## 3.4 Kontekstin suunnittelu
+
+Kontekstia kannattaa suunnitella kuin tietorakennetta: mitä siihen otetaan, missä järjestyksessä ja milloin jotain poistetaan <Reference id="gulli2025" />. Tarkistuslista:
+
+1. **Pysyvä sisältö alkuun:** järjestelmäkehote, työkalujen kuvaukset ja pitkät viitedokumentit.
+2. **Muuttuva sisältö loppuun:** aikaleimat, käyttäjäkohtaiset tiedot ja kysymys.
+3. **Deterministinen sarjallistus:** sama avainjärjestys ja sama työkalulista joka kutsulla.
+4. **Vain tarvittava tieto:** haettu tieto rajataan kysymykseen, ja vanhat työkalutulokset karsitaan tai tiivistetään.
+5. **Mittaa, älä arvaa:** lue syöte-, välimuisti- ja tulostokenit vastauksen käyttötiedoista ja seuraa niitä tuotannossa.
+6. **Testaa tiivistys:** aja samat testitehtävät ennen kompaktointia ja sen jälkeen.
+
+<ChapterQuiz chapterSlug="03-kontekstin-hallinta" />

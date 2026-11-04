@@ -1,0 +1,105 @@
+---
+title: "Infrastruktuuri ja kustannukset"
+description: "Mitä palvelimella tapahtuu, kun mallia ajetaan: esitäyttö ja dekoodaus, avain–arvo-välimuisti, eräajo, kvantisointi ja spekulatiivinen dekoodaus. API vai oma palvelin, nopeusrajat ja seuranta."
+order: 12
+section: "Tuotanto"
+part: 4
+tags: ["inferenssi", "KV-välimuisti", "vLLM", "kvantisointi", "nopeusrajat", "kustannukset"]
+---
+
+Luvussa 2 kustannus laskettiin tokeneista. Tämä luku selittää, mistä viive, kapasiteetti ja hinta syntyvät, kun malli ajetaan palvelimella (inferenssi). Samat mekanismit vaikuttavat, käytitpä API:a tai omaa palvelinta, mutta omalla palvelimella ne ovat sinun vastuullasi.
+
+## 12.1 Esitäyttö ja dekoodaus
+
+Mallikutsussa on kaksi vaihetta, jotka kuormittavat laitteistoa eri tavoin <Reference id="patel2023" />:
+
+- **Esitäyttö** (prefill) käsittelee koko syötteen kerralla. Kaikki syötteen tokenit lasketaan rinnakkain, joten vaihe on **laskentasidonnainen**. Tuloksena on ensimmäinen tulostetoken ja avain–arvo-välimuisti (12.2).
+- **Dekoodaus** (decode) tuottaa loput tokenit yksi kerrallaan. Jokaisella askeleella luetaan mallin painot ja välimuisti muistista, mutta laskentaa on vähän, joten vaihe on **muistisidonnainen**.
+
+Vaiheilla on omat viivemittarinsa <Reference id="zhong2024" />: **TTFT** (time to first token) on aika ensimmäiseen tulostetokeniin, ja **TPOT** (time per output token) on aika kutakin seuraavaa tokenia kohden. Vastauksen kokonaisaika on likimäärin:
+
+<div class="formula">T ≈ TTFT + (N_tuloste − 1) · TPOT</div>
+
+TTFT kasvaa syötteen pituuden mukana, ja jälkimmäinen termi kasvaa vastauksen pituuden mukana. Esimerkiksi jos TPOT olisi 20 ms, 500 tokenin vastauksen dekoodaus kestäisi noin 10 sekuntia. Pitkä vastaus on siis yleensä hitaampi kuin pitkä kehote, ja suoratoisto (luku 4) näyttää käyttäjälle ensimmäiset tokenit heti TTFT:n jälkeen.
+
+Kun samat GPU:t ajavat molempia vaiheita, ne häiritsevät toisiaan: pitkän syötteen esitäyttö hidastaa muiden käyttäjien dekoodausta. DistServe ajaa siksi vaiheet eri GPU:illa ja mitoittaa resurssit kummallekin erikseen <Reference id="zhong2024" />.
+
+## 12.2 Avain–arvo-välimuisti
+
+Itsehuomio (luku 1) tarvitsee jokaisella dekoodausaskeleella kaikkien aiempien tokenien avaimet *K* ja arvot *V*. Niitä ei lasketa joka askeleella uudelleen, vaan ne tallennetaan **avain–arvo-välimuistiin** (KV cache). Yhden sekvenssin välimuistin koko on:
+
+<div class="formula">M_KV = 2 · L · H_kv · d_head · b · T</div>
+
+Kerroin 2 tulee avaimista ja arvoista. *L* on kerrosten määrä, *H_kv* avain–arvo-päiden määrä, *d_head* pään dimensio, *b* tavuja lukua kohden ja *T* tokenien määrä. Esimerkkimallissa, jossa *L* = 64, *H_kv* = 8, *d_head* = 128 ja *b* = 2 (16-bittiset luvut), yksi token vie 262 144 tavua. Sadantuhannen tokenin keskustelu vie silloin noin 26 Gt, pelkästään yhden käyttäjän välimuistina.
+
+Siksi pitkä konteksti rajoittaa sitä, montako käyttäjää sama GPU palvelee yhtä aikaa. Välimuistia pienennetään vähentämällä avain–arvo-päitä. Multi-query attention käyttää yhtä avain–arvo-päätä kaikille kyselypäille, mikä nopeuttaa dekoodausta mutta voi heikentää laatua. **Grouped-query attention** (GQA) käyttää välimuotoa: avain–arvo-päitä on enemmän kuin yksi mutta vähemmän kuin kyselypäitä. Artikkelissa GQA:n laatu oli lähellä tavallista monipäistä huomiota ja nopeus lähellä multi-query attentionia <Reference id="ainslie2023" />.
+
+## 12.3 Eräajo palvelimella
+
+GPU on tehokas vain, jos se käsittelee monta pyyntöä yhtä aikaa. Pyyntötason eräajossa erä kootaan kerran: valmistunut pyyntö odottaa, kunnes koko erä on valmis, ja uusi pyyntö odottaa seuraavaa erää. Orca-järjestelmä ajoittaa sen sijaan **iteraatioittain**: erää päivitetään jokaisen dekoodausaskeleen välissä, joten valmis pyyntö poistuu heti ja uusi pääsee mukaan heti <Reference id="yu2022" />. Tätä kutsutaan yleisesti jatkuvaksi eräajoksi (continuous batching).
+
+Toinen pullonkaula on välimuistin muisti. Jos jokaiselle pyynnölle varataan yhtenäinen muistialue suurimman mahdollisen pituuden mukaan, muistia hukkuu pirstoutumiseen ja päällekkäisiin kopioihin. **PagedAttention** jakaa välimuistin käyttöjärjestelmän virtuaalimuistin tapaan sivuihin, jotka voivat sijaita missä tahansa muistissa ja joita pyynnöt voivat jakaa. Siihen perustuva vLLM paransi läpäisyä 2–4-kertaisesti FasterTransformeriin ja Orcaan verrattuna samalla viiveellä <Reference id="kwon2023" />.
+
+Erän koko on kompromissi. Suurempi erä nostaa läpäisyä (tokeneita sekunnissa koko palvelimella), mutta jokainen askel kestää kauemmin, joten yksittäisen käyttäjän TPOT kasvaa.
+
+## 12.4 Kvantisointi
+
+Kvantisointi tallentaa painot pienemmällä bittimäärällä. Muistitarve lasketaan luvun 2 kaavalla (parametrit · bitit / 8), joten 16 bitistä 4 bittiin siirtyminen pienentää painojen muistin neljäsosaan. Pienempi muistiliikenne nopeuttaa myös muistisidonnaista dekoodausta.
+
+- **GPTQ** kvantisoi valmiin mallin kerralla ilman uudelleenkoulutusta. Sillä kvantisoitiin 175 miljardin parametrin malli 3 tai 4 bittiin noin neljässä GPU-tunnissa, ja tarkkuus heikkeni artikkelin mukaan vain vähän <Reference id="frantar2022" />.
+- **AWQ** perustuu havaintoon, että painoista noin 1 % on muita tärkeämpiä: niiden suojaaminen pienentää kvantisointivirhettä paljon. AWQ skaalaa nämä kanavat aktivaatiotilastojen perusteella ennen kvantisointia <Reference id="lin2023" />.
+
+Tutkimusten tarkkuusluvut on mitattu niiden omilla testeillä. Aja oma eval (luku 11) kvantisoidulla mallilla ennen käyttöönottoa, koska laadun heikkeneminen riippuu tehtävästä.
+
+## 12.5 Spekulatiivinen dekoodaus
+
+Spekulatiivisessa dekoodauksessa pieni ja nopea luonnosmalli ehdottaa useita seuraavia tokeneita, ja iso malli tarkistaa ne yhdellä rinnakkaisella läpikäynnillä. Ehdotukset hyväksytään järjestyksessä, ja ensimmäisen hylätyn kohdalle arvotaan uusi token ison mallin jakaumasta johdetusta korjatusta jakaumasta. Menetelmän otantasääntö takaa, että tulosteen jakauma on täsmälleen sama kuin pelkällä isolla mallilla. Artikkelissa T5-XXL nopeutui 2–3-kertaisesti ilman uudelleenkoulutusta tai arkkitehtuurimuutoksia <Reference id="leviathan2023" />.
+
+Menetelmä hyötyy siitä, että dekoodausaskel on muistisidonnainen (12.1): kun painot on joka tapauksessa luettava muistista, usean tokenin tarkistaminen samalla läpikäynnillä ei maksa paljon enempää kuin yhden tuottaminen. Nopeutus riippuu siitä, kuinka usein luonnosmallin ehdotukset hyväksytään.
+
+## 12.6 API vai oma palvelin
+
+| | API | Oma palvelin (avoimet painot) |
+|---|---|---|
+| Hinnoittelu | Tokenien mukaan; käyttämätön kapasiteetti ei maksa | GPU-tuntien mukaan; myös tyhjäkäynti maksaa |
+| Kapasiteetti | Nopeusrajat (12.7) | Omien GPU:iden määrä |
+| Data | Siirtyy palveluntarjoajalle sopimuksen ehdoin | Pysyy omassa ympäristössä |
+| Ylläpito | Palveluntarjoaja | Oma: päivitykset, seuranta, skaalaus, viat |
+| Mallit | Myös suljetut mallit | Vain avoimet painot (luku 2) |
+
+Omalla palvelimella tokenin hinta riippuu käyttöasteesta. Jos GPU-tunnin hinta on *h*, GPU:ita on *G*, palvelimen läpäisy täydellä kuormalla on *R* tokenia sekunnissa ja keskimääräinen käyttöaste on *u* (0–1), miljoonan tokenin hinta on:
+
+<div class="formula">c = h · G · 10⁶ / (3600 · R · u)</div>
+
+Käyttöaste on nimittäjässä: jos palvelin on käytössä vain puolet ajasta, jokainen token maksaa kaksinkertaisesti täyteen kuormaan verrattuna. Tasainen ja suuri kuorma suosii omaa palvelinta, vaihteleva ja pieni kuorma API:a. Hae laskelman *h* palveluntarjoajan hinnastosta ja mittaa *R* omalla mallilla ja omilla kehotepituuksilla.
+
+## 12.7 Nopeusrajat
+
+API rajoittaa käyttöä organisaatiokohtaisesti. Tilanteessa 11/2026 Claude API mittaa kolmea rajaa malliryhmittäin: pyyntöjä minuutissa (RPM), syötetokeneita minuutissa (ITPM) ja tulostetokeneita minuutissa (OTPM). Rajat toteutetaan token bucket -algoritmilla, joten kapasiteetti täyttyy jatkuvasti eikä nollaudu kiinteinä hetkinä. Lyhyt purske voi siksi ylittää rajan, vaikka minuutin keskiarvo olisi sen alla <Reference id="anthropic-rate-limits" />.
+
+Kolme yksityiskohtaa vaikuttaa mitoitukseen <Reference id="anthropic-rate-limits" />:
+
+- **Välimuisti nostaa kapasiteettia.** Useimmilla Claude-malleilla välimuistista luetut syötetokenit eivät kuluta ITPM-rajaa. Kun etuliite osuu välimuistiin (luku 3), sama raja riittää moninkertaiseen kokonaissyötteeseen.
+- **OTPM lasketaan todellisista tokeneista.** Parametri `max_tokens` ei vaikuta OTPM-rajaan.
+- **Kaksi erilaista 429-virhettä.** Nopeusrajan ylittyessä vastaus on HTTP 429, ja otsake `retry-after` kertoo, montako sekuntia pitää odottaa. Jos kuukausittainen kulukatto täyttyy, vastaus on myös 429, mutta ilman `retry-after`-otsaketta, ja uudelleenyritykset epäonnistuvat, kunnes käyttö jatkuu. Erota tapaukset virhekoodista `enforced_spend_limit_reached`.
+
+## 12.8 Seuranta
+
+Kirjaa jokaisesta mallikutsusta vähintään malli, syöte-, tuloste- ja välimuistitokenit (`usage`), TTFT, kokonaisaika, lopetussyy (`stop_reason`) ja mahdollinen virhekoodi. Niistä saa:
+
+- **kustannuksen** kutsua, käyttäjää ja ominaisuutta kohden (luku 2)
+- **viiveen jakauman**: seuraa mediaania ja korkeita persentiilejä, kuten p95:tä, koska keskiarvo piilottaa hitaat kutsut
+- **välimuistin osumaosuuden**, joka kertoo, osuuko etuliite (luku 3)
+- **laadun signaalit**, kuten katkenneiden vastausten (`max_tokens`) ja kieltäytymisten osuuden
+
+Varamalli auttaa, kun palvelu on ylikuormittunut, mutta se ei ole ilmainen. Välimuisti on mallikohtainen (luku 2), ja kehote voi toimia toisella mallilla eri tavalla. Aja sama eval (luku 11) myös varamallilla ennen kuin luotat siihen.
+
+## Sudenkuopat
+
+- **Keskiarvoviive.** Keskiarvo näyttää hyvältä, vaikka joka kahdeskymmenes käyttäjä odottaa minuutin. Seuraa persentiilejä.
+- **Pitkä konteksti jokaiselle käyttäjälle.** Välimuistin muisti kasvaa lineaarisesti tokenien mukana ja rajoittaa samanaikaisia käyttäjiä.
+- **Kvantisointi ilman evalia.** Artikkelin "vähäinen heikkeneminen" on mitattu sen omilla testeillä, ei sinun tehtävälläsi.
+- **Oma palvelin matalalla käyttöasteella.** Tyhjäkäynti nostaa tokenin hintaa samassa suhteessa kuin käyttöaste laskee.
+- **Uudelleenyritys kulukattoon.** Kulukaton 429-virhettä ei korjaa odottaminen sekunteja, joten erota se nopeusrajasta.
+
+<ChapterQuiz chapterSlug="12-infrastruktuuri" />

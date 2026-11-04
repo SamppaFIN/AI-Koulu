@@ -1,101 +1,71 @@
 ---
-title: "Ihmiskeskeinen suunnittelu (HCD)"
-description: "Käyttäjätutkimus, personat, empatiakartat ja esteettömyys osana ydinsuunnittelua."
+title: "Ihmiskeskeinen suunnittelu"
+description: "Käytettävyyden määritelmä, ihmiskeskeisen suunnittelun kierros, tutkimusmenetelmät, käytettävyystestin otoskoko ja saavutettavuus osana suunnittelua."
 order: 1
 section: "Perusperiaatteet"
-tags: ["HCD", "UX", "käyttäjätutkimus", "esteettömyys"]
+tags: ["HCD", "käytettävyys", "käyttäjätutkimus", "käytettävyystesti", "persona"]
 published: true
 ---
 
-## Ihmiskeskeinen suunnittelu
+Ihmiskeskeinen suunnittelu (human-centered design, HCD) tarkoittaa, että ratkaisu perustuu tutkittuun tietoon käyttäjistä, heidän tehtävistään ja käyttöympäristöstään, ja että ratkaisua testataan oikeilla käyttäjillä toistuvasti. Vaihtoehto on suunnitella omien oletusten varassa, mutta suunnittelija ei ole käyttäjä: hän tuntee järjestelmän sisältäpäin eikä näe sitä niin kuin uusi käyttäjä.
 
-Ihmiskeskeinen suunnittelu (Human-Centered Design, HCD) on prosessi, jossa
-käyttäjä on kaiken keskiössä. Ei riitä, että tuote *toimii* — sen pitää
-toimia *oikeiden ihmisten arjessa*.
+## 1.1 Mitä käytettävyys on
 
-<Callout type="tip">
-  **Kultainen sääntö:** "You are not your user." — Sinun mieltymyksesi,
-  taitosi ja kontekstisi eivät ole sama asia kuin käyttäjäsi.
-</Callout>
+Nielsenin määritelmässä käytettävyys on laatuominaisuus, joka kertoo, kuinka helppo käyttöliittymää on käyttää. Siinä on viisi osatekijää <Reference id="nielsen2012" />:
 
-### Käyttäjätutkimuksen menetelmät
+| Osatekijä | Kysymys |
+|---|---|
+| Opittavuus | Kuinka helposti käyttäjä suoriutuu perustehtävistä ensimmäisellä kerralla? |
+| Tehokkuus | Kun käyttäjä on oppinut käytön, kuinka nopeasti hän tekee tehtävät? |
+| Muistettavuus | Kun käyttäjä palaa tauon jälkeen, kuinka helposti taito palaa? |
+| Virheet | Kuinka paljon virheitä syntyy, kuinka vakavia ne ovat ja kuinka helposti niistä toipuu? |
+| Tyytyväisyys | Kuinka miellyttävää käyttö on? |
 
-| Menetelmä | Milloin käyttää | Vahvuudet | Heikkoudet |
-|---|---|---|---|
-| **Haastattelut** | Alkuvaihe, syvä ymmärrys | Rikas data, yllättävät oivallukset | Pieni otos, ei skaalaudu |
-| **Kontekstuaalinen tutkimus** | Kun käyttötapa on monimutkainen | Todellinen konteksti paljastuu | Resurssi-intensiivinen |
-| **Kyselyt** | Laaja määrällinen data | Skaalautuu, tilastollinen merkitsevyys | Pinnallista, konteksti puuttuu |
-| **Analytiikka** | Jatkuva seuranta | Objektiivista, isolla datalla | "Mitä" ei "miksi" |
+Osatekijät voivat olla ristiriidassa. Pikanäppäimet parantavat tehokkuutta mutta eivät opittavuutta. Siksi suunnittelussa päätetään ensin, kuka käyttäjä on ja mikä hänelle on tärkeintä.
 
-<AnalogyBox>
-  **Analogia:** Käyttäjätutkimus on kuin kalaverkko — yksittäinen haastattelu
-  on yksi silmä verkossa. Saatat saada kiinni ison kalan (tärkeän oivalluksen),
-  mutta verkko toimii parhaiten, kun käytät useita menetelmiä rinnakkain.
-  Jos luotat vain yhteen menetelmään, kalat uivat välistä.
-</AnalogyBox>
+## 1.2 Suunnittelun kierros
 
-### Personat, käyttäjäpolut ja palvelumuotoilu
+Norman kuvaa ihmiskeskeisen suunnittelun toistuvana kierroksena: havainnoi käyttäjiä, ideoi ratkaisuja, tee prototyyppi ja testaa se. Testi tuottaa uusia havaintoja, ja kierros alkaa alusta <Reference id="norman2013" />. Prototyypin ei tarvitse olla valmis tuote. Paperiluonnos tai klikattava kuva riittää, kun testataan, ymmärtääkö käyttäjä rakenteen.
 
-**Personat** ovat fiktiivisiä, mutta tutkimukseen perustuvia käyttäjäprofiileja.
-Hyvä persona sisältää:
+Kierroksen tärkein ominaisuus on, että se on lyhyt. Virhe, joka löytyy paperiluonnoksesta, korjataan pyyhekumilla. Sama virhe julkaistussa tuotteessa vaatii koodimuutoksen, testauksen ja julkaisun.
 
-- Nimi, ikä, rooli
-- Tavoitteet ja motivaatiot
-- Kipupisteet ja turhautumat
-- Tekninen osaamistaso
+## 1.3 Tutkimusmenetelmät
 
-**Käyttäjäpolut (User Journeys)** kuvaavat käyttäjän matkan alusta loppuun.
-Jokaisessa vaiheessa dokumentoidaan:
+| Menetelmä | Mitä se kertoo | Rajoitus |
+|---|---|---|
+| Haastattelu | Miksi käyttäjä toimii niin kuin toimii; tavoitteet ja ongelmat | Ihmiset kertovat, mitä luulevat tekevänsä, eivät aina sitä, mitä tekevät |
+| Kontekstuaalinen havainnointi | Miten työ todella tehdään omassa ympäristössä | Vie aikaa; pieni otos |
+| Käytettävyystesti | Missä kohdassa käyttäjä epäonnistuu tehtävässä | Kertoo ongelmista, ei siitä, kuinka yleisiä ne ovat |
+| Kysely | Kuinka yleinen jokin mielipide tai tarve on | Ei kerro syytä; kysymysten muotoilu vaikuttaa vastauksiin |
+| Analytiikka | Mitä käyttäjät tekevät ja kuinka usein | Ei kerro miksi |
 
-1. **Toiminta** — mitä käyttäjä tekee
-2. **Ajatus** — mitä käyttäjä ajattelee
-3. **Tunne** — mitä käyttäjä tuntee (ilo, turhautuminen, hämmennys)
-4. **Mahdollisuus** — miten voimme parantaa
+Laadulliset menetelmät (haastattelu, havainnointi, testi) kertovat, *miksi* jotain tapahtuu. Määrälliset (kysely, analytiikka) kertovat, *kuinka paljon*. Hyvä tutkimus yhdistää molempia (luku 8).
 
-<WhyItMatters>
-  **Miksi tällä on väliä?** Suunnitteluratkaisut ovat vain arvauksia, ellet
-  tunne käyttäjääsi. Jokainen euro käyttäjätutkimukseen säästää kymmenen euroa
-  virheellisten ominaisuuksien kehittämisessä.
-</WhyItMatters>
+## 1.4 Kuinka monta testikäyttäjää
 
-### Empatiakartat
+Nielsenin ja Landauerin mallissa jokainen testikäyttäjä löytää keskimäärin osuuden *L* kaikista käytettävyysongelmista. Kun käyttäjiä on *n*, löydettyjen ongelmien osuus on:
 
-Empatiakartta on yhden hengen työkalu, joka auttaa tiimiä asettumaan käyttäjän
-asemaan. Se jakautuu neljään osa-alueeseen:
+<div class="formula">löydetyt / kaikki = 1 − (1 − L)ⁿ</div>
 
-<Diagram type="empathy-map">
-  {/* Tähän tulee myöhemmin React-komponentti */}
-</Diagram>
+Nielsenin projekteissa *L* oli keskimäärin 31 %. Viisi käyttäjää löytää silloin noin 1 − 0,69⁵ ≈ 84 % ongelmista <Reference id="nielsen2000" />. Kuudes käyttäjä löytää enimmäkseen samoja ongelmia, joten Nielsen suosittelee kolmea viiden käyttäjän testiä, joiden välissä ongelmat korjataan, yhden 15 käyttäjän testin sijaan.
 
-- **Sanoo** — mitä käyttäjä sanoo ääneen
-- **Ajattelee** — mitä käyttäjä ajattelee (mutta ei ehkä sano)
-- **Tekee** — mitä käyttäjä tekee
-- **Tuntee** — mitä käyttäjä tuntee (tunteet, turhautumat, ilot)
+Malli olettaa, että käyttäjät ovat samanlaisia. Jos käyttäjäryhmiä on useita, esimerkiksi opiskelijat ja opettajat, jokaisesta ryhmästä tarvitaan omat testikäyttäjänsä <Reference id="nielsen2000" />. Luku 31 % on keskiarvo, ei vakio, eikä viisi käyttäjää löydä kaikkia ongelmia.
 
-### Esteettömyys osana ydinsuunnittelua
+## 1.5 Personat ja käyttäjäpolut
 
-Esteettömyys (accessibility, a11y) ei ole lisäosa — se on perusedellytys.
-Noin 15–20 % maailman väestöstä elää jonkin vamman kanssa. Esteettömyys
-ei kuitenkaan hyödytä vain vammaisia:
+**Persona** on tutkimukseen perustuva kuvaus käyttäjätyypistä: tavoitteet, tehtävät, ympäristö ja ongelmat. Persona on hyödyllinen vain, jos se perustuu haastatteluihin tai havaintoihin. Toimistossa keksitty persona on oletus, joka näyttää tutkimukselta.
 
-- **Tekstitys** auttaa myös meluisassa ympäristössä
-- **Korkea kontrasti** auttaa auringonpaisteessa
-- **Näppäimistönavigaatio** auttaa tehokäyttäjiä
+**Käyttäjäpolku** kuvaa tehtävän vaiheet alusta loppuun: mitä käyttäjä tekee, mitä hän tarvitsee ja missä hän jumittuu. Polku näyttää ongelmat, jotka syntyvät vaiheiden välissä, esimerkiksi kun tieto pitää syöttää uudelleen toisessa järjestelmässä.
 
-Keskeiset standardit:
-- **WCAG 2.2** — Web Content Accessibility Guidelines, AA-taso on tavoite
-- **EN 301 549** — EU:n saavutettavuusdirektiivi (pakolliinen julkisille toimijoille)
-- **ARIA** — Accessible Rich Internet Applications -attribuutit
+## 1.6 Saavutettavuus kuuluu suunnitteluun
 
-<Reference id="w3c2023" />
-<Reference id="norman2013" />
-<Reference id="nielsen2012" />
+WHO:n arvion mukaan noin 1,3 miljardilla ihmisellä, eli noin joka kuudennella, on merkittävä toimintarajoite <Reference id="who2023" />. Lisäksi tilapäiset ja tilannesidonnaiset rajoitteet, kuten murtunut käsi, kirkas auringonvalo tai meluisa ympäristö, koskevat kaikkia. Saavutettavuus on siksi suunnittelun lähtötieto eikä lopussa lisättävä ominaisuus. Sen vaatimukset ja testaus käsitellään luvussa 4.
 
----
+## Sudenkuopat
 
-## Seuraavaksi
-
-Tutustu [visuaalisiin trendeihin](/AI-Koulu/ui-ux/02-visual-trends/) — typografia, värit, animaatio ja tilallinen suunnittelu.
-
+- **"Minä olisin käyttänyt tätä näin."** Suunnittelija tuntee järjestelmän. Testaa oikeilla käyttäjillä.
+- **Kysytään, mitä käyttäjät haluavat, ja rakennetaan se.** Käyttäjä tuntee ongelmansa paremmin kuin ratkaisun. Havainnoi tehtävää ja kysy ongelmista.
+- **Yksi suuri testi lopussa.** Löydetyt ongelmat ovat silloin kalliita korjata. Testaa pienesti ja usein.
+- **Keksitty persona.** Ilman tutkimusta persona vahvistaa tiimin omia oletuksia.
 
 <ChapterQuiz chapterSlug="01-hcd" />

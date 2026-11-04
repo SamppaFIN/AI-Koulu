@@ -1,0 +1,138 @@
+---
+title: "Koodausagentit"
+description: "Miten koodausagentti lukee projektin, muokkaa tiedostoja ja ajaa komentoja: silmukka, projektiohjeet, ohjeiden ja pakotteiden ero, luvat, tarkistus ja SWE-bench."
+order: 10
+section: "Agentit"
+part: 3
+tags: ["koodausagentti", "Claude Code", "AGENTS.md", "hookit", "SWE-bench"]
+---
+
+Koodausagentti on agentti (luku 8), jonka ympäristö on ohjelmistoprojekti. Se lukee tiedostoja, muokkaa niitä, ajaa komentoja ja tarkistaa työnsä esimerkiksi testeillä. Claude Coden dokumentaatio vertaa sitä editorin sisäisiin avustajiin, jotka näkevät vain nykyisen tiedoston: koodausagentti näkee koko projektin ja voi ketjuttaa kymmeniä toimintoja yhteen tehtävään <Reference id="claude-code-how" />.
+
+Esimerkkinä käytetään tässä luvussa Claude Codea, joka tuli yleisesti saataville toukokuussa 2025 <Reference id="anthropic-claude-4" />. Samat periaatteet pätevät muihinkin koodausagentteihin.
+
+## 10.1 Malli ja sen ympäristö
+
+Koodausagentissa on kaksi osaa: malli, joka päättelee, ja **ajoympäristö** (agentic harness), joka tarjoaa työkalut ja hallitsee sitä, mitä malli näkee kontekstissaan <Reference id="claude-code-how" />. Työkalut jakautuvat viiteen ryhmään:
+
+| Ryhmä | Mitä agentti voi tehdä |
+|---|---|
+| Tiedostot | Lukea, muokata, luoda ja siirtää tiedostoja |
+| Haku | Etsiä tiedostoja nimen perusteella ja sisältöä säännöllisellä lausekkeella |
+| Suoritus | Ajaa komentoja, käynnistää palvelimia, ajaa testejä ja käyttää gitiä |
+| Verkko | Hakea verkosta ja lukea dokumentaatiota |
+| Koodiäly | Nähdä tyyppivirheet muokkauksen jälkeen ja löytää määrittelyt ja viittaukset |
+
+Työ etenee silmukkana, jossa on kolme vaihetta: kontekstin keruu, toiminta ja tarkistus. Vaiheet sekoittuvat käytännössä, ja ihminen voi keskeyttää ja ohjata missä vaiheessa tahansa <Reference id="claude-code-how" />.
+
+<CodingAgentDiagram />
+
+Pyyntö "korjaa epäonnistuvat testit" voi esimerkiksi edetä näin: agentti ajaa testit, lukee virhetulosteen, hakee asiaan liittyvät lähdetiedostot, lukee ne, korjaa koodin ja ajaa testit uudelleen <Reference id="claude-code-how" />. Jokainen työkalukutsu tuo uutta tietoa, jonka perusteella malli valitsee seuraavan askeleen.
+
+## 10.2 Projektiohjeet
+
+Agentti näkee koodin, mutta ei sitä, mikä on vain tiimin päässä. Siksi projektin juureen kirjoitetaan ohjetiedosto, joka ladataan jokaisen istunnon alussa. Claude Code käyttää tiedostoa `CLAUDE.md` ja osaa lukea myös tiedoston `AGENTS.md` <Reference id="claude-code-how" />.
+
+**AGENTS.md** on avoin muoto koodausagenttien ohjeille: tavallista Markdownia ilman pakollisia kenttiä. Siinä kerrotaan tyypillisesti projektin yleiskuva, build- ja testikomennot, koodityyli, testausohjeet ja turvallisuusasiat. Suuressa monorepossa alikansioilla voi olla omat tiedostonsa, ja muokattavaa koodia lähin tiedosto on etusijalla <Reference id="agents-md" />. OpenAI julkaisi muodon elokuussa 2025, ja Linux Foundationin tiedotteen mukaan sen oli joulukuuhun 2025 mennessä ottanut käyttöön yli 60 000 avoimen lähdekoodin projektia ja agenttikehystä. Nykyään muotoa ylläpitää Agentic AI Foundation <Reference id="lf-aaif" />.
+
+Ohjetiedosto ladataan joka tehtävään, joten jokainen rivi vie hieman mallin huomiota myös tehtävistä, joihin se ei liity. Kirjoita siihen vain se, mitä agentti ei voi päätellä koodista <Reference id="claude-code-best-practices" />:
+
+- tarkat komennot työn tarkistamiseen: testit, tyyppitarkistus, linter ja yksittäisen testitiedoston ajo
+- kohdat, joissa koodi johtaa harhaan, esimerkiksi vanha malli, jota uusi koodi ei saa kopioida
+- päätökset, joita ei näe reposta, kuten deploy-käytäntö
+- asiat, jotka olet joutunut korjaamaan jo kahdesti
+
+```markdown
+# Komennot
+- Asennus: npm ci
+- Yksi testitiedosto: npx vitest run tests/data.test.ts
+- Tyyppitarkistus: npx tsc --noEmit
+
+# Käytännöt
+- Virheet src/lib/errors.ts:n apufunktioilla, ei raakoja merkkijonoja
+- src/legacy/ on käytössä, mutta sen malleja ei kopioida uuteen koodiin
+```
+
+## 10.3 Ohje vai pakote
+
+Claude Coden dokumentaatio jakaa ohjeet kahteen lajiin <Reference id="claude-code-best-practices" />:
+
+- **Ohje** (ei-deterministinen): kehote, `CLAUDE.md` tai taito. Malli lukee ohjeen ja päättää, miten toimii. Nykymallit noudattavat ohjeita yleensä, mutta takuuta ei ole.
+- **Pakote** (deterministinen): hook, kieltosääntö tai hallinnoitu asetus. Ajoympäristö suorittaa sen joka kerta riippumatta siitä, mitä malli päätti.
+
+Valtaosa säännöistä kuuluu ohjeisiin, koska niillä on poikkeuksia ja malli näkee tilanteen paremmin kuin etukäteen kirjoitettu sääntö. Pakote on sääntöä varten, jolla ei ole yhtään poikkeusta, kuten "älä koskaan lue .env-tiedostoa". Jos ohjetiedoston rivi unohtuu yhä uudelleen, vaikka sitä korostaa, se kuuluu luultavasti pakotteeksi <Reference id="claude-code-best-practices" />.
+
+**Hook** on käsittelijä, tavallisimmin komentotulkin komento, joka ajetaan automaattisesti tietyssä kohdassa agentin elinkaarta, esimerkiksi ennen työkalukutsua (`PreToolUse`) tai sen jälkeen (`PostToolUse`). Ajoympäristö antaa hookille tapahtuman tiedot JSON-muodossa. Jos `PreToolUse`-hook päättyy paluukoodiin 2, työkalukutsu estetään, ja virhetulosteen viesti välitetään mallille <Reference id="claude-code-hooks" />:
+
+```bash
+#!/bin/bash
+# PreToolUse-hook Bash-työkalulle: estää rm-alkuiset komennot
+input=$(cat)
+command=$(jq -r '.tool_input.command' <<<"$input")
+if [[ "$command" == rm* ]]; then
+  echo "Estetty: rm-komennot eivät ole sallittuja" >&2
+  exit 2
+fi
+exit 0
+```
+
+## 10.4 Luvat, palautus ja ajoympäristö
+
+Koodausagentti voi ajaa minkä tahansa komennon, jonka sinäkin voisit ajaa. Siksi sen toimia rajataan kolmella tavalla.
+
+**Lupatila** määrää, mitä agentti saa tehdä kysymättä. Tilanteessa 11/2026 Claude Codessa on neljä tilaa <Reference id="claude-code-how" />:
+
+| Tila | Toiminta |
+|---|---|
+| Manuaalinen | Kysyy luvan ennen tiedostomuokkauksia ja komentoja |
+| Muokkausten hyväksyntä | Muokkaa tiedostoja ja ajaa tavalliset tiedostokomennot kysymättä, kysyy muista komennoista |
+| Suunnittelu | Tutkii ja ehdottaa suunnitelman muokkaamatta lähdetiedostoja |
+| Automaattinen | Luokitin arvioi toimet taustalla ja estää riskialttiit kysymättä |
+
+**Tarkistuspisteet** tallentavat tiedoston sisällön ennen jokaista muokkausta, joten muokkaukset voi perua. Ne kattavat vain paikalliset tiedostot. Toimia, jotka vaikuttavat etäjärjestelmiin, kuten tietokantamuutoksia, API-kutsuja ja julkaisuja, ei voi perua tarkistuspisteellä <Reference id="claude-code-how" />. Niitä ohjataan lupatilalla ja lupasäännöillä.
+
+**Ajopaikka** voi olla oma kone, pilvessä toimiva virtuaalikone tai oma kone, jota ohjataan selaimesta <Reference id="claude-code-how" />. Esimerkiksi Codexin pilvitilassa jokaisella tehtävällä on oma työtilansa. Verkkoyhteyden voi sallia kokonaan, rajata pakettienhallinnan osoitteisiin tai täydentää sallittujen osoitteiden listalla. Muutokset ja testitulokset tarkistetaan ennen kuin niistä tehdään commit tai pull request <Reference id="codex-cloud" />.
+
+Viimeinen sana kuuluu ihmiselle: haaran suojaus ja ihminen, joka hyväksyy yhdistämisen päähaaraan, ovat pakotteita, joita agentti ei voi ohittaa <Reference id="claude-code-best-practices" />.
+
+## 10.5 Konteksti pitkässä tehtävässä
+
+Pitkässä istunnossa konteksti täyttyy tiedostojen sisällöstä ja komentojen tulosteista. Claude Code tiivistää keskustelun automaattisesti, kun raja lähestyy (luku 3). Tiivistelmä säilyttää pyynnöt ja keskeiset koodinpätkät, mutta keskustelun alun yksityiskohtaiset ohjeet voivat kadota. Siksi pysyvät säännöt kuuluvat ohjetiedostoon eivätkä keskusteluun <Reference id="claude-code-how" />.
+
+**Aliagentti** työskentelee omassa konteksti-ikkunassaan. Sen työkalukutsut eivät päädy pääkeskustelun kontekstiin, ja pääagentti saa takaisin vain yhteenvedon <Reference id="claude-code-how" />. Tämä on luvun 8 orkestroija ja työntekijät -malli sovellettuna kontekstin säästämiseen.
+
+## 10.6 Tarkistus ratkaisee
+
+Agentti lopettaa, kun työ näyttää valmiilta. Jos sillä ei ole mitään, mikä kertoo, onko työ oikeasti valmis, ihmisestä tulee testijoukko. Anna agentille tarkistus, joka palauttaa tuloksen läpi tai hylätty <Reference id="claude-code-best-practices" />:
+
+- testitiedosto
+- buildin paluukoodi
+- linter
+- skripti, joka vertaa tulostetta tunnettuun oikeaan tulokseen
+- selaimen kuvakaappaus mallikuvan rinnalla
+
+Kun tarkistus on olemassa, agentti voi sulkea silmukan itse: se tekee muutoksen, ajaa tarkistuksen ja korjaa, jos jokin hajosi. Pyydä lisäksi todisteet: ajettu komento ja sen tuloste. Pelkkä "kaikki testit menevät läpi" kertoo vähän <Reference id="claude-code-best-practices" />. Tarkistuksen voi teettää myös uudella aliagentilla, joka ei ole nähnyt koodin syntyä eikä siksi nojaa samaan päättelyyn.
+
+## 10.7 Miten koodausagentteja mitataan: SWE-bench
+
+**SWE-bench** koostuu 2 294 ohjelmistotehtävästä, jotka on koottu oikeista GitHub-issueista 12 suositussa Python-repossa. Malli saa koodikannan ja issuen kuvauksen, ja sen pitää muokata koodia niin, että issue ratkeaa <Reference id="jimenez2023" />. Ratkaisu arvioidaan ajamalla testit:
+
+- **FAIL_TO_PASS**: testit, jotka epäonnistuvat ennen ihmisen kirjoittamaa korjausta ja menevät läpi sen jälkeen. Ne todentavat, että issue ratkesi.
+- **PASS_TO_PASS**: testit, jotka menivät läpi jo ennen korjausta. Ne todentavat, ettei mikään muu hajonnut.
+
+Tehtävä on ratkaistu, jos molempien ryhmien kaikki testit menevät läpi <Reference id="jimenez2023" />.
+
+Osa alkuperäisistä tehtävistä osoittautui vaikeaksi tai mahdottomaksi ratkaista: issuen kuvaus saattoi olla epäselvä, tai testit olivat liian tarkkoja ja hylkäsivät oikeankin korjauksen. Tällöin mittari aliarvioi malleja. Siksi OpenAI julkaisi elokuussa 2024 yhdessä SWE-benchin tekijöiden kanssa **SWE-bench Verifiedin**: 500 tehtävää, jotka Pythoniin perehtyneet ohjelmistokehittäjät olivat käyneet läpi ja todenneet ongelmattomiksi <Reference id="openai-swebench-verified" />.
+
+Helmikuussa 2026 OpenAI lopetti SWE-bench Verified -tulosten raportoinnin. Perusteluina olivat jäljellä olevat testivirheet ja kontaminaatio: tehtävät on koottu julkisista repoista, joten ne ovat todennäköisesti päätyneet mallien koulutusaineistoon. OpenAI suosittelee raportoimaan sen sijaan SWE-bench Pron tulokset <Reference id="openai-swebench-retire" />. Benchmark siis vanhenee, kun mallit kehittyvät ja tehtävät leviävät verkkoon (luku 11).
+
+Tuloksia ei listata tässä, koska ne muuttuvat jokaisen mallijulkaisun myötä. Julkinen benchmark kertoo yleisestä kyvystä, ei siitä, miten agentti toimii sinun koodikannassasi. Oman tehtäväjoukon rakentamista käsitellään luvussa 11.
+
+## Sudenkuopat
+
+- **Ei tarkistusta.** Ilman testiä tai buildia agentin "valmis" tarkoittaa vain, että työ näyttää valmiilta.
+- **Testejä muutetaan, jotta ne menisivät läpi.** Testi, jota on muutettu läpäisemään, ei enää todista mitään. Kerro ohjeissa, saako agentti muuttaa testejä, ja tarkista testimuutokset erikseen.
+- **Pitkä ohjetiedosto.** Mitä pidempi tiedosto, sitä helpommin yksittäinen rivi hukkuu. Ehdottomat säännöt kuuluvat pakotteiksi.
+- **Laajat luvat ilman eristystä.** Jos agentti saa ajaa komentoja kysymättä, aja se ympäristössä, jossa ei ole tuotantotunnuksia ja jonka verkkoyhteys on rajattu.
+
+<ChapterQuiz chapterSlug="10-koodausagentit" />

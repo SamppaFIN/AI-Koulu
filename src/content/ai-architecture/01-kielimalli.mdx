@@ -1,0 +1,71 @@
+---
+title: "Miten kielimalli toimii"
+description: "Tokenit, dekooderi-Transformer, seuraavan tokenin valinta, koulutuksen vaiheet ja päättely: mitä yhdellä mallikutsulla tapahtuu."
+order: 1
+section: "Perusteet"
+part: 1
+tags: ["kielimalli", "token", "Transformer", "itsehuomio", "päättely", "effort"]
+---
+
+Kielimalli laskee todennäköisyysjakauman seuraavalle tokenille sen perusteella, mitä sille on annettu. Kaikki muu, kuten keskustelu, koodi ja työkalukutsut, rakennetaan tämän yhden operaation päälle: malli valitsee tokenin, lisää sen syötteeseen ja laskee seuraavan jakauman.
+
+## 1.1 Tokenit
+
+<TermTooltip term="token">Token</TermTooltip> on tekstin pala, jonka tokenisaattori tuottaa. Tavallinen menetelmä on byte pair encoding (BPE): yleiset merkkijonot yhdistetään yhdeksi tokeniksi ja harvinaiset pilkotaan pienempiin osiin <Reference id="sennrich2016" />. Malli ei näe kirjaimia vaan tokenien numeroita.
+
+Tokenimäärä ratkaisee sekä hinnan että sen, mahtuuko teksti kontekstiikkunaan (luvut 2 ja 3). Määrä riippuu kielestä: tokenisaattori, joka on opetettu pääosin englanninkielisellä datalla, pilkkoo monia muita kieliä useampaan tokeniin saman sisällön osalta <Reference id="petrov2023" />. Mittaa siksi oma suomenkielinen aineistosi palvelun tokenilaskurilla äläkä arvioi sitä sanamäärästä.
+
+Alla oleva demo on yksinkertaistettu havainnollistus pilkkomisesta. Se ei käytä minkään oikean mallin tokenisaattoria, joten sen tokenimäärät eivät vastaa todellisia.
+
+<TokenizerDemo />
+
+## 1.2 Dekooderi-Transformer
+
+Transformer esiteltiin vuonna 2017 käännöstehtävään, ja siinä oli enkooderi ja dekooderi <Reference id="vaswani2017" />. Kielimalleissa käytetään yleensä pelkkää dekooderiosaa: GPT-3 <Reference id="brown2020" /> ja Llama <Reference id="touvron2023" /> ovat dekoodereita. Poikkeuksiakin on: DeepSeek V4.1 Flashin mallikortti kuvaa rakenteen kausaaliseksi enkooderi–dekooderiksi <Reference id="deepseek-v41" />.
+
+<TransformerDiagram />
+
+Lohkon tärkein osa on **itsehuomio**. Jokaisesta tokenista lasketaan kolme vektoria: kysely *Q*, avain *K* ja arvo *V*. Tokenin uusi esitys on painotettu summa muiden tokenien arvoista, ja painot tulevat kyselyn ja avainten pistetuloista:
+
+<div class="formula">Attention(Q, K, V) = softmax(Q·Kᵀ / √d_k) · V</div>
+
+Dekooderissa huomio on **maskattu**: token voi katsoa vain itseään ja aiempia tokeneita, ei tulevia. Siksi koulutuksessa jokainen sijainti voi ennustaa seuraavaa tokenia samanaikaisesti. **Monipäinen** huomio laskee saman rinnakkain usealla painomatriisilla, jolloin eri päät voivat seurata eri suhteita.
+
+Monissa nykyisissä malleissa eteenpäinkytketty verkko on korvattu **asiantuntijoiden sekoituksella** (Mixture of Experts, MoE): verkkoja on useita, ja jokainen token kulkee vain osan niistä läpi. Siksi kokonaisparametrimäärä ja yhtä tokenia kohden käytettyjen parametrien määrä eroavat. Esimerkiksi gpt-oss-120b:ssä on 117 miljardia parametria, joista 5,1 miljardia on aktiivisia <Reference id="gpt-oss" />.
+
+## 1.3 Seuraavan tokenin valinta
+
+Viimeinen kerros tuottaa jokaiselle sanaston tokenille luvun (logit), ja softmax muuttaa ne todennäköisyyksiksi. Seuraava token valitaan tästä jakaumasta:
+
+- **Ahne valinta** ottaa aina todennäköisimmän tokenin.
+- **Otanta** arpoo tokenin jakauman mukaan. Lämpötila *T* jakaa logitit ennen softmaxia: pieni *T* terävöittää jakaumaa ja suuri tasoittaa sitä.
+- **Nucleus- eli top-p-otanta** arpoo vain pienimmästä joukosta tokeneita, joiden yhteistodennäköisyys ylittää rajan *p* <Reference id="holtzman2020" />.
+
+Otannan takia sama kehote voi tuottaa eri vastauksen eri kerroilla. Sovellusta ei siis voi testata kuten deterministista funktiota, vaan sen laatua mitataan otoksilla (luku 11). Kaikki palvelut eivät enää anna säätää otantaa: Claude API palauttaa virheen, jos pyyntö sisältää parametrin `temperature`, `top_p` tai `top_k`, API-versiosta 2026-10-21 alkaen <Reference id="anthropic-api-2026-10-21" />.
+
+## 1.4 Koulutuksen vaiheet
+
+1. **Esikoulutus:** malli opetetaan ennustamaan seuraavaa tokenia suuresta tekstiaineistosta. Tässä vaiheessa syntyvät kielitaito ja suurin osa tiedoista.
+2. **Ohjeistusviritys:** mallia hienosäädetään esimerkeillä, joissa on ohje ja hyvä vastaus.
+3. **Palaute ja vahvistusoppiminen:** ihmiset tai toinen malli arvioivat vastauksia, ja mallia ohjataan suosittuun suuntaan. InstructGPT-tutkimuksessa ihmisten palautteella hiotun 1,3 miljardin parametrin mallin vastauksia suosittiin 175 miljardin parametrin GPT-3:n vastausten sijaan <Reference id="ouyang2022" />.
+
+Mallin tiedot päättyvät koulutusaineiston rajapäivään. Uudempi tieto pitää antaa kontekstissa, esimerkiksi hakemalla (luku 5).
+
+## 1.5 Päättely ennen vastausta
+
+Kun malli kirjoittaa välivaiheet näkyviin ennen vastausta, monivaiheinen päättely paranee. Ilmiö raportoitiin ensin kehotetekniikkana nimellä ajatusketju (chain of thought) <Reference id="wei2022" />. Vuonna 2024 julkaistiin päättelymalleja, jotka on opetettu vahvistusoppimisella tuottamaan pitkä päättely ennen vastausta <Reference id="openai-o1" />.
+
+Nykyisissä Claude-malleissa päättely on **adaptiivista**: malli päättää itse, milloin ja kuinka paljon se päättelee. Kehittäjä säätää syvyyttä **effort-tasolla** (low, medium, high, xhigh, max) eikä enää kiinteällä päättelybudjetilla <Reference id="anthropic-opus46" /> <Reference id="anthropic-effort" />. Päättelytokenit laskutetaan tulostetokeneina, joten korkeampi effort-taso nostaa yleensä sekä viivettä että hintaa <Reference id="anthropic-thinking" />.
+
+<WhyItMatters>
+  Effort-taso on kustannus- ja laatusäädin. Rutiinitehtävä, kuten luokittelu, toimii usein matalalla tasolla, kun taas monivaiheinen koodaus- tai agenttitehtävä hyötyy korkeammasta. Taso valitaan mittaamalla omilla tehtävillä, ei oletuksena.
+</WhyItMatters>
+
+## Sudenkuopat
+
+- **Malli ei muista mitään kutsujen välillä.** Kaikki tarvittava lähetetään joka kerta uudelleen (luku 3).
+- **Token ei ole sana.** Arvioi hinta ja ikkunan käyttö tokeneina, älä sanoina.
+- **Sama syöte voi tuottaa eri tuloksen.** Testaa otoksilla ja rajaa tulosteen muoto rakenteisella tulosteella (luku 4).
+- **Malli ei tiedä uusimpia asioita.** Koulutusaineiston rajapäivän jälkeinen tieto tuodaan kontekstiin.
+
+<ChapterQuiz chapterSlug="01-kielimalli" />

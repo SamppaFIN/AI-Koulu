@@ -1,0 +1,90 @@
+---
+title: "API-sovellukset"
+description: "Mallikutsun rakenne, suoratoisto, rakenteinen tuloste, työkalukutsut ja virheiden käsittely: yksinkertaisin tuotantokelpoinen tekoälysovellus."
+order: 4
+section: "Rakennusmallit"
+part: 2
+tags: ["API", "työkalukutsut", "rakenteinen tuloste", "suoratoisto", "virheenkäsittely"]
+---
+
+Yksinkertaisin tekoälysovellus on käyttöliittymä, kehote ja mallikutsu. Se riittää moneen tehtävään, kuten luokitteluun, tiivistämiseen ja tiedon poimintaan. Tämä luku käy läpi kutsun osat ja ne mekanismit, joilla kutsusta tehdään luotettava. Esimerkit ovat Claude API:sta; OpenAI:n ja Googlen rajapinnoissa on vastaavat käsitteet eri nimillä.
+
+## 4.1 Kutsun rakenne
+
+Pyynnössä on malli, järjestelmäkehote, viestit ja tulosteen enimmäispituus. Vastauksessa on sisältölohkot, lopetussyy ja tokenimäärät.
+
+| Kenttä | Mitä se on |
+|---|---|
+| `model` | Mallin tunniste, esimerkiksi `claude-opus-5-5` (luku 2) |
+| `system` | Sovelluksen pysyvät ohjeet mallille |
+| `messages` | Keskusteluhistoria vuorotellen rooleilla `user` ja `assistant` |
+| `max_tokens` | Tulosteen yläraja; jos se täyttyy, vastaus katkeaa |
+| `stop_reason` (vastaus) | Miksi malli lopetti: esimerkiksi `end_turn`, `max_tokens`, `tool_use` tai `refusal` |
+| `usage` (vastaus) | Syöte-, tuloste- ja välimuistitokenit; kustannuslaskennan pohja |
+
+Tarkista aina `stop_reason`, ennen kuin luet vastauksen. Arvo `max_tokens` tarkoittaa, että vastaus on kesken, ja arvo `refusal` sitä, että malli kieltäytyi <Reference id="anthropic-messages" />.
+
+## 4.2 Suoratoisto
+
+Pitkän vastauksen tuottaminen kestää sekunneista minuutteihin. Suoratoistossa (streaming) palvelin lähettää vastauksen paloina sitä mukaa kuin se syntyy (Server-Sent Events). Käyttäjä näkee tekstin heti, ja yhteys ei aikakatkaise pitkää pyyntöä. Anthropic suosittelee suoratoistoa pitkille vastauksille <Reference id="anthropic-streaming" />.
+
+## 4.3 Rakenteinen tuloste
+
+Kun ohjelma lukee mallin vastauksen, vapaa teksti on hauras rajapinta. **Rakenteinen tuloste** pakottaa vastauksen JSON-skeeman mukaiseksi, ja **tiukka työkalukäyttö** (`strict: true`) takaa, että työkalun argumentit noudattavat skeemaa <Reference id="anthropic-structured-outputs" />. Skeema ei kuitenkaan takaa, että arvot ovat oikein: tarkista liiketoimintasäännöt omassa koodissa.
+
+## 4.4 Työkalukutsut
+
+Työkalukutsussa malli ei itse suorita mitään. Se palauttaa työkalun nimen ja argumentit, sovellus suorittaa työkalun ja palauttaa tuloksen seuraavassa viestissä <Reference id="anthropic-tool-use" />.
+
+```ts
+const tools = [{
+  name: "hae_tilaus",
+  description: "Hakee tilauksen tilan tilausnumerolla.",
+  input_schema: {
+    type: "object",
+    properties: { tilausnumero: { type: "string" } },
+    required: ["tilausnumero"],
+  },
+}];
+
+let response = await client.messages.create({ model: "claude-opus-5-5", max_tokens: 4096, tools, messages });
+
+while (response.stop_reason === "tool_use") {
+  messages.push({ role: "assistant", content: response.content });
+  const results = [];
+  for (const block of response.content) {
+    if (block.type !== "tool_use") continue;
+    const tulos = await suoritaTyokalu(block.name, block.input); // sovelluksen oma koodi
+    results.push({ type: "tool_result", tool_use_id: block.id, content: JSON.stringify(tulos) });
+  }
+  messages.push({ role: "user", content: results }); // kaikki tulokset yhdessä viestissä
+  response = await client.messages.create({ model: "claude-opus-5-5", max_tokens: 4096, tools, messages });
+}
+```
+
+Malli voi pyytää useita työkaluja samassa vastauksessa. Palauta silloin kaikki tulokset yhdessä viestissä, ja jos työkalu epäonnistuu, palauta virhe tuloksena (`is_error: true`) äläkä jätä sitä pois <Reference id="anthropic-tool-use" />.
+
+<Callout type="warning">
+  Malli päättää argumentit, mutta sovellus päättää, mitä suoritetaan. Tarkista argumentit ennen suoritusta ja anna työkalulle vain ne oikeudet, joita se tarvitsee. Sivuvaikutuksia tuottavat työkalut, kuten maksu tai sähköpostin lähetys, tarvitsevat usein ihmisen hyväksynnän (luku 13).
+</Callout>
+
+## 4.5 Virheet ja uudelleenyritykset
+
+| Tilanne | Merkki | Toimenpide |
+|---|---|---|
+| Liian monta pyyntöä | HTTP 429 | Odota `retry-after`-otsakkeen aika ja yritä uudelleen |
+| Palvelu ylikuormittunut | HTTP 529 tai muu 5xx | Uudelleenyritys kasvavalla viiveellä |
+| Virheellinen pyyntö | HTTP 400 | Korjaa pyyntö; uudelleenyritys ei auta |
+| Vastaus katkesi | `stop_reason: "max_tokens"` | Nosta rajaa tai pyydä lyhyempi vastaus |
+
+Anthropicin SDK:t yrittävät virheitä 429 ja 5xx automaattisesti uudelleen kasvavalla viiveellä, oletuksena kahdesti <Reference id="anthropic-errors" />. Jos sovellus yrittää itse uudelleen, työkalujen sivuvaikutusten pitää olla idempotentteja, ettei sama maksu lähde kahdesti.
+
+## 4.6 Kehote on koodia
+
+Järjestelmäkehote ohjaa sovelluksen käytöstä yhtä paljon kuin koodi. Pidä se versionhallinnassa, muuta sitä vain testien kanssa (luku 11) ja pidä pysyvä osa samana, jotta välimuisti osuu (luku 3).
+
+<WhyItMatters>
+  Moni tuotantovika ei johdu mallista vaan sovelluksesta: lopetussyy jää tarkistamatta, katkennut vastaus jäsennetään tai työkalu suoritetaan tarkistamattomilla argumenteilla. Nämä ovat tavallisia ohjelmointivirheitä, ja ne korjataan tavallisilla keinoilla.
+</WhyItMatters>
+
+<ChapterQuiz chapterSlug="04-api-sovellukset" />

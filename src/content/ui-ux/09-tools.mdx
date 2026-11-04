@@ -1,181 +1,65 @@
 ---
 title: "Työkalut ja toimintatavat"
-description: "Suunnittelutyökalut, kehitystyökalut ja suunnittelun ja kehityksen yhteistyö."
+description: "Suunnittelusta koodiin: prototyypit, design tokenien putki, komponenttien eristetty kehitys, automaattiset saavutettavuus- ja suorituskykytestit sekä koodausagentit käyttöliittymätyössä."
 order: 9
 section: "Työkalut"
-tags: ["Figma", "Storybook", "Playwright", "design-to-code"]
+tags: ["työkalut", "design tokenit", "Playwright", "axe-core", "koodausagentit"]
 published: true
 ---
 
-## 9.1 Suunnittelutyökalut
+Työkalut vaihtuvat nopeammin kuin periaatteet, joten tämä luku on järjestetty työvaiheiden mukaan. Jokaisessa vaiheessa kysytään, mitä työkalun pitää tehdä, ja esimerkkinä on tämän sivuston oma toteutus.
 
-### Figma
+## 9.1 Prototyyppi ennen koodia
 
-Nykypäivän standardi — ja syystä:
+Suunnittelukierroksen (luku 1) prototyyppi tehdään nopeimmalla välineellä, jolla testattava kysymys saadaan vastattua. Rakenteen ja navigaation testaamiseen riittää paperi tai rautalankamalli. Vuorovaikutuksen testaamiseen tarvitaan klikattava prototyyppi, ja suorituskyvyn tai oikean datan testaamiseen koodi. Suunnittelutyökaluihin on tullut toimintoja, jotka tuottavat prototyypin tai koodia kuvauksen perusteella. Esimerkiksi Figma esitteli toukokuussa 2025 Figma Make -toiminnon, joka tekee kehotteesta toimivan sovellusprototyypin <Reference id="figma-config-2025" />. Tuotettu prototyyppi on silti prototyyppi: sen saavutettavuus ja rakenne tarkistetaan kuten käsin tehdyn.
 
-| Ominaisuus | Hyöty | Tila 2026 |
+Tämän sivuston ulkoasu tehtiin ensin suunnittelukankaalle oikealla sisällöllä, ja toteutukseen siirryttiin vasta, kun ilme oli hyväksytty.
+
+## 9.2 Design tokenien putki
+
+Design tokenit (luku 6) ovat suunnittelun ja koodin yhteinen rajapinta. Toimiva putki näyttää tältä:
+
+1. Arvot määritellään yhdessä paikassa, esimerkiksi DTCG-muotoisena JSON-tiedostona <Reference id="design-tokens" />.
+2. Muunnostyökalu tuottaa niistä CSS-muuttujat ja tarvittaessa muiden alustojen muodot.
+3. Komponentit käyttävät vain muuttujia, eivät kovakoodattuja arvoja.
+4. Kontrastitesti tarkistaa käyttötarkoitusten parit, kuten tekstin taustaa vasten (luku 2).
+
+Tämä sivusto määrittelee värit OKLCH-muuttujina yhdessä tyylitiedostossa, ja tekstivärin kontrasti taustaan on laskettu WCAG:n kaavalla.
+
+## 9.3 Komponentit eristyksissä
+
+Komponentti kehitetään ja testataan erillään sovelluksesta, jotta sen jokainen tila on nähtävissä: tyhjä, lataus, virhe, pitkä teksti ja kapea näkymä. Komponenttityöpaja (esimerkiksi Storybook) näyttää tilat rinnakkain, ja kuvavertailutesti havaitsee tahattomat ulkoasumuutokset. Tärkeintä on, että tilat on lueteltu: virhetila, jota kukaan ei ole nähnyt, on usein rikki.
+
+## 9.4 Automaattinen testaus
+
+| Mitä testataan | Työkalu (esimerkki) | Mitä testi löytää |
 |---|---|---|
-| **Auto Layout** | Responsiiviset komponentit ilman koodia | Kypsä |
-| **Variantit** | Kaikki tilat yhdessä komponentissa | Kypsä |
-| **Design tokenit** | Värit, välit, typografia keskitetysti | Kypsä |
-| **Dev Mode** | Kehittäjä näkee tarkat arvot, koodin, CSS:n | Paranneltu 2025 |
-| **AI (Figma AI)** | Generoi komponentteja kuvauksesta | Beta 2025-2026 |
-| **Yhteistyö** | Reaaliaikainen, kommentit, versiohistoria | Kypsä |
-| **Figma Slides** | Presentaatiot suoraan Figmasta | Uusi 2025 |
+| Toiminta selaimessa | Playwright | Rikkinäiset polut, lomakkeet ja navigaatio oikeassa selaimessa |
+| Saavutettavuus | axe-core | Koneellisesti tunnistettavat WCAG-virheet: nimet, kontrasti, roolit (luku 4) |
+| Suorituskyky | Lighthouse | Laboratoriomittaukset ja niiden syyt (luku 5) |
+| Logiikka ja data | Vitest | Funktiot ja datan eheys |
 
-<Callout type="info">
-  **2026 trendi:** AI-avusteinen suunnittelu on arkipäivää. Figma AI, 
-  Uizard, Galileo AI ja Musho.ai generoivat UI:ta kuvauksesta. Mutta:
-  ne eivät korvaa suunnittelijaa — ne nopeuttavat iterointia.
-</Callout>
+Tämän sivuston testit ajetaan ennen jokaista julkaisua: Playwright avaa jokaisen sivun desktop- ja mobiilikoossa, axe-core tarkistaa saavutettavuuden, ja Vitest tarkistaa, että jokainen lähdeviite, visa ja sanastotermi osoittaa johonkin olemassa olevaan. Punainen testi estää julkaisun.
 
-### Kehitystyökalut 2026
+Testit odottavat sivun tilaa eivätkä kiinteää aikaa. Kiinteä viive on joko liian lyhyt hitaalla koneella, jolloin testi epäonnistuu satunnaisesti, tai liian pitkä nopealla, jolloin testit hidastuvat.
 
-| Työkalu | Tarkoitus | Vahvuus 2026 |
-|---|---|---|
-| **Storybook 8** | Komponenttikirjasto + testaus | Visual testing, a11y-tarkistus, autodocs |
-| **Chromatic** | Visuaalinen regressiotestaus Storybookille | Automaattinen, UI review |
-| **Playwright** (v1.50+) | E2E-testaus | Paras: nopeus, trace viewer, komponenttitestaus |
-| **Cypress** (v14+) | E2E-testaus | Helppo, hyvä dokumentaatio |
-| **Vitest** (v3) | Yksikkö/integraatiotestaus | Vite-natiivi, nopea, yhteensopiva Jestin kanssa |
-| **Biome** | Lintaus + formatointi | Korvaa ESLint + Prettier, 10× nopeampi (2025) |
-
-### Yhteistyö
-
-| Työkalu | Tarkoitus | Tila |
-|---|---|---|
-| **Storybook** | Komponenttidokumentaatio + testaus | Standardi |
-| **Zeroheight** | Koko design systemin dokumentaatio | Kypsä |
-| **Notion** | Prosessit, käytännöt, tutkimustulokset | Standardi |
-| **Linear** | Projektinhallinta (korvaa Jiran) | Nousussa, dev-ystävällinen |
-
-### Prototyyppaus
-
-| Työkalu | Vahvuus |
-|---|---|
-| **Figma** | Nopea, integroitu suunnitteluun |
-| **Prototype** | Kehittyneet animaatiot ja siirtymät |
-| **Origami** (Facebook) | Mobiiliprotot, eleohjaus |
-| **Framer** | Koodipohjainen, React-komponentit |
-
-## 9.2 Kehitystyökalut
-
-### Storybook + Chromatic
-
-```typescript
-// Storybook: komponentit eristyksissä
-export default {
-  title: "Components/Button",
-  component: Button,
-};
-
-export const Primary = {
-  args: {
-    variant: "primary",
-    children: "Tallenna",
-  },
-};
-
-export const Disabled = {
-  args: {
-    ...Primary.args,
-    disabled: true,
-  },
-};
+```ts
+// Odota, että Astro-saareke on hydratoitunut, älä odota 2 sekuntia
+await page.waitForFunction((sel) => {
+  const saari = document.querySelector(sel)?.closest("astro-island");
+  return !!saari && !saari.hasAttribute("ssr");
+}, ".contrast-tool");
 ```
 
-### Playwright ja Cypress
+## 9.5 Koodausagentit käyttöliittymätyössä
 
-| Työkalu | Vahvuus |
-|---|---|
-| **Playwright** | Nopea, moniselaimekäs, hyvä debug |
-| **Cypress** | Helppo aloittaa, hyvä dokumentaatio |
+Koodausagentti (AI-osion luku 10) voi kirjoittaa komponentin, korjata saavutettavuusvirheen tai päivittää riippuvuuden. Käyttöliittymätyössä tarkistus on vaikeampi kuin taustakoodissa, koska "näyttää oikealta" ei palaudu testin tulokseksi. Claude Coden dokumentaatio mainitsee yhdeksi tarkistustavaksi selaimen kuvakaappauksen mallikuvan rinnalla <Reference id="claude-code-best-practices" />. Lisäksi automaattiset testit, kuten saavutettavuustesti ja kuvavertailu, antavat agentille tuloksen läpi tai hylätty, jolloin se voi korjata työnsä itse ennen kuin ihminen katsoo sitä.
 
-### Visuaaliset regressiotestit
+## Sudenkuopat
 
-Percy, Applitools — vertaavat kuvakaappauksia eri versioiden välillä.
-Näkevät muutokset, joita yksikkötestit eivät näe (layout, värit, fontit).
-
-### axe DevTools
-
-Saavutettavuustestaus suoraan selaimen DevToolsissa — klikkaa, analysoi, korjaa.
-
-<AnalogyBox>
-  **Analogia:** Työkalut ovat kuin käsityöläisen työkalupakki.
-  - **Figma** on kuin työpiirustus — näyttää miltä lopputuloksen pitäisi näyttää
-  - **Storybook** on kuin mallihuone — jokainen komponentti on esillä erikseen
-  - **Playwright** on kuin testiajo — varmistaa että kaikki toimii yhdessä
-  - **Chromatic** on kuin valokuva ennen ja jälkeen — näkee pienetkin muutokset
-
-  Hyvä käsityöläinen tuntee työkalunsa. Mutta työkalut eivät tee mestaria —
-  taito ja kokemus tekevät.
-</AnalogyBox>
-
-## 9.3 Suunnittelun ja kehityksen yhteistyö
-
-### Design-to-code -putket
-
-```
-Figma → Design tokenit (JSON) → Koodi (CSS-muuttujat) → Komponentit → Sivu
-```
-
-1. Suunnittelija määrittelee tokenit Figmassa
-2. Tokenit synkronoidaan (käsiohjatusti tai työkalulla, kuten Specify/tokens.studio)
-3. Kehittäjä käyttää tokeneita Tailwind-konfiguraatiossa / CSS-muuttujina
-4. Komponentit rakennetaan Figma-komponenttien mukaan
-
-### Suunnittelukatselmukset (Design QA)
-
-```yaml
-Kriteerit ennen hyväksyntää:
-  - Vastaako toteutus Figma-suunnittelua? (pikselitarkkuus ±2px)
-  - Toimiiko kaikki tilat (loading, empty, error, hover, focus)?
-  - Onko saavutettavuus huomioitu (kontrasti, näppäimistö, ruudunlukija)?
-  - Toimiiko mobiililla ja desktopilla?
-  - Onhan fontit, värit ja välit design tokenien mukaiset?
-```
-
-### Yhteinen kieli
-
-**Design tokenit** ovat siltä suunnittelun ja kehityksen välillä:
-
-```json
-{
-  "color": {
-    "brand": { "value": "oklch(0.55 0.24 280)" },
-    "bg": { "value": "oklch(0.98 0.005 280)" },
-    "text": { "value": "oklch(0.15 0.02 280)" }
-  },
-  "spacing": {
-    "md": { "value": "1rem" },
-    "lg": { "value": "1.5rem" }
-  }
-}
-```
-
-### Dokumentaatio
-
-| Työkalu | Käyttötarkoitus |
-|---|---|
-| **Storybook** | Komponenttien dokumentaatio + testaus |
-| **Zeroheight** | Koko design systemin dokumentaatio |
-| **Notion / Confluence** | Prosessit, käytännöt, tutkimustulokset |
-
-<WhyItMatters>
-  **Miksi tällä on väliä?** Hyvä suunnittelun ja kehityksen välinen yhteistyö
-  on nopein tapa rakentaa laadukkaita käyttöliittymiä. Kun suunnittelija
-  ja kehittäjä puhuvat samaa kieltä (design tokenit), käyttävät samoja
-  työkaluja (Figma → Storybook → koodi) ja tarkistavat laatua yhdessä
-  (design QA), lopputulos on johdonmukainen, saavutettava ja valmis
-  tuotantoon — ilman turhia iteraatiokierroksia.
-</WhyItMatters>
-
-<Reference id="nielsen2012" />
-<Reference id="norman2013" />
-
----
-
-**Osa 2 on nyt valmis!** Siirry takaisin [etusivulle](/AI-Koulu/) tai tutustu [interaktiivisiin demoihin](/AI-Koulu/).
-
+- **Työkalu ennen kysymystä.** Valitse prototyypin väline sen mukaan, mitä haluat testata.
+- **Kovakoodatut arvot.** Yksi poikkeava väri komponentissa ohittaa koko token-järjestelmän ja sen kontrastitarkistuksen.
+- **Testit kiinteillä viiveillä.** Odota tilaa, älä aikaa.
+- **Puhdas automaattiraportti valmiin merkkinä.** Automaattiset testit eivät korvaa näppäimistö- ja ruudunlukijatestiä (luku 4) eivätkä käyttäjätestiä (luku 1).
 
 <ChapterQuiz chapterSlug="09-tools" />

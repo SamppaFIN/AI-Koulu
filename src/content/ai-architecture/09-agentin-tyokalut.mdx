@@ -1,0 +1,146 @@
+---
+title: "Agentin työkalut"
+description: "MCP yhdistää sovellukset työkaluihin, Agent Skills paketoi työohjeet ja computer use käyttää ohjelmia näytön kautta. Miten kukin toimii ja mitä se vaatii turvallisuudelta."
+order: 9
+section: "Agentit"
+part: 3
+tags: ["MCP", "Agent Skills", "computer use", "työkalut", "JSON-RPC"]
+---
+
+Luvussa 4 työkalu määriteltiin suoraan API-kutsussa: nimi, kuvaus ja syöteskeema. Tapa riittää, kun yksi sovellus käyttää muutamaa omaa työkaluaan. Tässä luvussa käsitellään kolmea tilannetta, joihin se ei riitä:
+
+- **Monta sovellusta, monta järjestelmää:** sama työkalu halutaan käyttöön useaan sovellukseen. Ratkaisu on yhteinen protokolla, MCP.
+- **Monivaiheinen työtapa:** agentin pitää tietää, miten jokin tehdään, esimerkiksi talon raporttipohja tai julkaisuprosessi. Ratkaisu on taito (skill).
+- **Ohjelma ilman rajapintaa:** ainoa käyttöliittymä on näyttö. Ratkaisu on computer use.
+
+## 9.1 MCP: yhteinen protokolla työkaluille
+
+**Model Context Protocol** (MCP) on avoin protokolla, jolla LLM-sovellus yhdistetään ulkoisiin tietolähteisiin ja työkaluihin <Reference id="mcp-spec" />. Anthropic julkaisi sen marraskuussa 2024. Julkaisussa ongelma kuvattiin näin: jokainen uusi tietolähde vaatii oman toteutuksensa, mikä tekee yhdistetyistä järjestelmistä vaikeita skaalata <Reference id="anthropic-mcp" />.
+
+Ongelman koon voi laskea. Jos *M* sovellusta liitetään *N* järjestelmään ilman yhteistä rajapintaa, tarvitaan pahimmillaan yksi integraatio jokaista paria kohti. Yhteisellä protokollalla jokainen sovellus ja jokainen järjestelmä toteuttaa protokollan kerran:
+
+<div class="formula">integraatioita ilman protokollaa ≤ M · N   →   protokollalla M + N</div>
+
+Spesifikaatio kertoo saaneensa mallia Language Server Protocolista (LSP), joka teki saman ohjelmointikielten tuelle kehitystyökaluissa <Reference id="mcp-spec" />.
+
+### Roolit ja viestit
+
+MCP:ssä on kolme roolia <Reference id="mcp-spec" />:
+
+- **Isäntä** (host) on LLM-sovellus, esimerkiksi chat-sovellus tai koodieditori.
+- **Asiakas** (client) on isännän sisällä oleva liitin, joka keskustelee yhden palvelimen kanssa.
+- **Palvelin** (server) on palvelu, joka tarjoaa kontekstia ja toimintoja.
+
+Viestit ovat JSON-RPC 2.0 -muotoisia. Vakiokuljetuksia on kaksi. **stdio**: asiakas käynnistää palvelimen aliprosessina, ja viestit kulkevat rivinvaihdoin erotettuina sen vakiovirroissa. **Streamable HTTP**: jokainen viesti on HTTP POST yhteen MCP-osoitteeseen, ja vastaus tulee JSON-oliona tai pyyntökohtaisena SSE-virtana <Reference id="mcp-transports" />. Paikallinen palvelin käyttää yleensä stdiota ja etäpalvelin HTTP:tä.
+
+Palvelin voi tarjota kolmenlaisia ominaisuuksia <Reference id="mcp-spec" />:
+
+| Ominaisuus | Mitä se on | Kuka ohjaa |
+|---|---|---|
+| Työkalut (tools) | Funktioita, joita malli voi kutsua | Malli valitsee, käyttäjä voi estää |
+| Resurssit (resources) | Dataa mallin kontekstiksi, esimerkiksi tiedostoja tai tietokantaskeemoja | Sovellus päättää, miten resurssi otetaan kontekstiin |
+| Kehotepohjat (prompts) | Valmiita viestipohjia ja työnkulkuja | Käyttäjä valitsee, esimerkiksi kauttaviivakomennolla |
+
+Ohjausjako on spesifikaation ominaisuussivuilta <Reference id="mcp-tools" /> <Reference id="mcp-resources" /> <Reference id="mcp-prompts" />. Asiakas voi lisäksi tarjota palvelimelle **elicitation**-ominaisuuden: palvelin voi pyytää käyttäjältä lisätietoa kesken toiminnon <Reference id="mcp-spec" />.
+
+<McpDiagram />
+
+### Työkalukutsu protokollatasolla
+
+Asiakas hakee työkalut `tools/list`-pyynnöllä. Jokaisella työkalulla on yksilöivä nimi, kuvaus ja JSON Schema -muotoinen `inputSchema`, ja vapaaehtoisesti `outputSchema` rakenteiselle tulokselle. Kutsu tehdään `tools/call`-pyynnöllä <Reference id="mcp-tools" />:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": { "name": "get_weather", "arguments": { "location": "Tampere" } }
+}
+```
+
+Virheitä on kahta lajia. **Protokollavirhe** (tuntematon työkalu, väärin muodostettu pyyntö) palautetaan JSON-RPC-virheenä. **Suoritusvirhe** (esimerkiksi päivämäärä väärässä muodossa) palautetaan tavallisena tuloksena, jossa on `isError: true` ja selitys. Spesifikaation mukaan suoritusvirheet kannattaa antaa mallille, jotta se voi korjata argumentit ja yrittää uudelleen <Reference id="mcp-tools" />.
+
+### Tilaton protokolla
+
+Revisiossa 2026-07-28 jokainen pyyntö on itsenäinen: protokollaversio ja asiakkaan ominaisuudet kulkevat jokaisen pyynnön mukana. Aiemmissa revisioissa yhteys aloitettiin `initialize`-kättelyllä, ja istunto oli sidottu yhteyteen <Reference id="mcp-transports" />. Jos palvelimen pitää muistaa jotain kutsujen välillä, esimerkiksi ostoskori tai tietokantatransaktio, se palauttaa ensimmäisestä kutsusta tunnisteen, ja malli antaa sen argumenttina seuraaville kutsuille <Reference id="mcp-tools" />.
+
+Tilattomuus helpottaa etäpalvelimen skaalaamista. Koska pyyntö ei riipu yhteyden tilasta, kuormantasaaja voi ohjata sen mille tahansa palvelininstanssille, kunhan kutsujen välinen tila (tunnisteiden takana oleva data) on jaetussa tallennuksessa.
+
+### Laajennukset ja hallinto
+
+Ydinprotokollan päälle on määritelty valinnaisia laajennuksia, jotka sekä asiakkaan että palvelimen pitää tukea. Esimerkkejä ovat Tasks (pitkäkestoiset toiminnot), Skills over MCP (taitojen jakelu MCP:n kautta) ja MCP Apps (vuorovaikutteiset käyttöliittymäelementit keskustelussa) <Reference id="mcp-spec" />. MCP Apps julkaistiin tammikuussa 2026 ensimmäisenä virallisena laajennuksena. Palvelin tarjoaa käyttöliittymän `ui://`-resurssina, ja isäntä näyttää sen eristetyssä iframessa <Reference id="mcp-apps" />. Generatiivista käyttöliittymää käsitellään myös UI/UX-osion luvussa 7.
+
+Joulukuussa 2025 Linux Foundation perusti Agentic AI Foundationin (AAIF). Sen perustajaprojektit olivat Anthropicin MCP, Blockin goose ja OpenAI:n AGENTS.md <Reference id="lf-aaif" />. MCP ei siis enää ole yhden yrityksen hallinnoima.
+
+### Turvallisuus
+
+MCP-työkalu on mielivaltaista koodia, jonka malli voi käynnistää. Spesifikaatio vaatii ja suosittelee <Reference id="mcp-spec" /> <Reference id="mcp-tools" />:
+
+- **Ihminen silmukassa.** Käyttäjän pitää voida estää työkalukutsu. Sovelluksen pitää näyttää, mitkä työkalut ovat mallin käytössä ja milloin niitä kutsutaan, ja kysyä vahvistus arkaluonteisille toiminnoille.
+- **Kuvaukset eivät ole luotettavia.** Työkalun kuvaus ja annotaatiot (esimerkiksi "vain luku") on käsiteltävä epäluotettavina, ellei palvelin ole luotettu. Kuvaus menee mallin kontekstiin, joten haitallinen palvelin voi kirjoittaa siihen ohjeita mallille (luku 13).
+- **Palvelimen vastuu.** Palvelimen pitää validoida syötteet, tarkistaa käyttöoikeudet, rajoittaa kutsutiheyttä ja puhdistaa tulosteet.
+- **Asiakkaan vastuu.** Asiakkaan kannattaa näyttää työkalun syötteet käyttäjälle ennen kutsua, jotta dataa ei vuoda huomaamatta, sekä asettaa aikakatkaisut ja kirjata kutsut.
+
+## 9.2 Työkalut kuluttavat kontekstia
+
+Jokaisen työkalun nimi, kuvaus ja skeema lähetetään mallille, joten ne kuluttavat konteksti-ikkunaa jokaisella kutsulla (luku 3). Kun palvelimia on useita, työkalumäärittelyt voivat viedä merkittävän osan kontekstista ennen kuin tehtävä on edes alkanut. Siksi esimerkiksi Claude Code lataa MCP-työkalujen määrittelyt oletuksena vasta tarvittaessa työkaluhaun kautta: aluksi kontekstissa ovat vain työkalujen nimet ja palvelinten ohjeet <Reference id="claude-code-how" />.
+
+Toinen ongelma on sekaannus. Jos kahdella palvelimella on samanniminen työkalu, esimerkiksi `search`, spesifikaatio suosittelee lisäämään nimen eteen palvelimen tunnisteen <Reference id="mcp-tools" />. Samankaltaiset kuvaukset johtavat helposti väärään valintaan, joten kuvaus kannattaa kirjoittaa kertomaan, milloin työkalua käytetään ja milloin ei.
+
+## 9.3 Agent Skills: työohjeet paketteina
+
+MCP antaa agentille pääsyn järjestelmiin. Pääsy ei kuitenkaan kerro, miten työ tehdään: missä järjestyksessä vaiheet kulkevat, mitä pohjaa käytetään ja mitkä ovat talon säännöt. **Taito** (skill) on kansio, jossa on `SKILL.md`-tiedosto. Tiedoston alussa on YAML-otsake, jossa on vähintään kentät `name` ja `description`, ja sen jälkeen ohjeet. Kansiossa voi lisäksi olla skriptejä, viitemateriaalia ja pohjia <Reference id="agentskills" />.
+
+```markdown
+---
+name: raportti-pdf
+description: Kokoaa kuukausiraportin talon PDF-pohjaan. Käytä, kun käyttäjä pyytää kuukausi- tai neljännesvuosiraporttia.
+---
+1. Hae luvut scripts/hae_luvut.py-skriptillä.
+2. Täytä pohja assets/pohja.html ja muunna PDF:ksi.
+3. Tarkista, että jokaisella kaaviolla on lähde.
+```
+
+Taidot ladataan **porrastetusti** (progressive disclosure) <Reference id="anthropic-skills" />:
+
+1. **Löytäminen:** käynnistyksessä kontekstiin ladataan vain jokaisen taidon nimi ja kuvaus. Malli tietää niiden perusteella, milloin taito voi olla hyödyllinen.
+2. **Aktivointi:** kun tehtävä vastaa kuvausta, malli lukee koko `SKILL.md`-tiedoston.
+3. **Suoritus:** malli noudattaa ohjeita ja avaa taidon muita tiedostoja tai ajaa sen skriptejä vain tarvittaessa.
+
+Porrastuksen ansiosta agentilla voi olla käytössään paljon taitoja, vaikka ne vievät kontekstista vain vähän tilaa. Anthropic julkaisi Agent Skillsin lokakuussa 2025 ja avoimena standardina joulukuussa 2025 <Reference id="anthropic-skills" />. Tilanteessa 11/2026 muodon ovat ottaneet käyttöön myös muut agenttituotteet <Reference id="agentskills" />.
+
+| | Projektiohje (CLAUDE.md, AGENTS.md) | Taito (SKILL.md) | MCP-palvelin |
+|---|---|---|---|
+| Mitä se antaa | Projektin säännöt ja komennot | Työtavan ja siihen kuuluvat tiedostot | Pääsyn järjestelmään ja sen toimintoihin |
+| Milloin kontekstissa | Aina | Kuvaus aina, sisältö tarvittaessa | Työkalujen määrittelyt (tai nimet, jos haku on käytössä) |
+| Missä suoritetaan | Ei suoritusta | Agentin omassa ympäristössä | Palvelimella |
+
+Taidon skriptit ajetaan agentin ympäristössä. Asenna siis vain taitoja, joiden lähteeseen luotat, ja lue skriptit ennen käyttöä, kuten minkä tahansa ladatun koodin.
+
+## 9.4 Computer use: näyttö käyttöliittymänä
+
+Joillakin ohjelmilla ei ole rajapintaa, vaan niitä käytetään vain graafisen käyttöliittymän kautta. **Computer use** antaa mallin käyttää tällaista ohjelmaa kuten ihminen: se katsoo kuvakaappausta ja päättää hiiren ja näppäimistön toiminnoista. Anthropic julkaisi ominaisuuden julkisena betana lokakuussa 2024, ja silloin se kuvattiin vielä kokeelliseksi, ajoittain kömpelöksi ja virhealttiiksi <Reference id="anthropic-computer-use-2024" />.
+
+Malli ei ole suoraan yhteydessä tietokoneeseen. Silmukka kulkee sovelluksen kautta <Reference id="anthropic-computer-use" />:
+
+1. Sovellus antaa mallille computer use -työkalun ja tehtävän.
+2. Malli palauttaa toimintoja työkalukutsuina, esimerkiksi `screenshot`, `left_click` tai `type`.
+3. Sovellus suorittaa toiminnot omassa ympäristössään ja palauttaa tuloksen, esimerkiksi uuden kuvakaappauksen.
+4. Silmukka jatkuu, kunnes malli toteaa tehtävän valmiiksi.
+
+Tilanteessa 11/2026 Claude 5.5 ja uudemmat mallit käyttävät työkalua `computer_toolset_20260801` ilman beta-otsaketta. Vanhemmat mallit käyttävät aiempaa versiota, joka vaatii beta-otsakkeen <Reference id="anthropic-computer-use" />.
+
+Jokainen askel vaatii kuvakaappauksen ja uuden mallikutsun, joten sama toiminto on näytön kautta hitaampi ja kalliimpi kuin yksi rakenteinen API-kutsu. Käytä computer usea vain, kun rajapintaa tai MCP-palvelinta ei ole.
+
+<Callout type="warning">
+  Computer use -agentti lukee kaiken, mitä näytöllä on, myös verkkosivujen ja kuvien tekstin, ja voi noudattaa siinä olevia ohjeita, vaikka ne olisivat ristiriidassa sinun ohjeidesi kanssa. Anthropic suosittelee <Reference id="anthropic-computer-use" />: erillinen virtuaalikone tai kontti vähimmillä oikeuksilla, ei pääsyä arkaluonteiseen dataan kuten kirjautumistietoihin, verkkoyhteys rajattuna sallittuihin osoitteisiin ja ihmisen vahvistus toimille, joilla on todellisia seurauksia, kuten maksuille ja käyttöehtojen hyväksymiselle.
+</Callout>
+
+## Sudenkuopat
+
+- **Liian laajat oikeudet.** MCP-palvelin toimii sillä tunnuksella, jonka sille annat. Lukutehtävään riittää lukuoikeus.
+- **Luotettu kuvaus.** Kolmannen osapuolen palvelimen työkalukuvaus on ulkoista dataa, ei ohje, johon voi luottaa.
+- **Kaikki työkalut aina mukana.** Kymmenien työkalujen määrittelyt vievät kontekstia ja heikentävät valintaa. Ota käyttöön vain tehtävään tarvittavat palvelimet tai käytä työkaluhakua.
+- **Computer use, kun API on olemassa.** Näytön kautta toimiminen on hitaampaa, kalliimpaa ja alttiimpaa virheille kuin suora kutsu.
+
+<ChapterQuiz chapterSlug="09-agentin-tyokalut" />

@@ -1,0 +1,100 @@
+---
+title: "Evalit ja laadunmittaus"
+description: "Miten mallin ja agentin työn laatu mitataan: tehtävät ja arvioijat, kielimalli arvioijana, pass@k ja pass^k, otoskoko, regressioevalit ja transkriptien lukeminen."
+order: 11
+section: "Agentit"
+part: 3
+tags: ["eval", "pass@k", "LLM-as-a-judge", "regressio", "benchmark"]
+---
+
+<TermTooltip term="eval">Eval</TermTooltip> on toistettava testi, joka mittaa, tekeekö malli tai agentti sen, mitä sen pitää. Kielimallin tuloste vaihtelee kutsusta toiseen, joten yksittäinen onnistunut kokeilu ei todista paljoa. Ilman evalia jokainen muutos kehotteeseen, malliin tai työkaluun on arvaus: et tiedä, paransiko se jotain vai rikkoiko se jotain muuta.
+
+## 11.1 Käsitteet
+
+Anthropicin agenttievaleja käsittelevä artikkeli käyttää näitä termejä <Reference id="anthropic-evals" />:
+
+| Termi | Merkitys |
+|---|---|
+| Tehtävä (task) | Yksi testi, jolla on määritellyt syötteet ja onnistumisehdot |
+| Yritys (trial) | Yksi suorituskerta. Tehtävää ajetaan useita kertoja, koska tulos vaihtelee |
+| Arvioija (grader) | Logiikka, joka pisteyttää jonkin suorituksen osan. Tehtävällä voi olla useita arvioijia |
+| Transkripti (transcript) | Yrityksen koko tallenne: tulosteet, työkalukutsut, päättely ja välitulokset |
+| Lopputila (outcome) | Ympäristön tila yrityksen päättyessä |
+
+Lopputilan ja transkriptin ero on tärkeä. Varausagentin evalissa ei riitä, että agentti *sanoo* varanneensa ajan. Arvioija tarkistaa, onko varaus oikeasti tietokannassa <Reference id="anthropic-evals" />.
+
+## 11.2 Arvioijat
+
+| Arvioija | Esimerkkejä | Vahvuudet | Heikkoudet |
+|---|---|---|---|
+| Koodi | Merkkijonovertailu, yksikkötestit, staattinen analyysi, työkalukutsujen tarkistus | Nopea, halpa, objektiivinen ja toistettava | Hylkää oikeitakin vastauksia, jotka poikkeavat odotetusta muodosta; ei sovi subjektiivisiin tehtäviin |
+| Kielimalli | Arviointikriteeristö, luonnollisen kielen väitteet, parivertailu, vertailu malliratkaisuun | Joustava, skaalautuu, sopii avoimiin vastauksiin | Ei deterministinen, kalliimpi, pitää kalibroida ihmisarvioihin |
+| Ihminen | Asiantuntija-arvio, pistokokeet, A/B-testit | Paras laatu, asiantuntijan harkinta | Kallis ja hidas |
+
+Taulukko perustuu Anthropicin artikkeliin <Reference id="anthropic-evals" />. Käytä koodiarvioijaa aina, kun onnistumisen voi tarkistaa ohjelmallisesti (luvun 10 testit ovat juuri tällaisia). Kielimalliarvioija sopii avoimiin vastauksiin, ja ihmisen arvioilla tarkistetaan, että kielimalliarvioija toimii.
+
+## 11.3 Kielimalli arvioijana
+
+Kielimalli arvioijana (LLM-as-a-judge) saa tehtävän, vastauksen ja arviointiohjeen ja palauttaa arvion. Zheng ym. mittasivat, että vahvat kielimalliarvioijat, kuten GPT-4, olivat samaa mieltä ihmisten kanssa yli 80 %:ssa tapauksista. Se on sama taso kuin kahden ihmisen keskinäinen yksimielisyys. Samassa tutkimuksessa havaittiin kolme vinoumaa sekä rajallinen päättelykyky <Reference id="zheng2023" />:
+
+| Vinouma | Mitä tapahtuu | Vastatoimi |
+|---|---|---|
+| Sijainti | Arvioija suosii vastausta sen paikan perusteella, esimerkiksi ensimmäisenä esitettyä | Arvioi pari molemmissa järjestyksissä ja hyväksy vain yhtenevä tulos |
+| Pituus | Arvioija suosii pidempää vastausta | Kirjoita kriteerit, jotka eivät palkitse pituutta, ja tarkista pituuden ja pisteiden yhteys |
+| Oma tuotos | Arvioija suosii oman mallinsa tuottamia vastauksia | Käytä arvioijana eri mallia kuin arvioitavana, tai kalibroi ihmisarvioilla |
+
+Vastatoimet ovat vinoumien mekanismista johdettuja käytäntöjä. Varmin tarkistus on aina sama: arvioi osa tehtävistä myös ihmisvoimin ja vertaa tuloksia.
+
+## 11.4 Satunnaisuus: useita yrityksiä
+
+Koska tulos vaihtelee, tehtävää ajetaan useita kertoja ja tulos tiivistetään tunnusluvuksi. Valinta riippuu siitä, mitä tuotteelta vaaditaan <Reference id="anthropic-evals" />.
+
+**pass@k** on todennäköisyys, että ainakin yksi *k* yrityksestä onnistuu. Se kasvaa *k*:n kasvaessa ja sopii tilanteisiin, joissa yksi onnistuminen riittää, esimerkiksi kun kehittäjä valitsee parhaan useasta ehdotuksesta. Chen ym. esittivät harhattoman estimaatin: tuota tehtävälle *n* ≥ *k* vastausta, laske oikeiden määrä *c* ja keskiarvoista tehtävien yli <Reference id="chen2021" />:
+
+<div class="formula">pass@k = 1 − C(n − c, k) / C(n, k)</div>
+
+**pass^k** on todennäköisyys, että *kaikki k* yritystä onnistuvat. Se pienenee *k*:n kasvaessa ja sopii asiakkaalle näkyvään agenttiin, jonka pitää toimia joka kerta. Jos yritykset ovat riippumattomia ja yksittäisen yrityksen onnistumistodennäköisyys on *p*:
+
+<div class="formula">pass^k = pᵏ,   esimerkiksi 0,75³ ≈ 0,42</div>
+
+Agentti, joka onnistuu 75 %:ssa yrityksistä, onnistuu siis kolmella peräkkäisellä kerralla vain noin 42 %:n todennäköisyydellä <Reference id="anthropic-evals" />.
+
+## 11.5 Tehtävät ja otoskoko
+
+Evalin ei tarvitse olla suuri alkaakseen. Anthropic pitää 20–50 yksinkertaista, todellisista virheistä koottua tehtävää hyvänä alkuna. Tehtäviä saa käsin tehdyistä tarkistuksista, virheseurannasta ja asiakastuen jonosta <Reference id="anthropic-evals" />. Hyvä tehtävä täyttää kaksi ehtoa:
+
+- **Yksiselitteinen:** kaksi asiantuntijaa päätyisi toisistaan riippumatta samaan arvioon, meneekö vastaus läpi.
+- **Ratkaistavissa:** tehtävällä on malliratkaisu, joka läpäisee kaikki arvioijat. Se todistaa, että tehtävä on ratkaistavissa ja arvioijat on asetettu oikein.
+
+Jos tehtävän läpäisyprosentti on 0 % monella yrityksellä, vika on yleensä tehtävässä eikä agentissa <Reference id="anthropic-evals" />.
+
+Pieni eval on kuitenkin epätarkka. Läpäisyosuuden *p* keskivirhe *n* tehtävällä on:
+
+<div class="formula">SE = √( p · (1 − p) / n )</div>
+
+Esimerkki: 40 tehtävää 50:stä läpi, jolloin *p* = 0,8 ja SE = √(0,8 · 0,2 / 50) ≈ 0,057. Noin 95 %:n luottamusväli on ±1,96 · SE ≈ ±11 prosenttiyksikköä. Viiden prosenttiyksikön ero kahden kehoteversion välillä ei siis 50 tehtävällä todista vielä mitään. Lisää tehtäviä tai yrityksiä, ennen kuin teet päätöksen pienen eron perusteella.
+
+## 11.6 Kyvykkyys- ja regressioevalit
+
+- **Kyvykkyyseval** kysyy, mitä agentti osaa. Sen läpäisyprosentin pitää aluksi olla matala, jotta parannukselle on tilaa.
+- **Regressioeval** kysyy, osaako agentti yhä sen, minkä se osasi ennen. Sen pitää olla lähellä 100 %:a, ja se paljastaa taantumat.
+
+Kun kyvykkyysevalin tehtävät alkavat mennä läpi, ne voi siirtää regressiojoukkoon <Reference id="anthropic-evals" />. Eval **kyllästyy**, kun agentti ratkaisee kaikki ratkaistavissa olevat tehtävät. Sadan prosentin eval seuraa yhä taantumia, mutta ei enää kerro parannuksista, joten tilalle tarvitaan vaikeampia tehtäviä <Reference id="anthropic-evals" />.
+
+Sama koskee julkisia benchmarkeja. Ne myös vuotavat: julkiset tehtävät ja niiden ratkaisut voivat päätyä mallien koulutusaineistoon. SWE-bench Verified poistui OpenAI:n raportoinnista helmikuussa 2026 muun muassa tästä syystä (luku 10) <Reference id="openai-swebench-retire" />. Oma eval omista tehtävistä on siksi luotettavampi päätöksenteon pohja kuin julkinen tulostaulukko.
+
+## 11.7 Lue transkriptit
+
+Arvioijan toimivuutta ei voi tietää lukematta transkriptejä ja arvioita monesta yrityksestä. Lukemalla selviää, oliko hylkäys agentin virhe vai hylkäsikö arvioija pätevän ratkaisun. Hylkäyksen syyn pitää olla selvä: lukijan pitää nähdä, mikä meni vikaan <Reference id="anthropic-evals" />.
+
+Käytännössä: lue jokaisen evalkierroksen jälkeen ainakin muutama hylätty ja muutama hyväksytty transkripti. Hyväksytyistä löytyy arvioijan liian löysät ehdot, hylätyistä liian tiukat.
+
+## Sudenkuopat
+
+- **Mitataan vastausta, ei lopputilaa.** Agentin oma raportti työstään ei ole todiste. Tarkista ympäristön tila.
+- **Yksi yritys tehtävää kohti.** Yksittäinen läpäisy tai hylkäys on heikko todiste, koska tulos vaihtelee.
+- **Kalibroimaton kielimalliarvioija.** Jos arvioijaa ei ole verrattu ihmisarvioihin, et tiedä, mittaako se oikeaa asiaa.
+- **Kehotetta säädetään testijoukolla.** Jos parannat kehotetta samoilla tehtävillä, joilla mittaat, tulos paranee niissä mutta ei välttämättä muualla. Pidä erillinen testijoukko, jota et käytä säätämiseen (vrt. luku 6).
+- **Liian pieni ero liian pienellä joukolla.** Laske keskivirhe ennen kuin julistat voittajan.
+
+<ChapterQuiz chapterSlug="11-evalit" />

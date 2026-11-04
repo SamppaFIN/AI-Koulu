@@ -1,165 +1,98 @@
 ---
-title: "Visuaaliset trendit"
-description: "Typografia, värit, animaatio ja tilallinen suunnittelu modernissa UI:ssa."
+title: "Visuaalinen suunnittelu"
+description: "Typografia ja luettavuus, värit ja kontrastisuhde, OKLCH-väriavaruus, liike ja prefers-reduced-motion sekä efektien saavutettavuusriskit."
 order: 2
-section: "Visuaaliset trendit"
-tags: ["typografia", "OKLCH", "animaatio", "värit", "glassmorphism"]
+section: "Visuaalinen suunnittelu"
+tags: ["typografia", "kontrasti", "OKLCH", "animaatio", "variable font"]
 published: true
 ---
 
-## 2.1 Typografia ja mikrotypografia
+Visuaalisen suunnittelun tehtävä on tehdä sisällöstä luettavaa ja rakenteesta näkyvää. Tässä luvussa käsitellään kolme osa-aluetta, joihin liittyy mitattavia vaatimuksia: typografia, värit ja liike.
 
-Typografia on käyttöliittymän ääni — se välittää tunnelman, hierarkian ja luettavuuden.
+## 2.1 Typografia ja luettavuus
 
-### Muuttuvat fontit (Variable fonts)
+WCAG 2.2 asettaa tekstille joustavuusvaatimuksia. Sivun pitää kestää käyttäjän omat asetukset <Reference id="w3c2023" />:
 
-Yksi fonttitiedosto sisältää kaikki leikkaukset (light, regular, bold, black) ja
-akselit (leveys, korkeus, kursiivi). Yksi tiedosto korvaa 10+ erillistä.
-
-```css
-/* Variable font: yksi tiedosto, rajattomat variaatiot */
-@font-face {
-  font-family: 'Inter';
-  src: url('/fonts/Inter-Variable.woff2') format('woff2');
-  font-weight: 100 900;  /* Koko väli yhdessä tiedostossa */
-}
-```
-
-### Typografinen hierarkia ja rytmi
-
-Hyvä typografia perustuu *modulaariseen skaalaan* — fonttikoot seuraavat
-suhteellista kaavaa (esim. 1.25× kultainen suhde).
-
-| Taso | Koko (clamp) | Paino | Käyttö |
-|---|---|---|---|
-| H1 | clamp(2rem, 5vw, 3.5rem) | 800 (Bold) | Sivun otsikko |
-| H2 | clamp(1.5rem, 3.5vw, 2.5rem) | 700 | Luvun otsikko |
-| H3 | clamp(1.2rem, 2.5vw, 1.75rem) | 600 | Alaotsikko |
-| Body | clamp(1rem, 1.5vw, 1.125rem) | 400 | Leipäteksti |
-| Small | clamp(0.8rem, 1.2vw, 0.9rem) | 400 | Ala-viitteet |
-
-### Responsiivinen typografia
-
-```css
-/* Fluid typografia: skaalautuu ikkunan koon mukaan */
-font-size: clamp(1rem, 0.75rem + 1.5vw, 1.375rem);
-```
-
-<Callout type="tip">
-  Käytä `clamp()`-funktiota minimalistisesti: yksi asteikon porras näyttää
-  ammattimaiselta, liian moni tekee kalligrafiasta sirkusta.
-</Callout>
-
-### Fonttien suorituskyky (FOUT, FOIT)
-
-| Strategia | Kuvaus | Riski |
+| Kriteeri | Taso | Vaatimus |
 |---|---|---|
-| `font-display: swap` | Näytä varafontti, vaihda ladattuun | FOUT (Flash of Unstyled Text) |
-| `font-display: optional` | Älä koskaan vaihda, jos fontti ei lataudu ajoissa | Käyttäjä ei ehkä näe oikeaa fonttia |
-| **Preload** | Lataa fontti etukäteen | Paras, jos fontti on kriittinen |
+| 1.4.4 Resize Text | AA | Tekstin voi suurentaa 200 %:iin ilman, että sisältöä tai toimintoja katoaa |
+| 1.4.10 Reflow | AA | Sisältö toimii 320 CSS-pikselin levyisenä ilman vaakavieritystä |
+| 1.4.12 Text Spacing | AA | Mitään ei katoa, kun riviväli on 1,5 × fonttikoko, kappaleväli 2 ×, kirjainväli 0,12 × ja sanaväli 0,16 × |
+| 1.4.8 Visual Presentation | AAA | Muun muassa rivin pituus enintään 80 merkkiä |
 
-<AnalogyBox>
-  **Analogia:** Typografia on kuin pukeutuminen — sama asia voi näyttää
-  hyvältä tai huonolta riippuen fontista. H1 on kuin takki: sen pitää olla
-  huomiota herättävä mutta ei räikeä. Leipäteksti on kuin paita: sen pitää
-  olla mukava ja luettava. Small-teksti on kuin asusteet: pienet yksityiskohdat.
-</AnalogyBox>
+Käytännössä vaatimukset toteutuvat, kun fonttikoko ja välit annetaan suhteellisina yksikköinä (`rem`, `em`), tekstisäiliöille ei anneta kiinteää korkeutta ja asettelu joustaa leveyden mukaan.
 
-## 2.2 Värit ja teemoitus
+**Muuttuva fontti** (variable font) sisältää yhdessä tiedostossa kirjasintyypin monta muunnelmaa erillisten tiedostojen sijaan. Rekisteröityjä akseleita on viisi: paino (`wght`), leveys (`wdth`), kursiivi (`ital`), kallistus (`slnt`) ja optinen koko (`opsz`) <Reference id="mdn-variable-fonts" />. Yksi tiedosto voi korvata usean painon erilliset lataukset, mikä vähentää pyyntöjä (luku 5).
 
-### OKLCH-väriavaruus
-
-OKLCH on nykyaikaisin väriavaruus, joka on *ihmissilmälle lineaarinen* —
-toisin kuin RGB tai HSL, joissa sama numeerinen muutos näyttää eri
-suuruiselta eri väreillä.
+**Sujuva typografia** skaalaa koon ikkunan leveyden mukaan rajojen sisällä:
 
 ```css
-/* OKLCH: looginen, ennustettava, saavutettava */
---color-brand: oklch(0.55 0.24 280);         /* Kroma (kylläisyys): 0.24 */
---color-brand-light: oklch(0.7 0.2 280);     /* Vaaleus: 0.7 */
---color-brand-dark: oklch(0.4 0.22 280);     /* Sävy: 280° (violetti) */
+h1 { font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem); }
 ```
 
-### Tumma/vaalea/kontrasti -teemat
+`clamp(min, toivottu, max)` pitää koon välillä 1,75–2,75 rem. Koska minimi ja maksimi ovat `rem`-yksikköjä, käyttäjän fonttiasetus vaikuttaa yhä kokoon.
 
-```css
-[data-theme="dark"] {
-  --color-bg: oklch(0.12 0.02 280);
-  --color-text: oklch(0.92 0.01 280);
-}
-```
+## 2.2 Kontrastisuhde
 
-### Saavutettavat värikontrastit (APCA vs. WCAG)
+WCAG määrittelee kahden värin kontrastisuhteen niiden suhteellisista luminansseista *L₁* (vaaleampi) ja *L₂* (tummempi) <Reference id="wcag-contrast" />:
 
-APCA (Accessible Perceptual Contrast Algorithm) on WCAG:n korvaaja, joka
-ottaa huomioon *havaitun kontrastin* eikä pelkkää matemaattista suhdetta.
+<div class="formula">kontrasti = (L₁ + 0,05) / (L₂ + 0,05),   vaihteluväli 1:1 … 21:1</div>
 
-| Standardi | Laskentatapa | Tavoite |
+| Kohde | AA-vaatimus | Kriteeri |
 |---|---|---|
-| **WCAG 2.1 AA** | Luminaanssisuhde ≥ 4.5:1 | Helppo laskea, epätarkka |
-| **APCA** | Havaittu kontrasti | Tarkempi, ottaa huomioon kontekstin |
+| Leipäteksti | vähintään 4,5:1 | 1.4.3 |
+| Suuri teksti (vähintään 18 pt tai lihavoituna 14 pt) | vähintään 3:1 | 1.4.3 |
+| Käyttöliittymäkomponentit ja grafiikka, esimerkiksi kentän reuna tai kaavion viiva | vähintään 3:1 | 1.4.11 |
 
-### Kokeile itse: Värikontrastityökalu
+Matala kontrasti on yleisin automaattisesti havaittu saavutettavuusvirhe: WebAIM Million 2026 -analyysissä sitä oli 83,9 %:lla miljoonan suosituimman sivuston etusivuista <Reference id="webaim-million" />.
+
+WCAG 3 on vielä työluonnos (10.9.2026), eikä sen kontrastialgoritmia ole päätetty <Reference id="wcag3-wd" />. Voimassa oleva vaatimus on siis WCAG 2.2:n kontrastisuhde.
 
 <ContrastTool />
 
-### Gradientit ja efektit
+## 2.3 OKLCH-väriavaruus
 
-- **Glassmorphism:** `backdrop-filter: blur(10px)` — käytä harkiten
-- **Neumorphism:** sisäänpainuneet/ulospäin pullistuneet pinnat — riski saavutettavuudelle
-
-<WhyItMatters>
-  **Miksi tällä on väliä?** Visuaaliset trendit tulevat ja menevät, mutta
-  typografian perusteet, saavutettavat värit ja looginen teemoitus pysyvät.
-  Älä seuraa trendejä sokeasti — laske kontrastit, testaa ruudunlukijalla,
-  varmista että tumma tila toimii.
-</WhyItMatters>
-
-## 2.3 Liike ja animaatio
-
-### Mikrovuorovaikutukset
-
-Pienet animaatiot kertovat käyttäjälle, että jotain tapahtuu:
+`oklch()` ilmaisee värin Oklab-väriavaruudessa kolmella koordinaatilla: koettu vaaleus *L* (0–1), kroma *C* eli värin määrä (käytännössä 0–0,4) ja sävykulma *H* <Reference id="mdn-oklch" />. HSL:n vaaleus ei vastaa koettua vaaleutta: keltainen ja sininen samalla HSL-vaaleudella näyttävät eri vaaleilta. OKLCH:n *L* on suunniteltu vastaamaan koettua vaaleutta, joten väriasteikko on helpompi rakentaa muuttamalla vain *L*:ää.
 
 ```css
-/* Napin hover: kevyt nousu */
-.button {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+:root {
+  --brand-900: oklch(0.30 0.10 260);
+  --brand-500: oklch(0.60 0.15 260);
+  --brand-100: oklch(0.95 0.03 260);
 }
 ```
 
-### View Transitions API
+Ominaisuus on ollut tuettu kaikissa pääselaimissa toukokuusta 2023 <Reference id="mdn-oklch" />. Tasainen *L* ei kuitenkaan takaa kontrastia, koska WCAG:n kaava käyttää eri luminanssimallia. Tarkista jokainen teksti–tausta-pari kontrastisuhteella.
 
-Natiivi selain-API sivujen välisten siirtymien animointiin—ei tarvetta
-kirjastoille yksinkertaisissa siirtymissä.
+## 2.4 Liike
 
-### prefers-reduced-motion
+Animaatio voi kertoa, mistä uusi elementti tuli tai että toiminto onnistui. Sama liike voi kuitenkin aiheuttaa joillekin pahoinvointia tai viedä huomion tekstiltä. WCAG asettaa kaksi rajaa <Reference id="w3c2023" />:
+
+- **2.2.2 Pause, Stop, Hide (A):** automaattisesti liikkuva sisältö, joka kestää yli viisi sekuntia, pitää voida pysäyttää.
+- **2.3.3 Animation from Interactions (AAA):** vuorovaikutuksen käynnistämän liikkeen pitää voida poistaa käytöstä.
+
+Käyttöjärjestelmän asetus "vähennä liikettä" näkyy CSS:ssä mediakyselynä:
 
 ```css
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
+  .hero-animation { animation: none; }
+  * { scroll-behavior: auto; }
 }
 ```
 
-## 2.4 Tilallinen suunnittelu
+Poista asetuksen ollessa päällä erityisesti suuret siirtymät, parallaksi ja automaattinen vieritys. Pieni värin tai läpinäkyvyyden muutos tilan merkkinä voi jäädä.
 
-- **Varjot:** `box-shadow` kertoo kerrostumisesta (MUI: kolme tasoa)
-- **backdrop-filter:** lasimaiset pinnat — kevyt blur riittää, älä liioittele
-- **z-index-strategia:** sticky header (100), modaalit (1000), työkalupaljastimet (10000)
+## 2.5 Efektit ja niiden riskit
 
-<Reference id="w3c2023" />
-<Reference id="nielsen2012" />
+- **Läpikuultava pinta** (`backdrop-filter: blur()`): tekstin kontrasti riippuu siitä, mitä pinnan alla sattuu olemaan, joten se voi alittaa vaatimuksen osassa näkymää. Lisää pinnalle riittävän peittävä taustaväri ja tarkista kontrasti huonoimmassa kohdassa.
+- **Kohokuviopinnat** (neumorfismi): painike erottuu taustasta vain varjolla, jolloin komponentin 3:1-kontrastivaatimus (1.4.11) jää helposti täyttämättä.
+- **Väri ainoana merkkinä:** WCAG 1.4.1 (A) kieltää välittämästä tietoa pelkällä värillä. Virheellisellä kentällä pitää olla myös teksti tai kuvake.
 
----
+## Sudenkuopat
 
-**Seuraavaksi:** [Vuorovaikutussuunnittelu](/AI-Koulu/ui-ux/03-interaction-design/)
-
+- **Kiinteät pikselikoot ja korkeudet.** Teksti ei suurene, tai suurennettu teksti leikkautuu.
+- **Kontrasti tarkistetaan vain päävärille.** Tarkista myös harmaat apu­tekstit, paikkamerkit (placeholder), linkit ja tilavärit.
+- **Animaatio, jota ei voi poistaa.** Kunnioita `prefers-reduced-motion`-asetusta.
+- **Uusi standardi ennen aikojaan.** WCAG 3:n luonnos ei ole vaatimus. Mittaa WCAG 2.2:n mukaan.
 
 <ChapterQuiz chapterSlug="02-visual-trends" />
