@@ -4,3 +4,6 @@ dist/
 *.local
 .DS_Store
 .astro/
+test-results/
+playwright-report/
+.private-names

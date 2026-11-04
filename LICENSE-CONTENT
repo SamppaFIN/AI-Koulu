@@ -1,0 +1,19 @@
+AI-Koulun opetussisältö © 2026 Infinite
+
+Opetussisältö on lisensoitu Creative Commons Nimeä 4.0 Kansainvälinen
+-lisenssillä (CC BY 4.0): https://creativecommons.org/licenses/by/4.0/
+Lisenssin virallinen teksti: https://creativecommons.org/licenses/by/4.0/legalcode
+
+Opetussisältöä ovat:
+- luvut hakemistoissa src/content/ai-architecture/ ja src/content/ui-ux/
+- sanasto (src/data/glossary.json) ja visat (src/data/quizzes.json)
+- aikakehän käsitteet (src/data/aikakehae.ts) ja insinöörien repliikit (src/data/crew.ts)
+
+Saat jakaa ja muokata sisältöä mihin tahansa tarkoitukseen, kun mainitset
+tekijän (Infinite, AI-Koulu) ja lisenssin sekä kerrot, jos teit muutoksia.
+
+Lähdeviitteet (src/data/references.json) ovat linkkejä ja lyhyitä lainauksia;
+kunkin lähteen oma lisenssi koskee itse lähdettä.
+
+Koodi on MIT-lisensoitu (LICENSE). Fontit ovat SIL Open Font License 1.1
+-lisensoituja (public/fonts/).

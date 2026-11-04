@@ -1,0 +1,794 @@
+{
+  "_meta": {
+    "schema_version": "1.1",
+    "generated_at": "2026-11-04T00:50:01Z",
+    "generated_by": "init-project v1.0",
+    "git_commit": "8b9d997",
+    "git_branch": "uudistus-2026-11",
+    "language": "fi"
+  },
+  "project": {
+    "name": "AI-Koulu",
+    "description": "Suomenkielinen interaktiivinen opetussivusto AI-arkkitehtuureista ja UI/UX-käytännöistä, marraskuun 2026 tasolla.",
+    "version": "0.1.0",
+    "status": "in_development",
+    "license": {
+      "id": "MIT",
+      "note": "Koodi MIT, opetussisältö CC BY 4.0 omassa LICENSE-CONTENT-tiedostossa. Ei GPL-lisensoituja riippuvuuksia."
+    },
+    "stack": {
+      "frontend": [
+        "Astro 5",
+        "MDX",
+        "React 19",
+        "React Flow",
+        "Recharts",
+        "Radix UI",
+        "motion"
+      ],
+      "build": [
+        "astro build",
+        "Pagefind"
+      ],
+      "testing": [
+        "Vitest",
+        "Playwright",
+        "@axe-core/playwright"
+      ]
+    },
+    "repositories": {
+      "app": "https://github.com/SamppaFIN/AI-Koulu"
+    },
+    "urls": {
+      "dev": "http://localhost:4321/AI-Koulu/",
+      "production": "https://samppafin.github.io/AI-Koulu/"
+    },
+    "branches": {
+      "main": "main",
+      "active": "uudistus-2026-11"
+    },
+    "has_ui": true
+  },
+  "epics": [
+    {
+      "id": "EPIC-001",
+      "title": "Perusta kuntoon",
+      "icon": "🧱",
+      "description": "Repo on dokumentoitu ja lisensoitu, riippuvuudet ovat turvallisia, ja testit suojaavat julkaisua.",
+      "status": "in_progress",
+      "stories": [
+        "STORY-001",
+        "STORY-002",
+        "STORY-003",
+        "STORY-004"
+      ],
+      "progress": 93
+    },
+    {
+      "id": "EPIC-002",
+      "title": "AI-arkkitehtuurit 11/2026",
+      "icon": "🧠",
+      "description": "AI-arkkitehtuurien luvut vastaavat marraskuun 2026 mallimaisemaa, ja jokaisella aikasidonnaisella faktalla on lähde.",
+      "status": "in_progress",
+      "stories": [
+        "STORY-005",
+        "STORY-006",
+        "STORY-007",
+        "STORY-008",
+        "STORY-009"
+      ],
+      "progress": 22
+    },
+    {
+      "id": "EPIC-003",
+      "title": "UI/UX-käytännöt 11/2026",
+      "icon": "🎨",
+      "description": "UI/UX-luvut ovat virheettömiä, ja AI:n vaikutus käyttöliittymiin on kuvattu nykytasolla.",
+      "status": "todo",
+      "stories": [
+        "STORY-010",
+        "STORY-011"
+      ],
+      "progress": 0
+    },
+    {
+      "id": "EPIC-004",
+      "title": "Demot, kaaviot ja data",
+      "icon": "🧩",
+      "description": "Demot, kaaviot, sanasto ja visat vastaavat uusia lukuja, ja RAG-kaavion vika on korjattu juurisyystä.",
+      "status": "in_progress",
+      "stories": [
+        "STORY-012",
+        "STORY-013",
+        "STORY-014"
+      ],
+      "progress": 10
+    },
+    {
+      "id": "EPIC-005",
+      "title": "Aleksandrian kirjasto -käyttöliittymä",
+      "icon": "🏛️",
+      "description": "Sivusto saa portfolion tasoisen käyttöliittymän yhdellä teemalla: futuristinen Aleksandrian kirjasto ja kolme keskustelevaa insinööriä.",
+      "status": "in_progress",
+      "stories": [
+        "STORY-015",
+        "STORY-016",
+        "STORY-017",
+        "STORY-018",
+        "STORY-019"
+      ],
+      "progress": 90
+    }
+  ],
+  "stories": [
+    {
+      "id": "STORY-001",
+      "epic": "EPIC-001",
+      "title": "README ja lisenssit",
+      "type": "chore",
+      "narrative": "Ylläpitäjänä haluan README:n ja lisenssitiedostot, jotta repon voi ottaa käyttöön ja sisältöä voi käyttää opetukseen luvallisesti.",
+      "effort": "S",
+      "depends_on": [],
+      "status": "review",
+      "acceptance_criteria": [
+        "README kertoo sisällön, hakemistorakenteen, kehityspalvelimen käynnistyksen sekä build- ja testikomennot",
+        "Puhtaalla koneella README:n ohjeilla npm install ja npm run dev avaavat sivun osoitteessa localhost:4321/AI-Koulu/",
+        "Juuressa on LICENSE (MIT) ja LICENSE-CONTENT (CC BY 4.0), ja alatunniste mainitsee molemmat",
+        "Tekijänä mainitaan vain Infinite, ei oikeaa nimeä"
+      ],
+      "progress": 90,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-002",
+      "epic": "EPIC-001",
+      "title": "Lähtötaso ja riippuvuudet",
+      "type": "chore",
+      "narrative": "Ylläpitäjänä haluan mitatun lähtötason ja ajantasaiset riippuvuudet, jotta uudistus alkaa toimivasta ja turvallisesta pohjasta.",
+      "effort": "M",
+      "depends_on": [],
+      "status": "review",
+      "acceptance_criteria": [
+        "Lähtötaso on kirjattu TICKET-TEST-001:een: install, build, lint, Vitest, a11y ja audit ennen muutoksia",
+        "npm audit --audit-level=high ei löydä high- tai critical-haavoittuvuuksia",
+        "npm run build ja npm run lint menevät läpi",
+        "Wrapperien tarve ja Astro 6 -päivitys on arvioitu, ja päätökset on kirjattu CLAUDE.md:n osioon 13"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": "TICKET-TEST-001"
+      }
+    },
+    {
+      "id": "STORY-003",
+      "epic": "EPIC-001",
+      "title": "Testit CI:hin ja käyttöliittymätestit",
+      "type": "chore",
+      "narrative": "Ylläpitäjänä haluan, että testit ajetaan ennen jokaista julkaisua, jotta rikkinäinen sivu ei päädy verkkoon.",
+      "effort": "M",
+      "depends_on": [
+        "STORY-002"
+      ],
+      "status": "in_progress",
+      "acceptance_criteria": [
+        "a11y-testi ajetaan astro preview -palvelinta vasten eikä file://-osoitteena, ja expect on tuotu, joten testi voi oikeasti mennä läpi",
+        "deploy.yml ajaa lintin, Vitestin ja Playwrightin, ja deploy-job riippuu testijobista",
+        "Tahallisesti rikottu testi estää deployn (todennettu kerran ja kirjattu testitikettiin)",
+        "Käyttöliittymätestit noudattavat portfolion playwright-tests.mjs-mallia: ne odottavat tilaa eivätkä kiinteitä viiveitä, ja ne ajetaan sekä 1440 px:n että 390 px:n leveydellä"
+      ],
+      "progress": 80,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-004",
+      "epic": "EPIC-001",
+      "title": "Viite- ja datatestit",
+      "type": "chore",
+      "narrative": "Lukijana haluan, että jokainen viite ja visakysymys on eheä, jotta en opi keksittyä tai rikkinäistä tietoa.",
+      "effort": "S",
+      "depends_on": [],
+      "status": "review",
+      "acceptance_criteria": [
+        "Vitest kaatuu, jos MDX viittaa id:hen, jota references.jsonissa ei ole",
+        "Vitest kaatuu, jos visan oikea vastaus ei osoita olemassa olevaan vaihtoehtoon tai sanastossa on sama termi kahdesti",
+        "Nykyinen data läpäisee testit, tai löydetyt virheet on listattu ja korjattu"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": "TICKET-TEST-003"
+      }
+    },
+    {
+      "id": "STORY-005",
+      "epic": "EPIC-002",
+      "title": "Sisältösuunnitelma",
+      "type": "spike",
+      "narrative": "Ylläpitäjänä haluan nähdä uuden lukurakenteen ennen kirjoittamista, jotta valmiita lukuja ei tarvitse kirjoittaa kahdesti.",
+      "effort": "S",
+      "depends_on": [],
+      "status": "review",
+      "acceptance_criteria": [
+        "Suunnitelma kertoo jokaisen nykyisen luvun kohtalon: säilyy, kirjoitetaan uudelleen, yhdistetään tai poistuu",
+        "Uudet luvut ja muutettavat demot on listattu",
+        "Infinite on hyväksynyt suunnitelman ennen kuin yhtään lukua kirjoitetaan uudelleen",
+        "Storyt 006–011 on pilkottu uudelleen hyväksytyn suunnitelman mukaan"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-006",
+      "epic": "EPIC-002",
+      "title": "Johdanto ja mallimaisema",
+      "type": "story",
+      "narrative": "Lukijana haluan ajantasaisen johdannon kielimalleihin, jotta ymmärrän, miten nykyiset mallit toimivat ja mitä niiden käyttö maksaa.",
+      "effort": "L",
+      "depends_on": [
+        "STORY-005"
+      ],
+      "status": "review",
+      "acceptance_criteria": [
+        "Nykyiset LLM:t kuvataan pelkkinä dekoodereina, ei enkooderi–dekooderi-malleina",
+        "Adaptiivinen päättely ja effort-taso on selitetty, eikä o3-mini- tai Claude 4 -vertailuja esitetä nykytilana",
+        "Mallitaulukot ja hinnat on merkitty \"tilanne 11/2026\", ja jokaisella rivillä on lähde references.jsonissa",
+        "Claude-tiedot on tarkistettu claude-api-skillistä ja muiden valmistajien tiedot web-haulla"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-007",
+      "epic": "EPIC-002",
+      "title": "Agentit, MCP ja Agent Skills",
+      "type": "story",
+      "narrative": "Lukijana haluan ymmärtää nykyiset agenttirakenteet, jotta osaan valita kehyksen ja työkalurajapinnan omaan projektiini.",
+      "effort": "L",
+      "depends_on": [
+        "STORY-005"
+      ],
+      "status": "review",
+      "acceptance_criteria": [
+        "MCP, Agent Skills ja computer use on selitetty esimerkein",
+        "Claude Agent SDK, OpenAI Agents SDK, Google ADK ja Microsoft Agent Framework on kuvattu lähteineen, ja AutoGenin ja Semantic Kernelin tila on tarkistettu ensikäden lähteestä",
+        "Agenttisuunnittelumallit (nykyinen luku 06) ovat linjassa kehysten kanssa"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-008",
+      "epic": "EPIC-002",
+      "title": "Koodausagentit, evalit ja kontekstin hallinta",
+      "type": "story",
+      "narrative": "Lukijana haluan oppia, miten agentteja käytetään ohjelmistotyössä ja miten niiden laatua mitataan, jotta osaan luottaa niihin oikeassa määrin.",
+      "effort": "L",
+      "depends_on": [
+        "STORY-005"
+      ],
+      "status": "review",
+      "acceptance_criteria": [
+        "Koodausagentit (esim. Claude Code ja Codex) on kuvattu toimintaperiaatteen tasolla, ei mainoksena",
+        "Evalit ja agenttien laadunmittaus on selitetty ilman keksittyjä benchmark-lukuja",
+        "Kompaktointi ja prompt-välimuisti on selitetty, ja kustannusvaikutus perustuu lähteeseen"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-009",
+      "epic": "EPIC-002",
+      "title": "Muiden AI-lukujen päivitys",
+      "type": "story",
+      "narrative": "Lukijana haluan, että API-, RAG-, hienosäätö-, multimodaali-, hybridi-, infra-, periaate- ja viitearkkitehtuuriluvut ovat ajan tasalla, jotta en opi vanhentuneita käytäntöjä.",
+      "effort": "L",
+      "depends_on": [
+        "STORY-005"
+      ],
+      "status": "review",
+      "acceptance_criteria": [
+        "Vanhentuneet mallinimet (esim. GPT-4o, GPT-4V, Claude 4 ja o3-mini) on poistettu tai merkitty historiaksi",
+        "Kustannusesimerkit on laskettu uudelleen, ja laskentatapa näkyy",
+        "Kirjoitusvirhe \"Antropiisin\" on korjattu",
+        "Avointen painojen mallit on merkitty toisen käden lähteiksi, jos ensikäden lähdettä ei löydy"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-010",
+      "epic": "EPIC-003",
+      "title": "UI/UX-lukujen tarkistus ja faktavirheet",
+      "type": "story",
+      "narrative": "Lukijana haluan, että UI/UX-luvut ovat virheettömiä ja nykytasolla, jotta voin soveltaa niitä suoraan.",
+      "effort": "M",
+      "depends_on": [
+        "STORY-005"
+      ],
+      "status": "review",
+      "acceptance_criteria": [
+        "INP on aukikirjoitettu oikein: Interaction to Next Paint",
+        "Figma AI:n tila (luku 09) on tarkistettu lähteestä",
+        "WCAG-viittaukset ovat 2.2-tasolla, ja jokainen luku on käyty läpi ja muutokset kirjattu"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-011",
+      "epic": "EPIC-003",
+      "title": "AI-UX: generatiivinen UI ja koodausagentit",
+      "type": "story",
+      "narrative": "Lukijana haluan ymmärtää, miten AI muuttaa käyttöliittymiä, jotta osaan suunnitella chatin sisäisiä ja generoituja näkymiä.",
+      "effort": "M",
+      "depends_on": [
+        "STORY-005"
+      ],
+      "status": "review",
+      "acceptance_criteria": [
+        "Generatiivinen ja interaktiivinen UI chatissa on selitetty esimerkein lähteineen",
+        "Työkalulista (v0, Bolt, Lovable jne.) on tarkistettu, ja koodausagentit on lisätty",
+        "Eettiset näkökohdat on päivitetty vastaamaan agenttisia käyttöliittymiä"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-012",
+      "epic": "EPIC-004",
+      "title": "Kaaviot ja RAG-kaavion juurisyy",
+      "type": "story",
+      "narrative": "Lukijana haluan kaaviot, jotka näkyvät heti ja vastaavat tekstiä, jotta ymmärrän rakenteen yhdellä silmäyksellä.",
+      "effort": "M",
+      "depends_on": [
+        "STORY-005"
+      ],
+      "status": "review",
+      "acceptance_criteria": [
+        "TransformerDiagram kuvaa dekooderipohjaisen mallin",
+        "RAG-kaavion näkyvyysvian juurisyy on korjattu, ja kiertotiet (MutationObserver, !important-pakotukset ja solmut näkyviin pakottava useEffect) on poistettu",
+        "Playwright-testi varmistaa, että kaavioiden solmut näkyvät, ja kaaviot toimivat näppäimistöllä"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-013",
+      "epic": "EPIC-004",
+      "title": "Demojen päivitys",
+      "type": "story",
+      "narrative": "Lukijana haluan kokeilla demoja, jotka käyttävät nykyisiä malleja ja käsitteitä, jotta kokeilu vastaa todellisuutta.",
+      "effort": "M",
+      "depends_on": [
+        "STORY-005"
+      ],
+      "status": "in_progress",
+      "acceptance_criteria": [
+        "Demoissa ei ole vanhentuneita mallinimiä tai lukuja ilman historiamerkintää",
+        "Jokainen demo toimii näppäimistöllä, 390 px:n leveydellä ja prefers-reduced-motion-tilassa",
+        "Muutetut ja uudet demot vastaavat hyväksyttyä sisältösuunnitelmaa"
+      ],
+      "progress": 60,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-014",
+      "epic": "EPIC-004",
+      "title": "Sanasto ja visat linjassa lukujen kanssa",
+      "type": "story",
+      "narrative": "Lukijana haluan sanaston ja visat, jotka vastaavat lukujen sisältöä, jotta kertaus vahvistaa oikeita asioita.",
+      "effort": "M",
+      "depends_on": [
+        "STORY-004",
+        "STORY-006",
+        "STORY-007",
+        "STORY-008",
+        "STORY-009",
+        "STORY-010",
+        "STORY-011"
+      ],
+      "status": "review",
+      "acceptance_criteria": [
+        "Jokaisella luvulla on visa, jossa on vähintään 3 kysymystä",
+        "Sanaston mallitermit vastaavat lukuja, ja vanhentuneet termit on poistettu tai merkitty historiaksi",
+        "Viite- ja datatestit (STORY-004) menevät läpi"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-015",
+      "epic": "EPIC-005",
+      "title": "Käyttöliittymäsuunnitelma ja Design-canvas",
+      "type": "spike",
+      "narrative": "Ylläpitäjänä haluan nähdä ja korjata koko ulkoasun canvaksessa ennen toteutusta, jotta live-sivulle ei tule palasittaisia muutoksia.",
+      "effort": "M",
+      "depends_on": [],
+      "status": "done",
+      "acceptance_criteria": [
+        "Canvaksessa on teeman 2–3 tulkintaa, etusivu, lukusivu, demo, insinöörien keskustelu ja mobiilinäkymä oikealla sisällöllä",
+        "Insinöörien nimet, roolit ja ulkonäkö on ehdotettu canvaksessa",
+        "Tailwind- ja wrapper-päätökset on kirjattu CLAUDE.md:n osioon 13",
+        "Infinite on korjannut ja hyväksynyt canvaksen"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-016",
+      "epic": "EPIC-005",
+      "title": "Teema ja perusrakenne",
+      "type": "story",
+      "narrative": "Lukijana haluan selkeän ja yhtenäisen ulkoasun, jotta voin keskittyä sisältöön.",
+      "effort": "L",
+      "depends_on": [
+        "STORY-015"
+      ],
+      "status": "review",
+      "acceptance_criteria": [
+        "Sivustolla on yksi teema, ja tumma/vaalea-vaihtaja on poistettu",
+        "Tekstin, himmeän tekstin ja korostusvärien kontrasti on vähintään 4,5:1, ja testi varmistaa sen",
+        "Fontit isännöidään itse, eikä sivu tee pyyntöjä fonts.googleapis.comiin; OFL-lisenssi on mukana",
+        "Dialogit ovat dialog-elementtejä ja pitkät listat details-elementtejä (oletuksena kiinni), osiot paljastuvat näkyviin tullessaan, ja mobiilissa sirurivit vierivät yhdellä rivillä"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": "TICKET-TEST-002"
+      }
+    },
+    {
+      "id": "STORY-017",
+      "epic": "EPIC-005",
+      "title": "WebGL-hero ja osioiden taustat",
+      "type": "story",
+      "narrative": "Lukijana haluan elävän mutta kevyen näkymän, jotta teema välittyy ja sivua on mukava tutkia.",
+      "effort": "L",
+      "depends_on": [
+        "STORY-016"
+      ],
+      "status": "review",
+      "acceptance_criteria": [
+        "WebGL-hero reagoi osoittimeen, ja ilman WebGL:ää näkyy staattinen fallback",
+        "Jokaisella osiolla on oma tausta eri tekniikalla, ja animaatio pyörii vain näkyvissä",
+        "prefers-reduced-motion pysäyttää heron ja taustat",
+        "\"tausta ·\" -merkinnät avaavat TECH-dialogin, jossa ovat tekniikka, kaava ja perustelu"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-018",
+      "epic": "EPIC-005",
+      "title": "Kolme insinööriä: hahmot ja liike",
+      "type": "story",
+      "narrative": "Lukijana haluan oppaat, jotka seuraavat sitä, mitä katson, jotta sivun tutkiminen tuntuu keskustelulta.",
+      "effort": "L",
+      "depends_on": [
+        "STORY-016"
+      ],
+      "status": "review",
+      "acceptance_criteria": [
+        "Hahmot piirretään koodilla (SVG tai Path2D), ja sivun latautuessa ne esittäytyvät rinnakkain hero-kortin yläpuolella",
+        "Desktopissa ne kiertävät osoitettua elementtiä nopeudella 16 px/s (puhuessa 6 px/s), siirtyvät jonossa ja väistävät osoitinta; mobiilissa ne kulkevat vierityksen mukana",
+        "Puhuja nousee ja suurenee hieman, ja puhe näkyy kuplassa",
+        "Hahmot voi piilottaa, ja prefers-reduced-motion pysäyttää liikkeen"
+      ],
+      "progress": 100,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    },
+    {
+      "id": "STORY-019",
+      "epic": "EPIC-005",
+      "title": "Insinöörien keskustelu ja Kysy",
+      "type": "story",
+      "narrative": "Lukijana haluan kuulla kolmen näkökulman keskustelun luvusta tai demosta, jotta näen sudenkuopat, tekniikan ja rajat.",
+      "effort": "L",
+      "depends_on": [
+        "STORY-005",
+        "STORY-018"
+      ],
+      "status": "in_progress",
+      "acceptance_criteria": [
+        "Repliikit kootaan datasta luvuittain, demoittain ja käsitteittäin, eivätkä ne toista lukutekstiä (testi vertaa tekstiin)",
+        "Hahmot vastaavat toisilleen: jokaisessa keskustelussa vähintään yksi repliikki viittaa edelliseen, täydentää sitä tai kiistää sen",
+        "Kysy-ikkuna tunnistaa aikomuksen paikallisesti ilman kielimallia, ja siinä on piilotus ja keskusteluloki",
+        "Tuntematon kysymys saa rehellisen vastauksen ja ehdotuksen siitä, mitä voi kysyä"
+      ],
+      "progress": 50,
+      "linked": {
+        "plan": null,
+        "implementation": null,
+        "testing": null
+      }
+    }
+  ],
+  "plans": [],
+  "implementation_tickets": [],
+  "testing_tickets": [
+    {
+      "id": "TICKET-TEST-001",
+      "story": "STORY-002",
+      "implementation_ticket": null,
+      "status": "done",
+      "fix_summary": {
+        "problem_and_root_cause": "Lähtötason mittaus ennen muutoksia, ei korjaus.",
+        "files_changed": []
+      },
+      "ai_testing": {
+        "environment": "Paikallinen Windows 11, Node, commit 8b9d997",
+        "tooling": "npm, Vitest, @playwright/test (Chromium headless shell v1223)",
+        "cases": [
+          {
+            "steps": "npm install",
+            "expected": "Riippuvuudet asentuvat",
+            "result": "541 pakettia asentui. npm audit raportoi 20 haavoittuvuutta: 1 low, 4 moderate, 12 high ja 3 critical.",
+            "outcome": "fail"
+          },
+          {
+            "steps": "npm run build",
+            "expected": "Build ja Pagefind-indeksi valmistuvat",
+            "result": "Valmis noin 15 sekunnissa. 25 sivua ja 6149 sanaa indeksoitu. Build muuttaa versionhallinnassa olevia .astro/-tiedostoja.",
+            "outcome": "pass"
+          },
+          {
+            "steps": "npm run lint (tsc --noEmit)",
+            "expected": "Ei tyyppivirheitä",
+            "result": "16 virhettä: AgentWorkflowDiagram 6, RAGDiagram 4, TransformerDiagram 4, HicksLawGame 1 ja content/config.ts 1.",
+            "outcome": "fail"
+          },
+          {
+            "steps": "npm run test (vitest run)",
+            "expected": "Yksikkötestit menevät läpi",
+            "result": "Testitiedostoja ei ole (no tests). Tyhjä tulos ei ole läpimeno.",
+            "outcome": "fail"
+          },
+          {
+            "steps": "npm run test:a11y",
+            "expected": "Ei kriittisiä tai vakavia axe-löydöksiä",
+            "result": "25/25 epäonnistui: ReferenceError: expect is not defined (tests/a11y.spec.ts tuo vain test-funktion), joten testi ei ole voinut koskaan mennä läpi. Lokin mukaan color-contrast-löydös 19 sivulla ja label-löydös 2 sivulla. Sivut avataan file://-osoitteena, joten kontrastitulos ei ole luotettava.",
+            "outcome": "fail"
+          },
+          {
+            "steps": "Riippuvuudet päivitetty (Astro 7.4.5, Vitest 5.1, Playwright 1.64), käyttämättömät poistettu, npm audit --audit-level=high",
+            "expected": "Ei high- tai critical-haavoittuvuuksia",
+            "result": "found 0 vulnerabilities",
+            "outcome": "pass"
+          },
+          {
+            "steps": "npm run build Node 24.22.2:lla",
+            "expected": "Build valmistuu",
+            "result": "25 sivua noin 3 sekunnissa, Pagefind indeksoi 6444 sanaa. Node 22.16 ei kelpaa Astro 7:lle (vaatii vähintään 22.23.4).",
+            "outcome": "pass"
+          },
+          {
+            "steps": "npm run lint",
+            "expected": "Ei tyyppivirheitä",
+            "result": "0 virhettä. Lähtötason 15 virhettä korjattu (kaavioiden data.label ja HicksLawGamen useRef); content/config.ts poistui siirrossa uuteen sisältökonfiguraatioon.",
+            "outcome": "pass"
+          },
+          {
+            "steps": "npm run test:a11y preview-palvelinta vasten, expect-import korjattu",
+            "expected": "Ei kriittisiä tai vakavia axe-löydöksiä",
+            "result": "Ennen uutta ulkoasua 8/50 läpi. Uudella ulkoasulla 72/72 läpi (36 sivua, mukaan lukien uudelleenohjaukset, 1440 px ja 390 px).",
+            "outcome": "pass"
+          }
+        ],
+        "console_findings": [],
+        "screenshots": []
+      },
+      "human_acceptance": {
+        "checked_items": [
+          {
+            "item": "Lähtötaso on kirjattu ja ymmärretty",
+            "checked": false
+          },
+          {
+            "item": "Node päivitetty koneelle versioon 22.23.4 tai uudempaan",
+            "checked": false
+          }
+        ],
+        "decision": null,
+        "signed_by": null,
+        "date": null
+      }
+    },
+    {
+      "id": "TICKET-TEST-002",
+      "story": "STORY-016",
+      "implementation_ticket": null,
+      "status": "in_progress",
+      "fix_summary": {
+        "problem_and_root_cause": "Uusi käyttöliittymä (teema C1, hero, taustat, insinöörit, Kysy, aikakehä). Löydetyt ja korjatut juurisyyt: Shiki-teeman github-dark kommenttiväri 4,22:1 → github-dark-default; demojen valkoinen teksti kultaisella pohjalla → --on-gold; skeleton-demon aria-label ilman roolia → role=status; tehtävälistojen nimettömät valintaruudut → tavallinen lista; vieritettävät taulukot ilman fokusta → tabindex skriptillä; uudelleenohjausten kohteesta puuttui base-polku.",
+        "files_changed": [
+          "src/styles/site.css",
+          "src/layouts/Layout.astro",
+          "src/scripts/*.ts",
+          "src/components/site/*",
+          "src/components/mdx/*",
+          "src/pages/*",
+          "astro.config.ts"
+        ]
+      },
+      "ai_testing": {
+        "environment": "http://127.0.0.1:4329/AI-Koulu/ (astro preview), Chromium headless, 1440×900 ja 390×844",
+        "tooling": "@playwright/test 1.64 + @axe-core/playwright 4.14",
+        "cases": [
+          {
+            "steps": "tests/a11y.spec.ts: kaikki 36 sivua kummallakin leveydellä",
+            "expected": "Ei kriittisiä tai vakavia axe-löydöksiä",
+            "result": "72/72 läpi",
+            "outcome": "pass"
+          },
+          {
+            "steps": "tests/ui.spec.ts: konsolivirheet, ulkoiset pyynnöt ja vaakavieritys 5 sivulla",
+            "expected": "0 virhettä, 0 ulkoista pyyntöä (fontit itse isännöity), ei vaakavieritystä",
+            "result": "Läpi molemmilla leveyksillä",
+            "outcome": "pass"
+          },
+          {
+            "steps": "Oikea nimi, sähköposti ja puhelinnumero eivät näy sivuilla",
+            "expected": "Ei osumia",
+            "result": "Läpi",
+            "outcome": "pass"
+          },
+          {
+            "steps": "Hero piirtää näkyvissä ja pysähtyy piilossa; taustat pyörivät vain näkyessään; reduced motion pysäyttää",
+            "expected": "Tila window.aiKoulu vastaa",
+            "result": "Läpi",
+            "outcome": "pass"
+          },
+          {
+            "steps": "Tekniikkadialogi ja kartta: avaus, Esc, fokus palaa avaajaan; skip-linkki; kosketuskohteet vähintään 44 px",
+            "expected": "Natiivi dialog-käytös",
+            "result": "Läpi",
+            "outcome": "pass"
+          },
+          {
+            "steps": "Insinöörit: esittely vuorotellen, puhuja nousee; kohteen kehä ja puhe vasta perillä (desktop); vierityksen mukana (mobiili); Kysy ja piilotus",
+            "expected": "Tila window.aiKoulu.crew vastaa",
+            "result": "Läpi; 2 testiä ohitetaan tarkoituksella toisella leveydellä",
+            "outcome": "pass"
+          },
+          {
+            "steps": "Aikakehä, Kontekstidemo, luettu-merkintä ja jatka-kortti, vanhan osoitteen uudelleenohjaus",
+            "expected": "Toimii",
+            "result": "Läpi",
+            "outcome": "pass"
+          },
+          {
+            "steps": "CI (deploy.yml): punainen testi estää deployn",
+            "expected": "Deploy-job ei käynnisty, jos build-job kaatuu",
+            "result": "Ei ajettu: vaatii pushin GitHubiin, eikä mitään ole pushattu",
+            "outcome": "not_run"
+          }
+        ],
+        "console_findings": [],
+        "screenshots": []
+      },
+      "human_acceptance": {
+        "checked_items": [
+          {
+            "item": "Ulkoasu vastaa canvasta palautteen muutoksin (hillitymmät efektit)",
+            "checked": false
+          },
+          {
+            "item": "Mobiili ja desktop kokeiltu itse",
+            "checked": false
+          }
+        ],
+        "decision": null,
+        "signed_by": null,
+        "date": null
+      }
+    },
+    {
+      "id": "TICKET-TEST-003",
+      "story": "STORY-004",
+      "implementation_ticket": null,
+      "status": "in_progress",
+      "fix_summary": {
+        "problem_and_root_cause": "Uusi testijoukko tests/data.test.ts.",
+        "files_changed": [
+          "tests/data.test.ts",
+          "vitest.config.ts"
+        ]
+      },
+      "ai_testing": {
+        "environment": "Vitest 5.1, Node 24",
+        "tooling": "vitest",
+        "cases": [
+          {
+            "steps": "npm test",
+            "expected": "14 testiä läpi",
+            "result": "14/14 läpi",
+            "outcome": "pass"
+          },
+          {
+            "steps": "Mutaatio: keksitty <Reference id=\"keksitty-lahde\" /> lukuun 3",
+            "expected": "Testi kaatuu ja nimeää viitteen",
+            "result": "Kaatui: \"03-kontekstin-hallinta: keksitty-lahde\"; palautuksen jälkeen 14/14 läpi",
+            "outcome": "pass"
+          }
+        ],
+        "console_findings": [],
+        "screenshots": []
+      },
+      "human_acceptance": {
+        "checked_items": [
+          {
+            "item": "Datatestit kattavat tarpeelliset tarkistukset",
+            "checked": false
+          }
+        ],
+        "decision": null,
+        "signed_by": null,
+        "date": null
+      }
+    }
+  ]
+}

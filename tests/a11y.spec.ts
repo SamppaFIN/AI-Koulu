@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -30,8 +30,8 @@ const pages = getAllPages();
 test.describe("Accessibility checks", () => {
   for (const pagePath of pages) {
     test(`${pagePath} should have no critical a11y violations`, async ({ page }) => {
-      const url = `file://${path.join(distDir, pagePath)}`;
-      await page.goto(url, { waitUntil: "networkidle" });
+      // Sivu haetaan preview-palvelimelta, jotta base-polku ja tyylit latautuvat
+      await page.goto(pagePath.replace(/index\.html$/, ""), { waitUntil: "networkidle" });
 
       const results = await new AxeBuilder({ page }).analyze();
 
